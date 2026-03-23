@@ -5,15 +5,24 @@ Lean 4 proof of the **Rellich–Kondrachov compact embedding theorem**: the Sobo
 ## Main result
 
 ```lean
--- The H¹ → L² embedding is a compact operator on compact Riemannian manifolds
-theorem FiniteChartData.isCompactOperator_h1ToL2_of_summands ...
+theorem isCompactOperator_h1ToL2_riemannianVolume
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    (I : ModelWithCorners ℝ E H)
+    [IsManifold I ⊤ M] [IsManifold I 1 M]
+    [Bundle.RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    [I.Boundaryless] [T3Space M] [CompactSpace M] :
+    IsCompactOperator fun x : ↥(h1 (I := I) (μ := riemannianVolumeMeasure (I := I) (M := M))) =>
+      h1ToL2 (I := I) (μ := riemannianVolumeMeasure (I := I) (M := M)) x
 ```
 
 ## Proof strategy
 
-1. **Euclidean heart** (`Euclidean/Rellich`): for a fixed compact set K ⊆ ℝⁿ, the inclusion H¹ → L² restricted to functions supported in K is compact. Proved via Fréchet–Kolmogorov + H¹ translation estimate.
-2. **Manifold glue** (`Manifold/RellichKondrachov`): package the chart-level compactness into a global compact operator using finite chart decomposition.
-3. **Riemannian specialisation** (`Manifold/RellichKondrachovRiemannian`): instantiate for Riemannian manifolds with Levi-Civita volume measure.
+1. **Euclidean heart** (`Euclidean/Rellich`): for a fixed compact set K ⊆ ℝⁿ, the H¹ → L² inclusion restricted to functions supported in K is compact. Proved via the Fréchet–Kolmogorov compactness criterion, using the H¹ translation estimate `‖τₐu − u‖₂ ≤ ‖a‖ · ‖∇u‖₂`.
+2. **Manifold glue** (`Manifold/RellichKondrachov`): given a finite atlas, the global H¹ → L² map is a finite sum of chart contributions; compactness of each summand implies compactness of the sum.
+3. **Riemannian specialisation** (`Manifold/RellichKondrachovRiemannian`): instantiate for compact Riemannian manifolds with Levi-Civita volume measure.
 
 ## Dependencies
 
@@ -21,10 +30,10 @@ Lean 4 + [Mathlib](https://github.com/leanprover-community/mathlib4). No externa
 
 ## Mathlib upstreaming
 
-This is intended as a Mathlib contribution. The proof is sorry-free.
+This is intended as a Mathlib contribution. The proof is sorry-free. Target namespace: `Mathlib.Geometry.Manifold.Sobolev`.
 
 ## References
 
-- K. O. Friedrichs, "On the boundary-value problems of the theory of elasticity", 1947
-- F. Rellich, "Ein Satz über mittlere Konvergenz", 1930
-- T. Kondrachov, "Sur certaines propriétés des fonctions...", 1945
+- F. Rellich, "Ein Satz über mittlere Konvergenz", *Nachrichten der Akademie der Wissenschaften in Göttingen*, 1930
+- V. I. Kondrachov, "Sur certaines propriétés des fonctions dans l'espace Lp", *Doklady Akademii Nauk SSSR*, 1945
+- L. C. Evans, *Partial Differential Equations*, 2nd ed., AMS, 2010, §5.7
