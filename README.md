@@ -4,7 +4,6 @@ Lean 4 proof of the **Rellich–Kondrachov compact embedding theorem**: the Sobo
 
 > **Build status:** Verified on Lean v4.29.0-rc7 with Mathlib. Zero sorries. Mathlib upstreaming candidate.
 
-
 ## Main result
 
 ```lean
@@ -23,8 +22,8 @@ theorem isCompactOperator_h1ToL2_riemannianVolume
 
 ## Proof strategy
 
-1. **Euclidean heart** (`Euclidean/Rellich`): for a fixed compact set K ⊆ ℝⁿ, the H¹ → L² inclusion restricted to functions supported in K is compact. Proved via the Fréchet–Kolmogorov compactness criterion, using the H¹ translation estimate `‖τₐu − u‖₂ ≤ ‖a‖ · ‖∇u‖₂`.
-2. **Manifold glue** (`Manifold/RellichKondrachov`): given a finite atlas, the global H¹ → L² map is a finite sum of chart contributions; compactness of each summand implies compactness of the sum.
+1. **Euclidean core** (`Euclidean/Rellich`): for a fixed compact set K ⊆ ℝⁿ, the H¹ → L² inclusion restricted to functions supported in K is compact. Via the Fréchet–Kolmogorov criterion, using the H¹ translation estimate `‖τₐu − u‖₂ ≤ ‖a‖ · ‖∇u‖₂`.
+2. **Manifold glue** (`Manifold/RellichKondrachov`): decompose via a finite atlas; compactness of each chart contribution implies compactness of the sum.
 3. **Riemannian specialisation** (`Manifold/RellichKondrachovRiemannian`): instantiate for compact Riemannian manifolds with Levi-Civita volume measure.
 
 ## Dependencies
@@ -33,7 +32,7 @@ Lean 4 + [Mathlib](https://github.com/leanprover-community/mathlib4). No externa
 
 ## Mathlib upstreaming
 
-This is intended as a Mathlib contribution. The proof is sorry-free. Target namespace: `Mathlib.Geometry.Manifold.Sobolev`.
+Intended as a Mathlib contribution. Target namespace: `Mathlib.Geometry.Manifold.Sobolev`.
 
 ## References
 
