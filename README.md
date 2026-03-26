@@ -2,6 +2,9 @@
 
 Lean 4 proof of the **Rellich–Kondrachov compact embedding theorem**: the Sobolev embedding H¹ → L² is compact on compact Riemannian manifolds.
 
+> **Build status:** Verified on Lean v4.29.0-rc7 with Mathlib. Zero sorries. Mathlib upstreaming candidate.
+
+
 ## Main result
 
 ```lean
