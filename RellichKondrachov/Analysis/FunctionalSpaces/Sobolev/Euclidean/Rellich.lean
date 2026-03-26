@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import Mathlib.Analysis.Normed.Operator.Compact
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
@@ -125,7 +131,6 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
         simpa [hxEq] using hTx'
       simpa [hnorm_ext] using this
     simpa [Metric.closedBall, dist_eq_norm] using hu'
-
   have hApprox :
       ∀ ε : ℝ, 0 < ε →
         ∃ ψ : E → ℝ, Continuous ψ ∧ HasCompactSupport ψ ∧ (∀ x, 0 ≤ ψ x) ∧
@@ -183,7 +188,6 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
       L2Compactness.integral_norm_sq_translateL2_sub_le_sq_of_tsupport_subset_ball
         (E := E) (ψ := ψ) hψc hψcs hψ0 hψint (δ := ε / 2) (η := ε / 2) hη hψsupp (T x) hmod
     simpa [hxEq] using hbound
-
   have hcomp : IsCompact (closure (T '' Metric.closedBall (0 : ↥(h1On (E := E) K hKm)) 1)) := by
     have hR : 0 ≤ C := hCnonneg
     have hA_eq :
@@ -232,9 +236,8 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
     have :
         IsCompact (closure (L2Compactness.extendByZeroL2 (E := E) (K := K) hKm '' A)) :=
       L2Compactness.isCompact_closure_extendByZeroL2_image_of_forall_exists_translationIntegral_small
-        (E := E) (K := K) (hK := (show IsCompact K from _hK)) (hKm := hKm) hR hA_ball hApprox
+        (E := E) (K := K) (hK := (_hK : IsCompact K)) (hKm := hKm) hR hA_ball hApprox
     simpa [hA_eq] using this
-
   -- Use the topological definition of `IsCompactOperator` to avoid expensive normed-space
   -- characterizations.
   refine ⟨closure (T '' Metric.closedBall (0 : ↥(h1On (E := E) K hKm)) 1), hcomp, ?_⟩

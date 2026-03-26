@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Transfer
 import Mathlib.Topology.UniformSpace.Cauchy
@@ -119,7 +125,6 @@ theorem totallyBounded_extendByZeroL2_image_of_forall_exists_translationIntegral
   rcases Set.mem_iUnion.1 hy with ⟨hyT, hyBall⟩
   have hyDist : dist (smoothL2 (E := E) (K := K) ψ hK hKm hψc hψcs u) y < ε / 2 := by
     simpa [Metric.ball, Set.mem_setOf_eq] using hyBall
-
   have hdist_smooth_ext :
       dist (extendByZeroL2 (E := E) (K := K) hKm u)
           (smoothL2 (E := E) (K := K) ψ hK hKm hψc hψcs u) ≤ ε / 2 := by
@@ -135,7 +140,6 @@ theorem totallyBounded_extendByZeroL2_image_of_forall_exists_translationIntegral
             (extendByZeroL2 (E := E) (K := K) hKm u) ≤ ε / 2 := by
       simpa [dist_eq_norm] using hnorm
     simpa [dist_comm] using hdist
-
   have hxDist : dist (extendByZeroL2 (E := E) (K := K) hKm u) y < ε := by
     have htri :=
       dist_triangle (extendByZeroL2 (E := E) (K := K) hKm u)
@@ -150,7 +154,6 @@ theorem totallyBounded_extendByZeroL2_image_of_forall_exists_translationIntegral
         dist (extendByZeroL2 (E := E) (K := K) hKm u) y < ε / 2 + ε / 2 :=
       lt_of_le_of_lt htri hlt
     simpa [add_halves ε] using htmp
-
   have hxBall : extendByZeroL2 (E := E) (K := K) hKm u ∈ Metric.ball y ε := by
     simpa [Metric.ball, Set.mem_setOf_eq] using hxDist
   exact Set.mem_iUnion.2 ⟨y, Set.mem_iUnion.2 ⟨hyT, hxBall⟩⟩

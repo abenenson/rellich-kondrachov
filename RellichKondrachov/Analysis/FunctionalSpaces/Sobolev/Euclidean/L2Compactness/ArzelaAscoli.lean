@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Compactness
 import Mathlib.Analysis.Normed.Group.Bounded
 import Mathlib.MeasureTheory.Function.L2Space
@@ -143,10 +149,8 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
       exists_norm_ψ_bound_on_diffSet (E := E) (K := K) (ψ := ψ) hK hψc hψcs
     -- A compact ball controlling all values.
     let s : Set ℝ := Metric.closedBall (0 : ℝ) (R * (mK * Cψ))
-
     have hs : IsCompact s := by
       simpa [s] using isCompact_closedBall (0 : ℝ) (R * (mK * Cψ))
-
     -- Pointwise compact range: each function in `A` takes values in `s`.
     have in_s :
         ∀ (f : BoundedContinuousFunction (↥(Kψ (K := K) (ψ := ψ))) ℝ) (x : ↥(Kψ (K := K) (ψ := ψ))),
@@ -210,7 +214,6 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
         simpa [smoothBCF_apply (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs u x,
           dist_eq_norm, Real.norm_eq_abs] using habs'
       simpa [s, Metric.mem_closedBall, dist_eq_norm] using this
-
     -- Equicontinuity for `A`.
     have H' : UniformEquicontinuous ((↑) : A → ↥(Kψ (K := K) (ψ := ψ)) → ℝ) := by
       rw [Metric.uniformEquicontinuous_iff]
@@ -403,9 +406,7 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
                 (smoothBCF (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs u y) < ε :=
           lt_of_le_of_lt hle' hε2lt
         simpa [hu_eq'] using this
-
     have H : Equicontinuous ((↑) : A → ↥(Kψ (K := K) (ψ := ψ)) → ℝ) := H'.equicontinuous
-
     -- Apply Arzelà–Ascoli.
     simpa [A, s] using
       (BoundedContinuousFunction.arzela_ascoli (α := ↥(Kψ (K := K) (ψ := ψ))) (β := ℝ)

@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitz
 import RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitzForward
 import RellichKondrachov.Geometry.Manifold.Sobolev.ChartData
@@ -146,7 +152,6 @@ theorem exists_riemannianFiniteChartData :
   haveI : T3Space M := by infer_instance
   letI : EMetricSpace M := EmetricSpace.ofRiemannianMetric I M
   haveI : IsRiemannianManifold I M := by infer_instance
-
   -- Choose a Lipschitz neighborhood for each point (for the chart inverse in chart coordinates).
   have hLipData :
       ∀ x : M, ∃ (C : ℝ≥0), 0 < C ∧ ∃ (r : ℝ), 0 < r ∧
@@ -156,7 +161,6 @@ theorem exists_riemannianFiniteChartData :
       RellichKondrachov.Geometry.Manifold.Riemannian.lipschitzOnWith_symm_extChartAt_ofRiemannianMetric
         (I := I) (M := M) x
   choose Cinv Cinv_pos rE rE_pos hLipSymm using hLipData
-
   -- Choose a Lipschitz neighborhood for each point (for the forward chart on a small Riemannian ball).
   have hFwdData :
       ∀ x : M, ∃ (C : ℝ≥0), 0 < C ∧ ∃ (r : ℝ≥0), 0 < r ∧
@@ -166,7 +170,6 @@ theorem exists_riemannianFiniteChartData :
       RellichKondrachov.Geometry.Manifold.Riemannian.lipschitzOnWith_extChartAt_ofRiemannianMetric
         (I := I) (M := M) x
   choose Cfwd Cfwd_pos rM rM_pos hLipFwdBall using hFwdData
-
   -- Shrink chart radii so that the chart-ball preimage lies in the forward Lipschitz neighborhood.
   let r' : M → ℝ := fun x => min (rE x) ((rM x / Cinv x : ℝ≥0) : ℝ)
   have r'_pos : ∀ x : M, 0 < r' x := by
@@ -177,7 +180,6 @@ theorem exists_riemannianFiniteChartData :
     have h₂ : 0 < ((rM x / Cinv x : ℝ≥0) : ℝ) := by
       exact_mod_cast h₂'
     exact lt_min_iff.2 ⟨h₁, h₂⟩
-
   -- Define the corresponding open neighborhood in `M` (preimage of the chart ball, inside the chart source).
   let U : M → Set M := fun x =>
     (extChartAt I x) ⁻¹' Metric.ball (extChartAt I x x) (r' x) ∩ (extChartAt I x).source
@@ -191,7 +193,6 @@ theorem exists_riemannianFiniteChartData :
     have hxball : extChartAt I x x ∈ Metric.ball (extChartAt I x x) (r' x) :=
       Metric.mem_ball_self (r'_pos x)
     exact ⟨hxball, mem_extChartAt_source (I := I) x⟩
-
   -- Extract a finite subcover and build a partition of unity subordinate to it.
   rcases (isCompact_univ.elim_finite_subcover U hU_open hcover) with ⟨t, ht⟩
   let ι' := {x : M // x ∈ t}
@@ -205,7 +206,6 @@ theorem exists_riemannianFiniteChartData :
   rcases SmoothPartitionOfUnity.exists_isSubordinate (ι := ι') (I := I) (M := M)
       (s := (univ : Set M)) isClosed_univ (fun i => U (i : M)) hU'_open hU' with
     ⟨ρ, hρsub⟩
-
   -- Package into finite chart data, keeping the original `FiniteChartData` interface.
   let d : FiniteChartData.{uE, uH, uM, uM} (H := H) (M := M) I :=
     { ι := ι'
@@ -221,7 +221,6 @@ theorem exists_riemannianFiniteChartData :
           exact hx.2
         -- `extChartAt.source = chartAt.source`.
         simpa [extChartAt_source] using hsubU.trans this }
-
   -- Produce the additional Lipschitz data indexed by `d.ι`.
   refine ⟨{
     d := d

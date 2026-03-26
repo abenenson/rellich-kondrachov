@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureLp
 import RellichKondrachov.Geometry.Manifold.Sobolev.H1
 import RellichKondrachov.Geometry.Manifold.Sobolev.H2
@@ -60,8 +66,7 @@ variable (d : FiniteChartData (H := H) (M := M) I)
 and extend by zero from the chart source. -/
 noncomputable def chartToGlobalL2 {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (μ : Measure M) [IsFiniteMeasure μ] (i : d.ι) :
-    (E →₂[chartMeasure (d := d) (I := I) μ i] F) →L[ℝ] (M →₂[μ] F) :=
-by
+    (E →₂[chartMeasure (d := d) (I := I) μ i] F) →L[ℝ] (M →₂[μ] F) := by
   classical
   let s : Set M := (extChartAt I (d.center i)).source
   have hs : MeasurableSet s :=
@@ -73,8 +78,7 @@ by
 /-- The continuous linear inclusion `H¹(d,μ) → L²(M,μ)` defined by summing the chartwise `L²`
 components after pulling them back to `M` and extending by zero. -/
 noncomputable def h1ToL2 (μ : Measure M) [IsFiniteMeasure μ] :
-    (↥(h1 (d := d) (I := I) (μ := μ))) →L[ℝ] (M →₂[μ] ℝ) :=
-by
+    (↥(h1 (d := d) (I := I) (μ := μ))) →L[ℝ] (M →₂[μ] ℝ) := by
   classical
   exact ∑ i : d.ι, (chartToGlobalL2 (d := d) (I := I) (μ := μ) (F := ℝ) i).comp
     (h1ToChartL2 (d := d) (I := I) (μ := μ) i)
@@ -82,16 +86,14 @@ by
 /-- The continuous linear inclusion `H²(d,μ) → L²(M,μ)` defined by summing the chartwise `L²`
 components after pulling them back to `M` and extending by zero. -/
 noncomputable def h2ToL2 (μ : Measure M) [IsFiniteMeasure μ] :
-    (↥(h2 (d := d) (I := I) (μ := μ))) →L[ℝ] (M →₂[μ] ℝ) :=
-by
+    (↥(h2 (d := d) (I := I) (μ := μ))) →L[ℝ] (M →₂[μ] ℝ) := by
   classical
   exact ∑ i : d.ι, (chartToGlobalL2 (d := d) (I := I) (μ := μ) (F := ℝ) i).comp
     (h2ToChartL2 (d := d) (I := I) (μ := μ) i)
 
 /-- The canonical linear map `C¹(M) →ₗ H¹(d,μ)` landing in the dense range used to define `H¹`. -/
 noncomputable def c1ToH1 (μ : Measure M) [IsFiniteMeasure μ] :
-    ↥(C1 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] ↥(h1 (d := d) (I := I) (μ := μ)) :=
-by
+    ↥(C1 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] ↥(h1 (d := d) (I := I) (μ := μ)) := by
   classical
   refine
     LinearMap.codRestrict (h1 (d := d) (I := I) (μ := μ)) (h1Graph (d := d) (I := I) (μ := μ)) ?_
@@ -104,8 +106,7 @@ by
 /-- The linear map `C¹(M) →ₗ L²(M,μ)` obtained by summing the per-chart `L²` localizations pulled back
 to `M` and extended by zero. -/
 noncomputable def c1ToL2 (μ : Measure M) [IsFiniteMeasure μ] :
-    ↥(C1 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] (M →₂[μ] ℝ) :=
-by
+    ↥(C1 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] (M →₂[μ] ℝ) := by
   classical
   exact ∑ i : d.ι,
     (chartToGlobalL2 (d := d) (I := I) (μ := μ) (F := ℝ) i).toLinearMap.comp
@@ -122,8 +123,7 @@ theorem h1ToL2_c1ToH1 (μ : Measure M) [IsFiniteMeasure μ]
 
 /-- The canonical linear map `C²(M) →ₗ H²(d,μ)` landing in the dense range used to define `H²`. -/
 noncomputable def c2ToH2 (μ : Measure M) [IsFiniteMeasure μ] :
-    ↥(C2 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] ↥(h2 (d := d) (I := I) (μ := μ)) :=
-by
+    ↥(C2 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] ↥(h2 (d := d) (I := I) (μ := μ)) := by
   classical
   refine
     LinearMap.codRestrict (h2 (d := d) (I := I) (μ := μ)) (h2Graph (d := d) (I := I) (μ := μ)) ?_
@@ -135,8 +135,7 @@ by
 /-- The linear map `C²(M) →ₗ L²(M,μ)` obtained by summing the per-chart `L²` localizations pulled back
 to `M` and extended by zero. -/
 noncomputable def c2ToL2 (μ : Measure M) [IsFiniteMeasure μ] :
-    ↥(C2 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] (M →₂[μ] ℝ) :=
-by
+    ↥(C2 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] (M →₂[μ] ℝ) := by
   classical
   exact ∑ i : d.ι,
     (chartToGlobalL2 (d := d) (I := I) (μ := μ) (F := ℝ) i).toLinearMap.comp

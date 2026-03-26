@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.MeasureTheory.Function.LpSpace.Restrict
 import Mathlib.Analysis.Convolution
 import Mathlib.Topology.Algebra.Support

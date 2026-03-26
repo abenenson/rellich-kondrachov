@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import Mathlib.Analysis.Normed.Operator.Compact
 import Mathlib.MeasureTheory.Measure.AbsolutelyContinuous
 import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
@@ -45,8 +51,7 @@ private noncomputable def changeMeasureFun {c : ℝ≥0∞} (hc : c ≠ ∞) (h�
 
 omit [NormedSpace ℝ E] [Fact (1 ≤ p)] in
 private theorem changeMeasureFun_coe {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ) (f : Lp E p μ) :
-    (changeMeasureFun (μ := μ) (ν := ν) (p := p) hc hν f : α → E) =ᵐ[ν] f :=
-  by
+    (changeMeasureFun (μ := μ) (ν := ν) (p := p) hc hν f : α → E) =ᵐ[ν] f := by
     simpa [changeMeasureFun] using
       (MeasureTheory.MemLp.coeFn_toLp (memLp_changeMeasure (μ := μ) (ν := ν) (p := p) hc hν f))
 

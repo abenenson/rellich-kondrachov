@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 
 /-!
@@ -64,11 +70,9 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
   letI (y : M) :
       SeminormedAddCommGroup (TangentSpace I y →L[ℝ] TangentSpace (𝓘(ℝ, E)) (extChartAt I x y)) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
-
   -- Start from a local bound on the derivative of `extChartAt I x`.
   rcases eventually_enorm_mfderiv_extChartAt_lt (I := I) x with ⟨C, C_pos, hC⟩
   refine ⟨C, C_pos, ?_⟩
-
   let P : Set M := {y | ‖mfderiv I (𝓘(ℝ, E)) (extChartAt I x) y‖ₑ < C}
   have hP : P ∈ 𝓝 x := by
     change (∀ᶠ y in 𝓝 x, y ∈ P)
@@ -76,11 +80,9 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
     simpa [P] using hy
   have hx_source : (chartAt H x).source ∈ 𝓝 x := chart_source_mem_nhds H x
   have hU : P ∩ (chartAt H x).source ∈ 𝓝 x := inter_mem hP hx_source
-
   -- Convert this neighborhood information into a concrete Riemannian ball.
   rcases setOf_riemannianEDist_lt_subset_nhds (I := I) (x := x)
       (s := P ∩ (chartAt H x).source) hU with ⟨c, c_pos, hc⟩
-
   -- Work on the smaller ball of radius `c/4`, so that short paths between points in the ball stay
   -- inside `{y | riemannianEDist I x y < c}` where the derivative bound holds.
   let r : ℝ≥0 := c / 4
@@ -89,7 +91,6 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
     positivity
   refine ⟨r, hr_pos, ?_⟩
   intro y₁ hy₁ y₂ hy₂
-
   -- Work with `edist` for triangle/commutativity, rewriting back to `riemannianEDist` at the end.
   have hy₁_edist : edist x y₁ < (r : ℝ≥0∞) := by
     have : riemannianEDist I x y₁ < (r : ℝ≥0∞) := by simpa [r] using hy₁
@@ -98,23 +99,19 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
     have : riemannianEDist I x y₂ < (r : ℝ≥0∞) := by simpa [r] using hy₂
     simpa [IsRiemannianManifold.out (I := I) (M := M)] using this
   have hy₁x_edist : edist y₁ x < (r : ℝ≥0∞) := by simpa [edist_comm] using hy₁_edist
-
   have hdist_edist_lt : edist y₁ y₂ < (r : ℝ≥0∞) + (r : ℝ≥0∞) := by
     have htri : edist y₁ y₂ ≤ edist y₁ x + edist x y₂ := edist_triangle _ _ _
     have hsum : edist y₁ x + edist x y₂ < (r : ℝ≥0∞) + (r : ℝ≥0∞) :=
       ENNReal.add_lt_add hy₁x_edist hy₂_edist
     exact lt_of_le_of_lt htri hsum
-
   have hdist_lt : riemannianEDist I y₁ y₂ < (r : ℝ≥0∞) + (r : ℝ≥0∞) := by
     -- rewrite `edist` as `riemannianEDist`
     simpa [IsRiemannianManifold.out (I := I) (M := M)] using hdist_edist_lt
-
   have hb_fin : ((C : ℝ≥0∞) * riemannianEDist I y₁ y₂) < ∞ := by
     refine ENNReal.mul_lt_top (by simp) ?_
     have : riemannianEDist I y₁ y₂ < (⊤ : ℝ≥0∞) :=
       lt_of_lt_of_le hdist_lt (by simp)
     exact this
-
   -- `ε`-approximation and `ENNReal.le_of_forall_pos_le_add` to avoid unfolding `riemannianEDist`.
   have hmain :
       edist (extChartAt I x y₁) (extChartAt I x y₂) ≤ (C : ℝ≥0∞) * riemannianEDist I y₁ y₂ := by
@@ -135,7 +132,6 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
     rcases exists_lt_of_riemannianEDist_lt (I := I) (x := y₁) (y := y₂)
         (r := riemannianEDist I y₁ y₂ + δ) hdist_lt' with
       ⟨γ, hγ0, hγ1, γ_smooth, hlen⟩
-
     have hlen_lt_c : pathELength I γ 0 1 < (c : ℝ≥0∞) := by
       have hδ_le : δ ≤ (r : ℝ≥0∞) := min_le_right _ _
       have hδ_ne_top : δ ≠ (⊤ : ℝ≥0∞) := ne_of_lt (lt_of_le_of_lt hδ_le (by simp))
@@ -150,15 +146,13 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
           exact_mod_cast (by nlinarith [show (0 : ℝ) < c by exact_mod_cast c_pos] :
             (c : ℝ) / 4 + (c : ℝ) / 4 + (c : ℝ) / 4 < (c : ℝ))
         -- coerce to `ℝ≥0∞`
-        simpa [add_assoc, add_left_comm, add_comm] using (show (r + r + r : ℝ≥0∞) < (c : ℝ≥0∞) from by exact_mod_cast this)
+        simpa [add_assoc, add_left_comm, add_comm] using (by exact_mod_cast this : (r + r + r : ℝ≥0∞) < (c : ℝ≥0∞))
       have hsum_lt_c : riemannianEDist I y₁ y₂ + δ < (c : ℝ≥0∞) := hsum_lt.trans hc3r
       exact hlen.trans hsum_lt_c
-
     -- Points along `γ` stay in the `c`-ball around `x`, hence in `P ∩ source`.
     have hδ_le : δ ≤ (r : ℝ≥0∞) := min_le_right _ _
     have hlen_lt_c34 :
-        pathELength I γ 0 1 < ((r : ℝ≥0∞) + (r : ℝ≥0∞)) + (r : ℝ≥0∞) :=
-      by
+        pathELength I γ 0 1 < ((r : ℝ≥0∞) + (r : ℝ≥0∞)) + (r : ℝ≥0∞) := by
         have hδ_ne_top : δ ≠ (⊤ : ℝ≥0∞) := ne_of_lt (lt_of_le_of_lt hδ_le (by simp))
         simpa [add_assoc] using hlen.trans (ENNReal.add_lt_add_of_lt_of_le hδ_ne_top hdist_lt hδ_le)
     have hγ_mem : ∀ t ∈ Icc (0 : ℝ) 1, γ t ∈ P ∩ (chartAt H x).source := by
@@ -189,11 +183,10 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
             have : (r + (r + r + r) : ℝ≥0) = c := by
               dsimp [r]
               exact_mod_cast (by nlinarith : (c : ℝ) / 4 + ((c : ℝ) / 4 + (c : ℝ) / 4 + (c : ℝ) / 4) = (c : ℝ))
-            simpa [add_assoc, add_left_comm, add_comm] using (show (r + (r + r + r) : ℝ≥0∞) = (c : ℝ≥0∞) from by exact_mod_cast this)
+            simpa [add_assoc, add_left_comm, add_comm] using (by exact_mod_cast this : (r + (r + r + r) : ℝ≥0∞) = (c : ℝ≥0∞))
           exact (lt_of_le_of_lt htri (hsum.trans_eq this))
         simpa [IsRiemannianManifold.out (I := I) (M := M)] using hxγt_edist
       exact hc hxγt
-
     have hchart_le :
         edist (extChartAt I x y₁) (extChartAt I x y₂) ≤ (C : ℝ≥0∞) * pathELength I γ 0 1 := by
       let γ' : ℝ → E := extChartAt I x ∘ γ
@@ -255,14 +248,12 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
         simp [pathELength_eq_lintegral_mfderivWithin_Icc, lintegral_const_mul', ENNReal.coe_ne_top]
       -- Unfold `γ'` at the endpoints.
       simpa [γ', Function.comp, hγ0, hγ1] using hI'
-
     have hδ_mul : (C : ℝ≥0∞) * δ ≤ (ε : ℝ≥0∞) := by
       have hδ : δ ≤ (ε : ℝ≥0∞) / (C : ℝ≥0∞) := min_le_left _ _
       have : (C : ℝ≥0∞) * δ ≤ (C : ℝ≥0∞) * ((ε : ℝ≥0∞) / (C : ℝ≥0∞)) :=
         mul_le_mul_right hδ _
       -- cancel `C` (finite and nonzero)
       simpa [ENNReal.mul_div_cancel C_ne (by simp)] using this
-
     have hfinal :
         edist (extChartAt I x y₁) (extChartAt I x y₂) ≤
           (C : ℝ≥0∞) * riemannianEDist I y₁ y₂ + (ε : ℝ≥0∞) := by
@@ -278,7 +269,6 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
               simpa [add_assoc, add_left_comm, add_comm] using
                 (add_le_add_left hδ_mul ((C : ℝ≥0∞) * riemannianEDist I y₁ y₂))
     exact hfinal
-
   -- Conclude in terms of `edist` on `M`.
   simpa [IsRiemannianManifold.out (I := I) (M := M)] using hmain
 

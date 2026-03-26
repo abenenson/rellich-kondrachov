@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Geometry.Manifold.Riemannian.VolumeMeasure
 import RellichKondrachov.Geometry.Manifold.Sobolev.ChartDataRiemannian
 import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasure
@@ -99,7 +105,6 @@ theorem chartMeasure_restrict_le_hausdorff (i : dR.d.ι) :
       simpa [extChartAt_target (I := I) (x := dR.d.center i), inter_assoc, inter_comm, inter_left_comm] using
         (hopen.measurableSet.inter hclosed.measurableSet)
     simpa [S, chartBall, hball, htarget] using hball.inter htarget
-
   intro A
   -- Reduce to a measurable superset (measurable w.r.t. `μE.restrict S`) so we can use `restrict_apply`.
   set t : Set E := toMeasurable (μE.restrict S) A with ht
@@ -124,7 +129,6 @@ theorem chartMeasure_restrict_le_hausdorff (i : dR.d.ι) :
   have hSubT : t ∩ S ⊆ (extChartAt I (dR.d.center i)).target := by
     intro y hy
     exact hy.2.2
-
   -- Rewrite `chartMeasure` as the `μM`-measure of a `symm` image on the chart target.
   have hChart :
       (FiniteChartData.chartMeasure (d := dR.d) (I := I) μM i) (t ∩ S) =
@@ -163,18 +167,15 @@ theorem chartMeasure_restrict_le_hausdorff (i : dR.d.ι) :
           congrArg μM (inter_comm _ _)
       _ = μM ((extChartAt I (dR.d.center i)).symm '' (t ∩ S)) :=
           congrArg μM (Eq.symm hsymm)
-
   -- Apply Hausdorff measure distortion on the smaller set `t ∩ S`.
   have hLipTS :
       LipschitzOnWith (dR.C i) (extChartAt I (dR.d.center i)).symm (t ∩ S) :=
     hLipS.mono (by intro y hy; exact hy.2)
   have hleHaus :=
     hLipTS.hausdorffMeasure_image_le (d := (Module.finrank ℝ E : ℝ)) (by positivity)
-
   have hμEt : (μE.restrict S) t = (μE.restrict S) A := by
     rw [ht]
     exact measure_toMeasurable (μ := μE.restrict S) A
-
   have hmain_t :
       (FiniteChartData.chartMeasure (d := dR.d) (I := I) μM i).restrict S t ≤
         ((dR.C i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) • (μE.restrict S) t := by
@@ -184,7 +185,6 @@ theorem chartMeasure_restrict_le_hausdorff (i : dR.d.ι) :
       simpa [hμM, μE] using hleHaus
     -- Convert the inequality to the restricted-measure form.
     simpa [Measure.restrict_apply, ht_meas, Measure.smul_apply, hChart] using hle'
-
   -- Conclude for `A` via monotonicity and `toMeasurable`.
   have hright_A :
       ((dR.C i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) • (μE.restrict S) t =
@@ -223,7 +223,6 @@ theorem hausdorff_restrict_le_chartMeasure (i : dR.d.ι) :
       simpa [extChartAt_target (I := I) (x := dR.d.center i), inter_assoc, inter_comm, inter_left_comm] using
         (hopen.measurableSet.inter hclosed.measurableSet)
     simpa [S, chartBall, hball, htarget] using hball.inter htarget
-
   intro A
   -- Reduce to a measurable superset (measurable w.r.t. `chartMeasure.restrict S`) so we can use
   -- `restrict_apply`.
@@ -236,7 +235,6 @@ theorem hausdorff_restrict_le_chartMeasure (i : dR.d.ι) :
   have hleA : (μE.restrict S) A ≤ (μE.restrict S) t := measure_mono hAt
   refine hleA.trans ?_
   have htS_meas : MeasurableSet (t ∩ S) := ht_meas.inter hS_meas
-
   -- Convert the Riemannian-distance inequality to a `LipschitzOnWith` statement in the induced
   -- emetric space structure on `M`.
   let U : Set M :=
@@ -246,7 +244,6 @@ theorem hausdorff_restrict_le_chartMeasure (i : dR.d.ι) :
       LipschitzOnWith (dR.Cfwd i) (extChartAt I (dR.d.center i)) U := by
     intro x₁ hx₁ x₂ hx₂
     simpa [IsRiemannianManifold.out (I := I) (M := M)] using dR.riemannianLipschitz i x₁ hx₁ x₂ hx₂
-
   -- Rewrite `chartMeasure` as the `μM`-measure of a `symm` image on the chart target.
   have hSubT : t ∩ S ⊆ (extChartAt I (dR.d.center i)).target := by
     intro y hy
@@ -283,7 +280,6 @@ theorem hausdorff_restrict_le_chartMeasure (i : dR.d.ι) :
           congrArg μM (inter_comm _ _)
       _ = μM ((extChartAt I (dR.d.center i)).symm '' (t ∩ S)) :=
           congrArg μM (Eq.symm hsymm)
-
   -- Apply Hausdorff measure distortion for the forward chart on `symm '' (t ∩ S)`.
   let Apre : Set M := (extChartAt I (dR.d.center i)).symm '' (t ∩ S)
   have hApre_sub : Apre ⊆ U := by
@@ -307,7 +303,6 @@ theorem hausdorff_restrict_le_chartMeasure (i : dR.d.ι) :
     simpa [U, Metric.mem_ball] using hy_dist'
   have hLipApre : LipschitzOnWith (dR.Cfwd i) (extChartAt I (dR.d.center i)) Apre :=
     hLipU.mono hApre_sub
-
   have hleHaus :=
     hLipApre.hausdorffMeasure_image_le (d := (Module.finrank ℝ E : ℝ)) (by positivity)
   have himage :
@@ -329,14 +324,12 @@ theorem hausdorff_restrict_le_chartMeasure (i : dR.d.ι) :
       simpa [extChartAt_coe_symm] using hChart
     -- Rewrite `f '' Apre = t ∩ S` and `μM Apre = chartMeasure (t ∩ S)`.
     simpa [himage', hChart', extChartAt_coe_symm, Function.comp] using hleHaus'
-
   have hchart_t : (chartMeasure.restrict S) t = (chartMeasure.restrict S) A := by
     rw [ht]
     exact measure_toMeasurable (μ := chartMeasure.restrict S) A
   have hmain_t :
       (μE.restrict S) t ≤ ((dR.Cfwd i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) • (chartMeasure.restrict S) t := by
     simpa [Measure.restrict_apply, ht_meas, Measure.smul_apply, hS_meas, hle'] using hle'
-
   have hright_A :
       ((dR.Cfwd i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) • (chartMeasure.restrict S) t =
         ((dR.Cfwd i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) • (chartMeasure.restrict S) A := by

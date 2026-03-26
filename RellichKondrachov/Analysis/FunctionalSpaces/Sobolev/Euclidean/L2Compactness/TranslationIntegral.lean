@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
@@ -82,7 +88,6 @@ theorem integral_norm_sq_translateL2_sub_le_sq_of_tsupport_subset_ball
     simpa [μ] using kernelMeasure_compl_ball_eq_zero_of_tsupport_subset (E := E) (ψ := ψ) hψsupp
   have hAE_ball : (Metric.ball (0 : E) δ) ∈ MeasureTheory.ae μ :=
     (MeasureTheory.mem_ae_iff.2 hμzero)
-
   -- On `Metric.ball 0 δ`, the squared translation error is bounded by `η²`.
   have hAE_bound :
       ∀ᵐ t : E ∂μ,
@@ -96,7 +101,6 @@ theorem integral_norm_sq_translateL2_sub_le_sq_of_tsupport_subset_ball
       sq_nonneg _
     have hηnonneg : 0 ≤ η ^ 2 := sq_nonneg _
     simpa [Real.norm_eq_abs, abs_of_nonneg hnonneg, abs_of_nonneg hηnonneg] using hsq
-
   have hnorm_int :
       ‖∫ t,
             ‖(translateL2 (μ := (volume : Measure E)) (-t)) F - F‖ ^ 2
@@ -105,11 +109,9 @@ theorem integral_norm_sq_translateL2_sub_le_sq_of_tsupport_subset_ball
       (MeasureTheory.norm_integral_le_of_norm_le_const (μ := μ)
         (f := fun t : E => ‖(translateL2 (μ := (volume : Measure E)) (-t)) F - F‖ ^ 2)
         (C := η ^ 2) hAE_bound)
-
   have hμreal : μ.real Set.univ = 1 := by
     -- `μ` is a probability measure.
     simp [MeasureTheory.measureReal_def]
-
   have hnonneg_int :
       0 ≤ ∫ t,
             ‖(translateL2 (μ := (volume : Measure E)) (-t)) F - F‖ ^ 2
@@ -117,7 +119,6 @@ theorem integral_norm_sq_translateL2_sub_le_sq_of_tsupport_subset_ball
     refine MeasureTheory.integral_nonneg ?_
     intro t
     exact sq_nonneg _
-
   -- Use `|∫ f| = ∫ f` for a nonnegative integrand.
   have habs :
       |∫ t,
@@ -126,7 +127,6 @@ theorem integral_norm_sq_translateL2_sub_le_sq_of_tsupport_subset_ball
     have := hnorm_int
     -- Replace `‖·‖` by `abs` in `ℝ` and simplify `μ.real univ = 1`.
     simpa [Real.norm_eq_abs, hμreal, mul_one] using this
-
   simpa [abs_of_nonneg hnonneg_int, μ] using habs
 
 end Volume

@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import Mathlib.MeasureTheory.Measure.Hausdorff
 import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 import Mathlib.MeasureTheory.Measure.OpenPos
@@ -39,27 +45,22 @@ theorem hausdorffMeasure_eq_smul_volume :
     ⟨⟨Metric.closedBall (0 : E) 1, isCompact_closedBall (x := (0 : E)) (r := (1 : ℝ))⟩,
       (Metric.nonempty_ball.2 (by norm_num : (0 : ℝ) < (1 : ℝ))).mono <|
         Metric.ball_subset_interior_closedBall (x := (0 : E)) (ε := (1 : ℝ))⟩
-
   have hμH :
       (μH[(Module.finrank ℝ E : ℝ)] : Measure E) =
         (μH[(Module.finrank ℝ E : ℝ)] : Measure E) K₀ • Measure.addHaarMeasure K₀ := by
     simpa using
       (Measure.addHaarMeasure_unique (μ := (μH[(Module.finrank ℝ E : ℝ)] : Measure E)) K₀)
-
   have hvol :
       (volume : Measure E) = (volume : Measure E) K₀ • Measure.addHaarMeasure K₀ := by
     simpa using (Measure.addHaarMeasure_unique (μ := (volume : Measure E)) K₀)
-
   have hv0 : (volume : Measure E) K₀ ≠ 0 := by
     exact (Measure.measure_pos_of_nonempty_interior (μ := (volume : Measure E)) (s := (K₀ : Set E))
       K₀.interior_nonempty).ne'
   have hvTop : (volume : Measure E) K₀ ≠ ∞ := by
     exact (K₀.isCompact.measure_lt_top (μ := (volume : Measure E))).ne
   set c : ℝ≥0∞ := (1 : ℝ≥0∞) / (volume : Measure E) K₀
-
   have hc : c * (volume : Measure E) K₀ = (1 : ℝ≥0∞) := by
     simpa [c] using (ENNReal.div_mul_cancel hv0 hvTop (b := (1 : ℝ≥0∞)))
-
   have hhaar : Measure.addHaarMeasure K₀ = c • (volume : Measure E) := by
     have :
         c • (volume : Measure E) = Measure.addHaarMeasure K₀ := by
@@ -71,7 +72,6 @@ theorem hausdorffMeasure_eq_smul_volume :
               simp [smul_smul]
         _ = Measure.addHaarMeasure K₀ := by simp [hc]
     simpa [c] using this.symm
-
   have :
       (μH[(Module.finrank ℝ E : ℝ)] : Measure E) =
         ((μH[(Module.finrank ℝ E : ℝ)] : Measure E) K₀ /
@@ -85,7 +85,6 @@ theorem hausdorffMeasure_eq_smul_volume :
       _ = ((μH[(Module.finrank ℝ E : ℝ)] : Measure E) K₀ /
               (volume : Measure E) K₀) • (volume : Measure E) := by
             simp [c, smul_smul, div_eq_mul_inv]
-
   simpa [K₀] using this
 
 /-! ### Inverting the proportionality -/
@@ -118,7 +117,6 @@ theorem volume_eq_smul_hausdorffMeasure :
         (μ := (μH[(Module.finrank ℝ E : ℝ)] : Measure E)) (s := K) hne).ne'
   have hμHTop : (μH[(Module.finrank ℝ E : ℝ)] : Measure E) K ≠ ∞ := by
     exact (isCompact_closedBall (x := (0 : E)) (r := (1 : ℝ))).measure_lt_top.ne
-
   set a : ℝ≥0∞ := (μH[(Module.finrank ℝ E : ℝ)] : Measure E) K
   set b : ℝ≥0∞ := (volume : Measure E) K
   have hab : (μH[(Module.finrank ℝ E : ℝ)] : Measure E) = (a / b) • (volume : Measure E) := by

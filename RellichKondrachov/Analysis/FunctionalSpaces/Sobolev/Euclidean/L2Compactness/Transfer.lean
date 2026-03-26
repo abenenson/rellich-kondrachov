@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.ArzelaAscoli
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.Topology.MetricSpace.Pseudo.Basic
@@ -51,7 +57,6 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
           (smoothL2 (E := E) (K := K) ψ hK hKm hψc hψcs '' Metric.closedBall (0 : _) R)) := by
   classical
   letI : Fact (1 ≤ (2 : ℝ≥0∞)) := ⟨by norm_num⟩
-
   let s : Set E := Kψ (K := K) (ψ := ψ)
   have hs_compact : IsCompact s := isCompact_Kψ (K := K) (ψ := ψ) hK hψcs
   have hs : MeasurableSet s := hs_compact.measurableSet
@@ -64,7 +69,6 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
   have hmS : 0 ≤ mS := by
     have : 0 ≤ (MeasureTheory.measureUnivNNReal μs) := by simp
     exact Real.rpow_nonneg this _
-
   let U : Set (MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K)) :=
     Metric.closedBall (0 : _) R
   let A :
@@ -72,10 +76,8 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
     smoothBCF (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs '' U
   let B : Set (E →₂[(volume : Measure E)] ℝ) :=
     smoothL2 (E := E) (K := K) ψ hK hKm hψc hψcs '' U
-
   have hA_compact : IsCompact (closure A) :=
     smoothBCF_image_closedBall_isCompact (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs (R := R) hR
-
   have hdist_smoothL2_le :
       ∀ u v : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K),
         dist (smoothL2 (E := E) (K := K) ψ hK hKm hψc hψcs u)
@@ -99,7 +101,6 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
     have hg : MeasureTheory.MemLp g (2 : ℝ≥0∞) (volume : Measure E) := MeasureTheory.Lp.memLp F
     have hg_restrict : MeasureTheory.MemLp g (2 : ℝ≥0∞) μs := hg.restrict s
     let Fs : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) μs := hg_restrict.toLp g
-
     -- Show `Fs` is pointwise bounded by `‖Bu - Bv‖` on `μs`.
     have hF_ae :
         (g =ᵐ[μs] fun x : E => smoothFun (E := E) (K := K) ψ u x - smoothFun (E := E) (K := K) ψ v x) := by
@@ -119,11 +120,9 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
               smoothFun (E := E) (K := K) ψ u x - smoothFun (E := E) (K := K) ψ v x := by
         simpa [Pi.sub_apply] using hsub.trans (hu.sub hv)
       exact MeasureTheory.ae_restrict_of_ae (μ := (volume : Measure E)) (s := s) hF
-
     have hFs_ae : ((Fs : E → ℝ) =ᵐ[μs] g) := by
       simpa [Fs, g] using
         (MeasureTheory.MemLp.coeFn_toLp (μ := μs) (p := (2 : ℝ≥0∞)) (f := g) hg_restrict)
-
     have hbound :
         ∀ᵐ x ∂μs, ‖Fs x‖ ≤ ‖Bu - Bv‖ := by
       have hpoint :
@@ -143,12 +142,10 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
       have := hpoint x hx
       -- rewrite through the AE equalities
       simpa [hFs, hF] using this
-
     have hnorm_Fs : ‖Fs‖ ≤ mS * ‖Bu - Bv‖ := by
       have := (MeasureTheory.Lp.norm_le_of_ae_bound (μ := μs) (p := (2 : ℝ≥0∞))
         (f := Fs) (hC := hBuBv) hbound)
       simpa [mS] using this
-
     -- Relate the `L²` norm on `volume` to the restricted norm on `μs` using extension-by-zero.
     have hsupport :
         ∀ x : E, x ∉ s → smoothFun (E := E) (K := K) ψ u x - smoothFun (E := E) (K := K) ψ v x = 0 := by
@@ -166,7 +163,6 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
         have : x ∉ Function.support (smoothFun (E := E) (K := K) ψ v) := fun hx' => hx (hv_supp hx')
         simpa [Function.support] using this
       simp [hu0, hv0]
-
     have hF0 :
         ∀ᵐ x ∂(volume : Measure E), x ∉ s → g x = 0 := by
       have hF_ae_full :
@@ -193,7 +189,6 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
       have : smoothFun (E := E) (K := K) ψ u x - smoothFun (E := E) (K := K) ψ v x = 0 :=
         hsupport x hxnot
       simpa [hx] using this
-
     have hF_ind :
         (s.indicator g =ᵐ[(volume : Measure E)] g) := by
       filter_upwards [hF0] with x hx
@@ -201,7 +196,6 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
       · simp [g, hxmem]
       · have : g x = 0 := hx hxmem
         simp [g, hxmem, this]
-
     -- Conclude `‖F‖ = ‖Fs‖` using `extendByZeroₗᵢ` and the indicator identity.
     let Fext :
         MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume : Measure E) :=
@@ -240,7 +234,6 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
       simpa [hFext_eq] using this
     -- Convert to the `dist` statement.
     simpa [Su, Sv, Bu, Bv, F, dist_eq_norm, mS, mul_assoc] using hnorm_F
-
   have hTB_B : TotallyBounded B := by
     -- Use a finite `BCF` ε-net for `A` with centers in the image, then transfer to `L²`.
     rw [Metric.totallyBounded_iff]
@@ -335,7 +328,6 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
       refine ⟨?_, hdist⟩
       -- show the chosen center lies in `tL2`
       exact ⟨f', rfl⟩
-
   -- Compactness follows from total boundedness + completeness of `L²`.
   have hTB_closure : TotallyBounded (closure B) := hTB_B.closure
   have hcomplete : IsComplete (closure B) := isClosed_closure.isComplete

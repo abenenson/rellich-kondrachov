@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachovRiemannian.Transport
 
 /-!
@@ -921,13 +927,11 @@ omit [T2Space M] in
       (rhoSupportImage_measurable (dR := dR) (I := I) i)
   -- The chartwise `L²` component.
   let u : (E →₂[μchart] ℝ) := (FiniteChartData.h1ToChartL2 (d := dR.d) (I := I) (μ := μM) i) x
-
   -- `h1ToChartL2Range` is a codomain restriction of `h1ToChartL2`, so its underlying value is `u`.
   have hz_coe :
       ((h1ToChartL2Range (dR := dR) (I := I) (i := i)) x : (E →₂[μchart] ℝ)) = u := by
     -- `simp` can unfold the codomain restriction, but we also unfold `μM` so both sides match.
     simp [h1ToChartL2Range, u, μM]
-
   -- Identify the preimage in the restricted `L²` space corresponding to `u` under `extendByZero`.
   let uK : (E →₂[μchart.restrict K] ℝ) :=
     (LinearIsometry.equivRange eChart).symm ((h1ToChartL2Range (dR := dR) (I := I) (i := i)) x)
@@ -942,7 +946,6 @@ omit [T2Space M] in
     -- Coerce to `L²(μchart)` and simplify.
     have := congrArg Subtype.val this
     simpa [eChart] using this
-
   -- The `changeMeasureL` used in `l2ChartToVolumeOnRhoSupportImage` from `μchart` to `μchart.restrict K`.
   let cm :
       (E →₂[μchart] ℝ) →L[ℝ] (E →₂[μchart.restrict K] ℝ) :=
@@ -950,7 +953,6 @@ omit [T2Space M] in
       (μ := μchart) (ν := μchart.restrict K) (E := ℝ) (p := (2 : ℝ≥0∞)) (c := (1 : ℝ≥0∞))
       (by simpa using (one_ne_top : (1 : ℝ≥0∞) ≠ ∞)) (restrict_le_one_smul (μ := μchart) (s := K))
       (by simpa using (ENNReal.coe_ne_top (2 : ℕ)))
-
   -- `uK` is the same as `changeMeasureL` applied to `u`, since `u` is supported in `K`.
   have huK_eq : uK = cm u := by
     -- Show `uK =ᵐ[μchart.restrict K] u` (by restricting the `extendByZero` AE equality), then compare
@@ -990,7 +992,6 @@ omit [T2Space M] in
     have : (uK : E → ℝ) =ᵐ[μchart.restrict K] (cm u : E → ℝ) :=
       hu_restrict.symm.trans hcm_ae.symm
     exact this
-
   -- Compute both sides as `extendByZero` of the same restricted-volume witness.
   -- Left side: unfold the range equivalence and use `huK_eq` to identify the restricted witness.
   have hL :
@@ -1034,7 +1035,6 @@ omit [T2Space M] in
           (hν₂ := _)
           (hp₁ := (by simpa using (ENNReal.coe_ne_top (2 : ℕ))))
           (hp₂ := _))
-
   -- Combine: align the restricted witness and conclude.
   calc
     ↑((eL2RangeChartVol (dR := dR) (I := I) (i := i) (F := ℝ))
@@ -1070,7 +1070,6 @@ theorem isCompactOperator_h1ToChartL2Range (i : dR.d.ι) :
   let K : Set E := FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i
   have hKm : MeasurableSet K := rhoSupportImage_measurable (dR := dR) (I := I) i
   have hK : IsCompact K := FiniteChartData.isCompact_rhoSupportImage (d := dR.d) (I := I) i
-
   -- Euclidean Rellich compactness into the `extendByZero` range for `volume`.
   let volRange :
       Submodule ℝ (E →₂[(volume : Measure E)] ℝ) :=
@@ -1105,7 +1104,6 @@ theorem isCompactOperator_h1ToChartL2Range (i : dR.d.ι) :
     simpa [volRange] using
       (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.isCompactOperator_h1OnToL2_codRestrict_range_extendByZero
         (E := E) (K := K) hK hKm)
-
   -- Precompose by the manifold-to-Euclidean supported `H¹` map.
   have hcompVol' :
       IsCompactOperator fun x : ↥(FiniteChartData.h1 (d := dR.d) (I := I) (μ := μM)) =>
@@ -1129,7 +1127,6 @@ theorem isCompactOperator_h1ToChartL2Range (i : dR.d.ι) :
             exact hymem))
           ((h1ToChartVolH1On (dR := dR) (I := I) (i := i)) x) :=
     hcompVol.comp_clm (h1ToChartVolH1On (dR := dR) (I := I) (i := i))
-
   -- Transport the compactness statement back to the chart measure using the range equivalence.
   have hcompVol'' :
       IsCompactOperator fun x : ↥(FiniteChartData.h1 (d := dR.d) (I := I) (μ := μM)) =>
@@ -1154,7 +1151,6 @@ theorem isCompactOperator_h1ToChartL2Range (i : dR.d.ι) :
                   exact hymem)
                 ((h1ToChartVolH1On (dR := dR) (I := I) (i := i)) x))) :=
     (hcompVol'.clm_comp (eL2RangeChartVol (dR := dR) (I := I) (i := i) (F := ℝ)).symm.toContinuousLinearMap)
-
   -- Finally, identify this transported compact operator with the actual codomain-restricted chart map.
   -- This is the only nontrivial point: it asserts that `h1ToChartL2Range` is obtained by conjugating
   -- the volume-side supported `H¹` inclusion.
@@ -1223,7 +1219,6 @@ theorem isCompactOperator_h1ToChartL2Range (i : dR.d.ι) :
     -- Now cancel the forward equivalence.
     -- (`simp` uses `ContinuousLinearEquiv.apply_symm_apply`.)
     simpa using congrArg ((eL2RangeChartVol (dR := dR) (I := I) (i := i) (F := ℝ)).symm) this
-
   -- Rewrite the goal using the identification and apply the established compactness.
   simpa [hEq] using hcompVol''
 

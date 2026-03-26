@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasure
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Measure.Map
@@ -82,8 +88,7 @@ measure-preserving measurable modification `extChartAtMk`. -/
 noncomputable def chartPullbackL2 {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (μ : Measure M) (i : d.ι) :
     (E →₂[chartMeasure (d := d) (I := I) μ i] F) →ₗᵢ[ℝ]
-      (M →₂[μ.restrict (extChartAt I (d.center i)).source] F) :=
-by
+      (M →₂[μ.restrict (extChartAt I (d.center i)).source] F) := by
   classical
   simpa using
     (MeasureTheory.Lp.compMeasurePreservingₗᵢ (𝕜 := ℝ) (E := F) (p := (2 : ENNReal))

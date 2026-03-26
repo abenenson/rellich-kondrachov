@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.Topology.Algebra.Support
@@ -58,7 +64,6 @@ theorem exists_kernel_tsupport_subset_ball_integral_eq_one {δ : ℝ} (hδ : 0 <
   have hf0_ne : f (0 : E) ≠ 0 := by
     -- `f 0 = 1`.
     simp [hf0]
-
   -- The integral is strictly positive (Lebesgue is an open-positive measure).
   have hIpos :
       0 < ∫ x, f x ∂(volume : Measure E) := by
@@ -68,7 +73,6 @@ theorem exists_kernel_tsupport_subset_ball_integral_eq_one {δ : ℝ} (hδ : 0 <
   set I : ℝ := ∫ x, f x ∂(volume : Measure E)
   have hI0 : I ≠ 0 := ne_of_gt hIpos
   have hIpos' : 0 < I := by simpa [I] using hIpos
-
   -- Normalize: `ψ = I⁻¹ • f`.
   let ψ : E → ℝ := fun x => I⁻¹ * f x
   have hψc : Continuous ψ := by
@@ -93,7 +97,6 @@ theorem exists_kernel_tsupport_subset_ball_integral_eq_one {δ : ℝ} (hδ : 0 <
     have hsub : tsupport ψ ⊆ tsupport f := by
       simpa [ψ, smul_eq_mul] using (tsupport_smul_subset_right (f := fun _x : E => I⁻¹) (g := f))
     exact hsub.trans hf_tsupp
-
   exact ⟨ψ, hψc, hψcs, hψ0, hψint, hψ_tsupp⟩
 
 end Volume

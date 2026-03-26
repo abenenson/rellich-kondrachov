@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
 import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureRiemannian
 import RellichKondrachov.MeasureTheory.Measure.HausdorffVolume
 
@@ -171,7 +177,6 @@ theorem chartMeasure_restrict_le_volume (i : dR.d.ι) :
         ((dR.C i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) •
           (μH[(Module.finrank ℝ E : ℝ)] : Measure E).restrict (chartBall (dR := dR) (I := I) i) :=
     RiemannianFiniteChartData.chartMeasure_restrict_le_hausdorff (dR := dR) (I := I) i
-
   -- Rewrite `μH[dim]` as a scalar multiple of `volume`.
   have hHvol :
       (μH[(Module.finrank ℝ E : ℝ)] : Measure E) =
@@ -187,7 +192,6 @@ theorem chartMeasure_restrict_le_volume (i : dR.d.ι) :
     have :=
       congrArg (fun μ : Measure E => μ.restrict (chartBall (dR := dR) (I := I) i)) hHvol
     simpa using this
-
   -- Combine scalars.
   have :
       ((dR.C i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) •
@@ -198,7 +202,6 @@ theorem chartMeasure_restrict_le_volume (i : dR.d.ι) :
           (volume : Measure E).restrict (chartBall (dR := dR) (I := I) i) := by
     -- `a • (b • μ) = (a*b) • μ`, and `restrict` commutes with `smul`.
     simp [hHvol_restrict, smul_smul]
-
   exact hμH.trans_eq this
 
 /-- On the chart ball, Lebesgue `volume` on the chart model space is dominated by the chart
@@ -232,7 +235,6 @@ theorem volume_restrict_le_chartMeasure (i : dR.d.ι) :
               ((μH[(Module.finrank ℝ E : ℝ)] : Measure E) (Metric.closedBall (0 : E) 1))) •
           (μH[(Module.finrank ℝ E : ℝ)] : Measure E).restrict S := by
     simpa [Measure.restrict_smul] using hVolS
-
   have hHaus :
       (μH[(Module.finrank ℝ E : ℝ)] : Measure E).restrict S ≤
         ((dR.Cfwd i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) •
@@ -240,7 +242,6 @@ theorem volume_restrict_le_chartMeasure (i : dR.d.ι) :
                 (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) i).restrict
             S :=
     RiemannianFiniteChartData.hausdorff_restrict_le_chartMeasure (dR := dR) (I := I) i
-
   -- Multiply by the scalar relating `volume` and `μH[dim]`, and combine scalars.
   have :
       (((volume : Measure E) (Metric.closedBall (0 : E) 1)) /
@@ -260,7 +261,6 @@ theorem volume_restrict_le_chartMeasure (i : dR.d.ι) :
         (((volume : Measure E) (Metric.closedBall (0 : E) 1)) /
           ((μH[(Module.finrank ℝ E : ℝ)] : Measure E) (Metric.closedBall (0 : E) 1)))
     simpa [Measure.smul_apply, smul_smul, mul_assoc, mul_left_comm, mul_comm] using this
-
   -- Conclude by rewriting the left-hand side as `volume.restrict S`.
   simpa [S, hVolS'] using (le_trans (le_of_eq hVolS') this)
 

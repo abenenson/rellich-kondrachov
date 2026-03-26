@@ -1,3 +1,15 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
+
+/-!
+# Rellich–Kondrachov Compact Embedding Theorem
+
+This is the root import file for the Rellich–Kondrachov compact embedding theorem.
+-/
+
 import RellichKondrachov.Analysis.Calculus.ContDiff.Support
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H2
