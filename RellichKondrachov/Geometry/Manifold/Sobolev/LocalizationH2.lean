@@ -1,11 +1,11 @@
+import RellichKondrachov.Geometry.Manifold.Sobolev.Localization
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H2
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Sobolev.Localization
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H2
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.LocalizationH2`
@@ -55,7 +55,8 @@ private abbrev chart (i : d.ι) : PartialEquiv M E :=
 
 private abbrev Iℝ : ModelWithCorners ℝ ℝ ℝ := 𝓘(ℝ, ℝ)
 
-omit [CompleteSpace E] [IsManifold I (1 : WithTop ℕ∞) M] [I.Boundaryless] [T2Space M] [CompactSpace M] in
+omit [CompleteSpace E] [IsManifold I (1 : WithTop ℕ∞) M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M] in
 private theorem contDiffOn_localize_target {f : M → ℝ}
     (hf : ContMDiff I Iℝ 2 f) (i : d.ι) :
     ContDiffOn ℝ 2 (localize (d := d) f i) (chart (d := d) i).target := by

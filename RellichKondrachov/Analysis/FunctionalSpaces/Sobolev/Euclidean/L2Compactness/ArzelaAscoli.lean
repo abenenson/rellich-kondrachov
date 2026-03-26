@@ -1,13 +1,14 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Compactness
+import Mathlib.Analysis.Normed.Group.Bounded
+import Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli
+import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.MeasureTheory.Integral.Bochner.Set
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Compactness
-import Mathlib.Analysis.Normed.Group.Bounded
-import Mathlib.MeasureTheory.Function.L2Space
-import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 /-!
 # `L²` compactness criterion: Arzelà–Ascoli for the smoothing operator (Euclidean)
@@ -109,7 +110,8 @@ private lemma exists_norm_ψ_bound_on_diffSet (hK : IsCompact K) (hψc : Continu
       exact ⟨hx, ht⟩
     exact hne ⟨(x : E) - t, this⟩
 
-/-- Arzelà–Ascoli: smoothing maps `L²(K)` bounded sets into a precompact set in `BCF(K + tsupport ψ)`. -/
+/-- Arzelà--Ascoli: smoothing maps `L²(K)` bounded sets into a precompact set
+in `BCF(K + tsupport ψ)`. -/
 theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : MeasurableSet K)
     (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ) {R : ℝ} (hR : 0 ≤ R) :
     IsCompact
@@ -163,8 +165,11 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
       have hker :
           MemLp (fun t : E => ψ ((x : E) - t)) (2 : ℝ≥0∞) (volume.restrict K) := by
         refine MemLp.of_bound (μ := (volume.restrict K))
-          (hf := (hψc.aestronglyMeasurable.comp_measurable (measurable_const.sub measurable_id))) Cψ ?_
-        filter_upwards [MeasureTheory.ae_restrict_mem (μ := (volume : Measure E)) hKm] with t ht
+          (hf := (hψc.aestronglyMeasurable.comp_measurable
+            (measurable_const.sub measurable_id))) Cψ ?_
+        filter_upwards
+          [MeasureTheory.ae_restrict_mem
+            (μ := (volume : Measure E)) hKm] with t ht
         exact hψ_bound x t ht
       let kx : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) μ :=
         hker.toLp (fun t : E => ψ ((x : E) - t))
@@ -173,11 +178,15 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
             ∀ᵐ t ∂(volume.restrict K), ‖(fun t : E => ψ ((x : E) - t)) t‖ ≤ Cψ := by
           filter_upwards [MeasureTheory.ae_restrict_mem (μ := (volume : Measure E)) hKm] with t ht
           exact hψ_bound x t ht
-        have := (MeasureTheory.Lp.norm_le_of_ae_bound (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
+        have := (MeasureTheory.Lp.norm_le_of_ae_bound
+          (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
           (f := kx) (hC := hCψ_nonneg) (by
             -- transport the bound through the `toLp` representative
-            filter_upwards [h_ae, MeasureTheory.MemLp.coeFn_toLp (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
-              (f := fun t : E => ψ ((x : E) - t)) hker] with t ht hrep
+            filter_upwards [h_ae,
+              MeasureTheory.MemLp.coeFn_toLp
+                (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
+                (f := fun t : E => ψ ((x : E) - t))
+                hker] with t ht hrep
             simpa [kx, hrep] using ht))
         simpa [mK] using this
       -- Express the smoothing value as an `L²` inner product, then apply Cauchy–Schwarz.
@@ -186,11 +195,14 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
             ∫ t, u t * kx t ∂(volume.restrict K) := by
         have h_ae :
             (fun t : E => u t * kx t) =ᵐ[volume.restrict K] fun t : E => u t * ψ ((x : E) - t) := by
-          filter_upwards [MeasureTheory.MemLp.coeFn_toLp (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
-            (f := fun t : E => ψ ((x : E) - t)) hker] with t ht
+          filter_upwards [MeasureTheory.MemLp.coeFn_toLp
+            (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
+            (f := fun t : E => ψ ((x : E) - t))
+            hker] with t ht
           simp [kx, ht]
         -- rewrite `smoothFun` as an integral on `volume.restrict K`
-        rw [smoothFun_eq_integral_restrict (E := E) (K := K) (ψ := ψ) (hKm := hKm) u (x : E)]
+        rw [smoothFun_eq_integral_restrict
+          (E := E) (K := K) (ψ := ψ) (hKm := hKm) u (x : E)]
         exact (MeasureTheory.integral_congr_ae h_ae.symm)
       have hsmooth' :
           smoothFun (E := E) (K := K) ψ u (x : E) =
@@ -199,7 +211,7 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
       have hinner :
           smoothFun (E := E) (K := K) ψ u (x : E) =
             inner ℝ (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) μ) kx := by
-        simp [MeasureTheory.L2.inner_def, hsmooth']
+        erw [MeasureTheory.L2.inner_def]; exact hsmooth'
       have habs :
           |smoothFun (E := E) (K := K) ψ u (x : E)| ≤ ‖u‖ * ‖kx‖ := by
         simpa [hinner] using
@@ -277,13 +289,17 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
         have hkerx :
             MemLp (fun t : E => ψ ((x : E) - t)) (2 : ℝ≥0∞) (volume.restrict K) := by
           refine MemLp.of_bound (μ := (volume.restrict K))
-            (hf := (hψc.aestronglyMeasurable.comp_measurable (measurable_const.sub measurable_id))) Cψ ?_
-          filter_upwards [MeasureTheory.ae_restrict_mem (μ := (volume : Measure E)) hKm] with t ht
+            (hf := (hψc.aestronglyMeasurable.comp_measurable
+              (measurable_const.sub measurable_id))) Cψ ?_
+          filter_upwards
+            [MeasureTheory.ae_restrict_mem
+              (μ := (volume : Measure E)) hKm] with t ht
           exact hψ_bound x t ht
         have hkery :
             MemLp (fun t : E => ψ ((y : E) - t)) (2 : ℝ≥0∞) (volume.restrict K) := by
           refine MemLp.of_bound (μ := (volume.restrict K))
-            (hf := (hψc.aestronglyMeasurable.comp_measurable (measurable_const.sub measurable_id))) Cψ ?_
+            (hf := (hψc.aestronglyMeasurable.comp_measurable
+              (measurable_const.sub measurable_id))) Cψ ?_
           filter_upwards [MeasureTheory.ae_restrict_mem (μ := (volume : Measure E)) hKm] with t ht
           exact hψ_bound y t ht
         let kx : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) μ :=
@@ -330,18 +346,23 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
                 smoothFun (E := E) (K := K) ψ u (x : E) =
                   ∫ t, u t * kx t ∂(volume.restrict K) := by
               have h_ae' :
-                  (fun t : E => u t * kx t) =ᵐ[volume.restrict K] fun t : E => u t * ψ ((x : E) - t) := by
-                filter_upwards [MeasureTheory.MemLp.coeFn_toLp (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
-                  (f := fun t : E => ψ ((x : E) - t)) hkerx] with t ht
+                  (fun t : E => u t * kx t) =ᵐ[volume.restrict K]
+                    fun t : E => u t * ψ ((x : E) - t) := by
+                filter_upwards [MeasureTheory.MemLp.coeFn_toLp
+                  (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
+                  (f := fun t : E => ψ ((x : E) - t))
+                  hkerx] with t ht
                 simp [kx, ht]
-              rw [smoothFun_eq_integral_restrict (E := E) (K := K) (ψ := ψ) (hKm := hKm) u (x : E)]
+              rw [smoothFun_eq_integral_restrict
+                (E := E) (K := K) (ψ := ψ) (hKm := hKm)
+                u (x : E)]
               exact (MeasureTheory.integral_congr_ae h_ae'.symm)
             have hsmooth' :
                 smoothFun (E := E) (K := K) ψ u (x : E) =
                   ∫ t, kx t * u t ∂(volume.restrict K) := by
               simp [hsmooth, mul_comm]
-            simp [smoothBCF_apply (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs u x,
-              MeasureTheory.L2.inner_def, hsmooth']
+            erw [smoothBCF_apply (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs u x,
+              MeasureTheory.L2.inner_def]; exact hsmooth'
           have hy_val :
               smoothBCF (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs u y =
                 inner ℝ (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) μ) ky := by
@@ -349,18 +370,23 @@ theorem smoothBCF_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurabl
                 smoothFun (E := E) (K := K) ψ u (y : E) =
                   ∫ t, u t * ky t ∂(volume.restrict K) := by
               have h_ae' :
-                  (fun t : E => u t * ky t) =ᵐ[volume.restrict K] fun t : E => u t * ψ ((y : E) - t) := by
-                filter_upwards [MeasureTheory.MemLp.coeFn_toLp (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
-                  (f := fun t : E => ψ ((y : E) - t)) hkery] with t ht
+                  (fun t : E => u t * ky t) =ᵐ[volume.restrict K]
+                    fun t : E => u t * ψ ((y : E) - t) := by
+                filter_upwards [MeasureTheory.MemLp.coeFn_toLp
+                  (μ := (volume.restrict K)) (p := (2 : ℝ≥0∞))
+                  (f := fun t : E => ψ ((y : E) - t))
+                  hkery] with t ht
                 simp [ky, ht]
-              rw [smoothFun_eq_integral_restrict (E := E) (K := K) (ψ := ψ) (hKm := hKm) u (y : E)]
+              rw [smoothFun_eq_integral_restrict
+                (E := E) (K := K) (ψ := ψ) (hKm := hKm)
+                u (y : E)]
               exact (MeasureTheory.integral_congr_ae h_ae'.symm)
             have hsmooth' :
                 smoothFun (E := E) (K := K) ψ u (y : E) =
                   ∫ t, ky t * u t ∂(volume.restrict K) := by
               simp [hsmooth, mul_comm]
-            simp [smoothBCF_apply (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs u y,
-              MeasureTheory.L2.inner_def, hsmooth']
+            erw [smoothBCF_apply (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs u y,
+              MeasureTheory.L2.inner_def]; exact hsmooth'
           have :
               ‖smoothBCF (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs u x -
                   smoothBCF (E := E) (K := K) (ψ := ψ) hK hKm hψc hψcs u y‖ ≤

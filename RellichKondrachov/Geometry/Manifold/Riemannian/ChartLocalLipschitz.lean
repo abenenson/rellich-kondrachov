@@ -1,11 +1,11 @@
+import Mathlib.Geometry.Manifold.Riemannian.Basic
+import Mathlib.MeasureTheory.Integral.Lebesgue.Add
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.Geometry.Manifold.Riemannian.Basic
-import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitz`
@@ -18,7 +18,8 @@ Riemannian `edist` on `M`).
 
 ## Main result
 
-- `RellichKondrachov.Geometry.Manifold.Riemannian.lipschitzOnWith_symm_extChartAt_ofRiemannianMetric`
+- `RellichKondrachov.Geometry.Manifold.Riemannian.`
+  `lipschitzOnWith_symm_extChartAt_ofRiemannianMetric`
 -/
 
 namespace RellichKondrachov
@@ -43,8 +44,9 @@ variable
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
 
 /-!
-`mfderivWithin` is a continuous linear map between tangent spaces. For the model space `E` (viewed as
-a manifold), we locally activate the `NormedAddCommGroup`/`NormedSpace` structures on its tangent
+`mfderivWithin` is a continuous linear map between tangent spaces. For the model
+space `E` (viewed as a manifold), we locally activate the
+`NormedAddCommGroup`/`NormedSpace` structures on its tangent
 spaces so that operator-norm estimates are available.
 
 This matches the approach used in Mathlib’s Riemannian manifold development: these instances should
@@ -87,7 +89,8 @@ theorem lipschitzOnWith_symm_extChartAt_ofRiemannianMetric
     filter_upwards [hC] with y hy
     change ‖mfderivWithin 𝓘(ℝ, E) I (extChartAt I x).symm (range I) y‖ₑ < (C : ℝ≥0∞)
     exact hy
-  -- Choose a small convex neighborhood in the chart where the derivative bound holds and the map is defined.
+  -- Choose a small convex neighborhood in the chart where the derivative
+  -- bound holds and the map is defined.
   obtain ⟨r, r_pos, hr⟩ : ∃ r > 0,
       Metric.ball (extChartAt I x x) r ∩ range I ⊆ (extChartAt I x).target ∩ P := by
     exact Metric.mem_nhdsWithin_iff.1 (inter_mem (extChartAt_target_mem_nhdsWithin (I := I) x) hP)
@@ -129,7 +132,7 @@ theorem lipschitzOnWith_symm_extChartAt_ofRiemannianMetric
             (mfderivWithin 𝓘(ℝ) 𝓘(ℝ, E) η (Icc (0 : ℝ) 1) t) := by
       apply mfderivWithin_comp
       · exact mdifferentiableWithinAt_extChartAt_symm (I := I) (x := x) (hη.1 ht)
-      · exact η_smooth.mdifferentiableOn le_rfl t ht
+      · exact η_smooth.mdifferentiableOn one_ne_zero t ht
       · exact hη.1.trans (preimage_mono (extChartAt_target_subset_range (I := I) x))
       · rw [uniqueMDiffWithinAt_iff_uniqueDiffWithinAt]
         exact uniqueDiffOn_Icc zero_lt_one t ht

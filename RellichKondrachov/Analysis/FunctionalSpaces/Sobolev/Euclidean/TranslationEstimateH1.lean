@@ -1,11 +1,11 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateL2
+import Mathlib.Topology.Order.OrderClosed
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateL2
-import Mathlib.Topology.Order.OrderClosed
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateH1`
@@ -33,9 +33,12 @@ section
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
 
-local instance instMeasurableSpaceE_SobolevEuclideanTranslationEstimateH1 : MeasurableSpace E := borel E
-local instance instBorelSpaceE_SobolevEuclideanTranslationEstimateH1 : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevEuclideanTranslationEstimateH1 : OpensMeasurableSpace E := by
+local instance instMeasurableSpaceE_SobolevEuclideanTranslationEstimateH1 :
+    MeasurableSpace E := borel E
+local instance instBorelSpaceE_SobolevEuclideanTranslationEstimateH1 :
+    BorelSpace E := ⟨rfl⟩
+local instance instOpensMeasurableSpaceE_SobolevEuclideanTranslationEstimateH1 :
+    OpensMeasurableSpace E := by
   infer_instance
 local instance instMeasurableAddE_SobolevEuclideanTranslationEstimateH1 : MeasurableAdd E := by
   infer_instance
@@ -59,7 +62,8 @@ theorem norm_translateL2_sub_h1ToL2_le (a : E) (u : ↥(h1 (μ := μ) (E := E)))
     have hf :
         Continuous fun v : V =>
           ‖translateL2 (μ := μ) (F := ℝ) a v.1 - v.1‖ := by
-      -- `v ↦ v.1` is continuous, translation is continuous, subtraction is continuous, and norm is continuous.
+      -- `v ↦ v.1` is continuous, translation is continuous,
+      -- subtraction is continuous, and norm is continuous.
       have hfst : Continuous fun v : V => v.1 := continuous_fst
       have htr :
           Continuous fun v : V =>
@@ -89,11 +93,17 @@ theorem norm_translateL2_sub_h1ToL2_le (a : E) (u : ↥(h1 (μ := μ) (E := E)))
   have hu :
       (u : V) ∈ closure (LinearMap.range (graph (μ := μ) (E := E)) : Set V) := by
     -- `u ∈ H¹` means `u` is in the topological closure of the range of `graph`.
-    have hu0 : (u : V) ∈ ((LinearMap.range (graph (μ := μ) (E := E))).topologicalClosure : Set V) := by
+    have hu0 :
+        (u : V) ∈
+          ((LinearMap.range (graph (μ := μ) (E := E))).topologicalClosure :
+            Set V) := by
       have hu0 : (u : V) ∈ h1 (μ := μ) (E := E) := u.2
       dsimp [h1] at hu0
       exact hu0
-    have hu1 : (u : V) ∈ ((LinearMap.range (graph (μ := μ) (E := E))).topologicalClosure : Set V) := hu0
+    have hu1 :
+        (u : V) ∈
+          ((LinearMap.range (graph (μ := μ) (E := E))).topologicalClosure :
+            Set V) := hu0
     rw [Submodule.topologicalClosure_coe] at hu1
     exact hu1
   have huS : (u : V) ∈ S := hClosure hu

@@ -1,13 +1,13 @@
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureLp
+import RellichKondrachov.Geometry.Manifold.Sobolev.H1
+import RellichKondrachov.Geometry.Manifold.Sobolev.H2
+import RellichKondrachov.MeasureTheory.Function.LpSpace.Restrict
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureLp
-import RellichKondrachov.Geometry.Manifold.Sobolev.H1
-import RellichKondrachov.Geometry.Manifold.Sobolev.H2
-import RellichKondrachov.MeasureTheory.Function.LpSpace.Restrict
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.EmbeddingL2`
@@ -16,8 +16,8 @@ Define the canonical continuous linear maps `H¹ → L²` and `H² → L²` on a
 to finite chart data.
 
 The construction is by summing, over the finite chart index type, the chartwise `L²` components
-(coming from `h1ToChartL2` / `h2ToChartL2`) pulled back to `M` via a measure-preserving chart map and
-then extended by zero from the chart source.
+(coming from `h1ToChartL2` / `h2ToChartL2`) pulled back to `M` via a
+measure-preserving chart map and then extended by zero from the chart source.
 
 ## Main definitions
 
@@ -72,8 +72,10 @@ noncomputable def chartToGlobalL2 {F : Type*} [NormedAddCommGroup F] [NormedSpac
   have hs : MeasurableSet s :=
     (isOpen_extChartAt_source (I := I) (x := d.center i)).measurableSet
   exact
-    (MeasureTheory.Lp.extendByZeroₗᵢ (μ := μ) (p := (2 : ENNReal)) (s := s) hs).toContinuousLinearMap.comp
-      ((chartPullbackL2 (d := d) (I := I) (μ := μ) (i := i) (F := F)).toContinuousLinearMap)
+    (MeasureTheory.Lp.extendByZeroₗᵢ
+      (μ := μ) (p := (2 : ENNReal)) (s := s) hs).toContinuousLinearMap.comp
+      ((chartPullbackL2
+        (d := d) (I := I) (μ := μ) (i := i) (F := F)).toContinuousLinearMap)
 
 /-- The continuous linear inclusion `H¹(d,μ) → L²(M,μ)` defined by summing the chartwise `L²`
 components after pulling them back to `M` and extending by zero. -/
@@ -103,8 +105,8 @@ noncomputable def c1ToH1 (μ : Measure M) [IsFiniteMeasure μ] :
       (LinearMap.range (h1Graph (d := d) (I := I) (μ := μ))).topologicalClosure
   exact (Submodule.le_topologicalClosure _ ) ⟨f, rfl⟩
 
-/-- The linear map `C¹(M) →ₗ L²(M,μ)` obtained by summing the per-chart `L²` localizations pulled back
-to `M` and extended by zero. -/
+/-- The linear map `C¹(M) →ₗ L²(M,μ)` obtained by summing the per-chart
+`L²` localizations pulled back to `M` and extended by zero. -/
 noncomputable def c1ToL2 (μ : Measure M) [IsFiniteMeasure μ] :
     ↥(C1 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] (M →₂[μ] ℝ) := by
   classical
@@ -132,8 +134,8 @@ noncomputable def c2ToH2 (μ : Measure M) [IsFiniteMeasure μ] :
       (LinearMap.range (h2Graph (d := d) (I := I) (μ := μ))).topologicalClosure
   exact (Submodule.le_topologicalClosure _ ) ⟨f, rfl⟩
 
-/-- The linear map `C²(M) →ₗ L²(M,μ)` obtained by summing the per-chart `L²` localizations pulled back
-to `M` and extended by zero. -/
+/-- The linear map `C²(M) →ₗ L²(M,μ)` obtained by summing the per-chart
+`L²` localizations pulled back to `M` and extended by zero. -/
 noncomputable def c2ToL2 (μ : Measure M) [IsFiniteMeasure μ] :
     ↥(C2 (E := E) (H := H) (M := M) (I := I)) →ₗ[ℝ] (M →₂[μ] ℝ) := by
   classical

@@ -1,12 +1,12 @@
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.MeasureTheory.Integral.Bochner.Set
+import Mathlib.Topology.Algebra.Support
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.MeasureTheory.Integral.Bochner.Set
-import Mathlib.Topology.Algebra.Support
 
 /-!
 # `L²` compactness criterion: existence of small-support probability kernels (Euclidean)
@@ -54,7 +54,8 @@ theorem exists_kernel_tsupport_subset_ball_integral_eq_one {δ : ℝ} (hδ : 0 <
   classical
   -- Start from a smooth bump supported in `ball 0 δ` with value `1` at `0`.
   have hs : (Metric.ball (0 : E) δ) ∈ 𝓝 (0 : E) := Metric.ball_mem_nhds _ hδ
-  rcases exists_smooth_tsupport_subset (E := E) (s := Metric.ball (0 : E) δ) (x := (0 : E)) hs with
+  rcases exists_contDiff_tsupport_subset (n := ⊤)
+    (E := E) (s := Metric.ball (0 : E) δ) (x := (0 : E)) hs with
     ⟨f, hf_tsupp, hf_cs, hf_smooth, hf_range, hf0⟩
   have hf_cont : Continuous f := hf_smooth.continuous
   have hf_nonneg : ∀ x, 0 ≤ f x := by

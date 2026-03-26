@@ -1,18 +1,17 @@
+import Mathlib.MeasureTheory.Function.LpSpace.Complete
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.SupportedH1
+import RellichKondrachov.Geometry.Manifold.Riemannian.VolumeMeasure.Finiteness
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureRiemannianVolume
+import RellichKondrachov.Geometry.Manifold.Sobolev.H1
+import RellichKondrachov.Geometry.Manifold.Sobolev.Localization
+import RellichKondrachov.MeasureTheory.Function.LpSpace.ChangeMeasureLeSmul
+import RellichKondrachov.MeasureTheory.Function.LpSpace.ExtendByZeroRangeEquiv
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.MeasureTheory.Function.LpSpace.Complete
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.SupportedH1
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Rellich
-import RellichKondrachov.Geometry.Manifold.Riemannian.VolumeMeasure.Finiteness
-import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureRiemannianVolume
-import RellichKondrachov.Geometry.Manifold.Sobolev.Localization
-import RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachov
-import RellichKondrachov.MeasureTheory.Function.LpSpace.ChangeMeasureLeSmul
-import RellichKondrachov.MeasureTheory.Function.LpSpace.ExtendByZeroRangeEquiv
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachovRiemannian.Transport`
@@ -57,19 +56,23 @@ variable
   [T3Space M]
   [T2Space M] [CompactSpace M]
 
-local instance instMeasurableSpaceM_SobolevRellichKondrachovRiemannian : MeasurableSpace M := borel M
+local instance instMeasurableSpaceM_SobolevRellichKondrachovRiemannian :
+    MeasurableSpace M := borel M
 local instance instBorelSpaceM_SobolevRellichKondrachovRiemannian : BorelSpace M := ⟨rfl⟩
 
-local instance instMeasurableSpaceE_SobolevRellichKondrachovRiemannian : MeasurableSpace E := borel E
-local instance instBorelSpaceE_SobolevRellichKondrachovRiemannian : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevRellichKondrachovRiemannian : OpensMeasurableSpace E := by
+local instance instMeasurableSpaceE_SobolevRellichKondrachovRiemannian :
+    MeasurableSpace E := borel E
+local instance instBorelSpaceE_SobolevRellichKondrachovRiemannian :
+    BorelSpace E := ⟨rfl⟩
+local instance instOpensMeasurableSpaceE_SobolevRellichKondrachovRiemannian :
+    OpensMeasurableSpace E := by
   infer_instance
 
 -- On compact manifolds, the Riemannian volume measure is finite.
 local instance instIsFiniteMeasure_riemannianVolumeMeasure :
     IsFiniteMeasure
-        (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) :=
-  RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure_isFiniteMeasure (I := I) (M := M)
+        (Riemannian.riemannianVolumeMeasure (I := I) (M := M)) :=
+  Riemannian.riemannianVolumeMeasure_isFiniteMeasure (I := I) (M := M)
 
 namespace RiemannianFiniteChartData
 
@@ -162,7 +165,8 @@ private theorem h1ToChart_mem_euclidean_h1 (i : dR.d.ι)
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
     let μchart := FiniteChartData.chartMeasure (d := dR.d) (I := I) μM i
     (FiniteChartData.h1ToChart (d := dR.d) (I := I) (μ := μM) i x) ∈
-      (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1 (μ := μchart) (E := E) : Set _) := by
+      (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1
+        (μ := μchart) (E := E) : Set _) := by
   classical
   intro μM μchart
   let A : Set (FiniteChartData.h1Target (d := dR.d) (I := I) μM) :=
@@ -175,10 +179,12 @@ private theorem h1ToChart_mem_euclidean_h1 (i : dR.d.ι)
         (FiniteChartData.h1TargetE (d := dR.d) (I := I) μM i) :=
     ContinuousLinearMap.proj (R := ℝ) i
   have hproj_mem : proj x.1 ∈ closure (Set.image proj A) :=
-    mem_closure_image (f := proj) (s := A) (x := x.1) (proj.continuous.continuousAt) hx_closure
+    mem_closure_image (f := proj) (s := A) (x := x.1)
+      (proj.continuous.continuousAt) hx_closure
   have hImage :
       Set.image proj A ⊆
-        (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1 (μ := μchart) (E := E) : Set _) := by
+        (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1
+          (μ := μchart) (E := E) : Set _) := by
     intro y hy
     rcases hy with ⟨z, hzA, rfl⟩
     rcases hzA with ⟨f, rfl⟩
@@ -186,7 +192,8 @@ private theorem h1ToChart_mem_euclidean_h1 (i : dR.d.ι)
     have :
         FiniteChartData.h1GraphChart (d := dR.d) (I := I) (μ := μM) i f ∈
           LinearMap.range
-            (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.graph (μ := μchart) (E := E)) := by
+            (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.graph
+              (μ := μchart) (E := E)) := by
       simpa [μchart] using
         (FiniteChartData.h1GraphChart_mem_range_euclidean_graph (d := dR.d) (I := I) (μ := μM) i f)
     -- Conclude membership in the Euclidean `H¹` closure.
@@ -196,7 +203,8 @@ private theorem h1ToChart_mem_euclidean_h1 (i : dR.d.ι)
         (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1 (μ := μchart) (E := E) :
           Set (FiniteChartData.h1TargetE (d := dR.d) (I := I) μM i)) := by
     simpa [FiniteChartData.h1TargetE, μchart] using
-      (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.isClosed_h1 (μ := μchart) (E := E))
+      (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.isClosed_h1
+        (μ := μchart) (E := E))
   have hx_closure_h1 :
       proj x.1 ∈
         closure
@@ -214,8 +222,8 @@ private theorem h1ToChart_mem_euclidean_h1 (i : dR.d.ι)
 /-!
 ### Codomain restriction: chart coordinate as a Euclidean `H¹` element
 
-We package `h1ToChart_mem_euclidean_h1` as a codomain-restricted continuous linear map landing in the
-Euclidean `H¹` submodule.
+We package `h1ToChart_mem_euclidean_h1` as a codomain-restricted continuous
+linear map landing in the Euclidean `H¹` submodule.
 -/
 
 omit [T2Space M] in
@@ -224,7 +232,8 @@ private noncomputable def h1ToChartH1 (i : dR.d.ι) :
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
     let μchart := FiniteChartData.chartMeasure (d := dR.d) (I := I) μM i
     ↥(FiniteChartData.h1 (d := dR.d) (I := I) (μ := μM)) →L[ℝ]
-      ↥(RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1 (μ := μchart) (E := E)) := by
+      ↥(RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1
+        (μ := μchart) (E := E)) := by
   classical
   intro μM μchart
   refine
@@ -266,7 +275,9 @@ private theorem h1GraphChart_fst_mem_extendByZero_range (i : dR.d.ι)
       (FiniteChartData.h1GraphChart_fst (d := dR.d) (I := I) (μ := μM) i f)
   -- Apply the general range characterization lemma.
   have hfK :
-      MeasureTheory.MemLp (FiniteChartData.localize (d := dR.d) (I := I) f.1 i) (2 : ℝ≥0∞) μchart := by
+      MeasureTheory.MemLp
+        (FiniteChartData.localize (d := dR.d) (I := I) f.1 i)
+        (2 : ℝ≥0∞) μchart := by
     simpa using
       (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.memLp_of_mem_C1c
           (μ := μchart) (E := E)
@@ -277,10 +288,13 @@ private theorem h1GraphChart_fst_mem_extendByZero_range (i : dR.d.ι)
     simpa [K] using
       (FiniteChartData.tsupport_localize_subset_rhoSupportImage (d := dR.d) (I := I) (f := f.1) i)
   -- `toL2` is defined as `MemLp.toLp`, so `hL2` allows rewriting to use the range lemma.
-  simpa [hL2, RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.toL2] using
-    (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.mem_range_extendByZeroₗᵢ_toLp_of_tsupport_subset
-        (μ := μchart) (hKm := hKm)
-        (f := FiniteChartData.localize (d := dR.d) (I := I) f.1 i) hfK htsupp)
+  open Analysis.FunctionalSpaces.Sobolev.Euclidean in
+  simpa [hL2, toL2] using
+    (mem_range_extendByZeroₗᵢ_toLp_of_tsupport_subset
+      (μ := μchart) (hKm := hKm)
+      (f := FiniteChartData.localize
+        (d := dR.d) (I := I) f.1 i)
+      hfK htsupp)
 
 omit [T2Space M] in
 private theorem h1GraphChart_snd_mem_extendByZero_range (i : dR.d.ι)
@@ -328,13 +342,14 @@ private theorem h1GraphChart_snd_mem_extendByZero_range (i : dR.d.ι)
       (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.tsupport_grad_subset
           (E := E) (f := FiniteChartData.localize (d := dR.d) (I := I) f.1 i)).trans
         htsupp
-  simpa [hL2Grad, RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.toL2Grad] using
-    (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.mem_range_extendByZeroₗᵢ_toLp_of_tsupport_subset
-        (μ := μchart) (hKm := hKm)
-        (f :=
-          RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.grad (E := E)
-            (FiniteChartData.localize (d := dR.d) (I := I) f.1 i))
-        hfK htsuppGrad)
+  open Analysis.FunctionalSpaces.Sobolev.Euclidean in
+  simpa [hL2Grad, toL2Grad] using
+    (mem_range_extendByZeroₗᵢ_toLp_of_tsupport_subset
+      (μ := μchart) (hKm := hKm)
+      (f := grad (E := E)
+        (FiniteChartData.localize
+          (d := dR.d) (I := I) f.1 i))
+      hfK htsuppGrad)
 
 omit [T2Space M] in
 theorem h1ToChartL2_mem_extendByZero_range (i : dR.d.ι)
@@ -377,8 +392,11 @@ theorem h1ToChartL2_mem_extendByZero_range (i : dR.d.ι)
     -- Unfold `h1` as a topological closure.
     simpa [FiniteChartData.h1, Submodule.topologicalClosure_coe, A] using x.2
   have hf_mem : fTarget x.1 ∈ closure (Set.image fTarget A) :=
-    mem_closure_image (f := fTarget) (s := A) (x := x.1) (fTarget.continuous.continuousAt) hx_closure
-  have hImage : Set.image fTarget A ⊆ (LinearMap.range e.toLinearMap : Set (E →₂[μchart] ℝ)) := by
+    mem_closure_image (f := fTarget) (s := A) (x := x.1)
+      (fTarget.continuous.continuousAt) hx_closure
+  have hImage :
+      Set.image fTarget A ⊆
+        (LinearMap.range e.toLinearMap : Set (E →₂[μchart] ℝ)) := by
     intro y hy
     rcases hy with ⟨z, hzA, rfl⟩
     rcases hzA with ⟨g, rfl⟩
@@ -386,11 +404,18 @@ theorem h1ToChartL2_mem_extendByZero_range (i : dR.d.ι)
     simpa [fTarget, FiniteChartData.h1Graph, LinearMap.pi_apply] using
       (h1GraphChart_fst_mem_extendByZero_range (dR := dR) (I := I) i g)
   -- Close the argument using closedness of the range.
-  have hClosure : closure (Set.image fTarget A) ⊆ (LinearMap.range e.toLinearMap : Set (E →₂[μchart] ℝ)) := by
-    have : closure (Set.image fTarget A) ⊆ closure (LinearMap.range e.toLinearMap : Set (E →₂[μchart] ℝ)) :=
+  have hClosure :
+      closure (Set.image fTarget A) ⊆
+        (LinearMap.range e.toLinearMap : Set (E →₂[μchart] ℝ)) := by
+    have :
+        closure (Set.image fTarget A) ⊆
+          closure (LinearMap.range e.toLinearMap :
+            Set (E →₂[μchart] ℝ)) :=
       closure_mono hImage
     simpa [hClosed.closure_eq] using this
-  have : fTarget x.1 ∈ (LinearMap.range e.toLinearMap : Set (E →₂[μchart] ℝ)) :=
+  have :
+      fTarget x.1 ∈
+        (LinearMap.range e.toLinearMap : Set (E →₂[μchart] ℝ)) :=
     hClosure hf_mem
   -- Rewrite `fTarget x.1` back to `h1ToChartL2`.
   simpa [fTarget, FiniteChartData.h1ToChartL2, FiniteChartData.h1ToChart] using this
@@ -432,20 +457,31 @@ theorem h1ToChartL2Grad_mem_extendByZero_range (i : dR.d.ι)
   have hx_closure : (x.1 : FiniteChartData.h1Target (d := dR.d) (I := I) μM) ∈ closure A := by
     simpa [FiniteChartData.h1, Submodule.topologicalClosure_coe, A] using x.2
   have hf_mem : fTarget x.1 ∈ closure (Set.image fTarget A) :=
-    mem_closure_image (f := fTarget) (s := A) (x := x.1) (fTarget.continuous.continuousAt) hx_closure
-  have hImage : Set.image fTarget A ⊆ (LinearMap.range e.toLinearMap : Set (E →₂[μchart] E)) := by
+    mem_closure_image (f := fTarget) (s := A) (x := x.1)
+      (fTarget.continuous.continuousAt) hx_closure
+  have hImage :
+      Set.image fTarget A ⊆
+        (LinearMap.range e.toLinearMap : Set (E →₂[μchart] E)) := by
     intro y hy
     rcases hy with ⟨z, hzA, rfl⟩
     rcases hzA with ⟨g, rfl⟩
     simpa [fTarget, FiniteChartData.h1Graph, LinearMap.pi_apply] using
       (h1GraphChart_snd_mem_extendByZero_range (dR := dR) (I := I) i g)
-  have hClosure : closure (Set.image fTarget A) ⊆ (LinearMap.range e.toLinearMap : Set (E →₂[μchart] E)) := by
-    have : closure (Set.image fTarget A) ⊆ closure (LinearMap.range e.toLinearMap : Set (E →₂[μchart] E)) :=
+  have hClosure :
+      closure (Set.image fTarget A) ⊆
+        (LinearMap.range e.toLinearMap : Set (E →₂[μchart] E)) := by
+    have :
+        closure (Set.image fTarget A) ⊆
+          closure (LinearMap.range e.toLinearMap :
+            Set (E →₂[μchart] E)) :=
       closure_mono hImage
     simpa [hClosed.closure_eq] using this
-  have : fTarget x.1 ∈ (LinearMap.range e.toLinearMap : Set (E →₂[μchart] E)) :=
+  have :
+      fTarget x.1 ∈
+        (LinearMap.range e.toLinearMap : Set (E →₂[μchart] E)) :=
     hClosure hf_mem
-  simpa [fTarget, FiniteChartData.h1ToChartL2Grad, FiniteChartData.h1ToChart] using this
+  simpa [fTarget, FiniteChartData.h1ToChartL2Grad,
+    FiniteChartData.h1ToChart] using this
 
 omit [T2Space M] in
 private theorem h1ToChartH1_mem_h1OnMeasure (i : dR.d.ι)
@@ -462,7 +498,8 @@ private theorem h1ToChartH1_mem_h1OnMeasure (i : dR.d.ι)
       (RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1OnMeasure
           (μ := μchart) (E := E) (K := K) (rhoSupportImage_measurable (dR := dR) (I := I) i) :
         Submodule ℝ
-          (↥(RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1 (μ := μchart) (E := E)))) := by
+          (↥(Analysis.FunctionalSpaces.Sobolev.Euclidean.h1
+            (μ := μchart) (E := E)))) := by
   classical
   intro μM μchart K
   have hKm : MeasurableSet K := rhoSupportImage_measurable (dR := dR) (I := I) i
@@ -473,7 +510,8 @@ private theorem h1ToChartH1_mem_h1OnMeasure (i : dR.d.ι)
         LinearMap.range
           ((MeasureTheory.Lp.extendByZeroₗᵢ
                 (μ := μchart) (E := ℝ) (p := (2 : ℝ≥0∞)) (s := K) hKm).toLinearMap) := by
-    -- `h1ToL2` is the first projection from the ambient graph target; `codRestrict` does not change it.
+    -- `h1ToL2` is the first projection from the ambient graph target;
+    -- `codRestrict` does not change it.
     simpa [h1ToChartH1, RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1ToL2,
       FiniteChartData.h1ToChartL2, FiniteChartData.h1ToChart] using
       (h1ToChartL2_mem_extendByZero_range (dR := dR) (I := I) i x)
@@ -488,7 +526,8 @@ private noncomputable def h1ToChartH1OnMeasure (i : dR.d.ι) :
     let K : Set E := FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i
     ↥(FiniteChartData.h1 (d := dR.d) (I := I) (μ := μM)) →L[ℝ]
       ↥(RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1OnMeasure
-            (μ := μchart) (E := E) (K := K) (rhoSupportImage_measurable (dR := dR) (I := I) i)) := by
+            (μ := μchart) (E := E) (K := K)
+              (rhoSupportImage_measurable (dR := dR) (I := I) i)) := by
   classical
   intro μM μchart K
   have hKm : MeasurableSet K := rhoSupportImage_measurable (dR := dR) (I := I) i
@@ -551,15 +590,17 @@ noncomputable def l2EquivVolumeOnRhoSupportImage' (i : dR.d.ι) (F : Type*)
     [NormedAddCommGroup F] [NormedSpace ℝ F] :
     (E →₂[
         (FiniteChartData.chartMeasure (d := dR.d) (I := I)
-              (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) i).restrict
+          (Riemannian.riemannianVolumeMeasure
+            (I := I) (M := M)) i).restrict
           (FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i)
       ] F) ≃L[ℝ]
       (E →₂[
-          (volume : Measure E).restrict (FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i)
+          (volume : Measure E).restrict
+            (FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i)
         ] F) := by
   classical
   let μM :=
-    RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
+    Riemannian.riemannianVolumeMeasure (I := I) (M := M)
   let μchart := FiniteChartData.chartMeasure (d := dR.d) (I := I) μM i
   let K : Set E := FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i
   have hKm : MeasurableSet K := rhoSupportImage_measurable (dR := dR) (I := I) i
@@ -583,7 +624,8 @@ noncomputable def l2EquivVolumeOnRhoSupportImage' (i : dR.d.ι) (F : Type*)
     have hpos :
         0 < (volume : Measure E) (Metric.closedBall (0 : E) 1) := by
       simpa using
-        (Metric.measure_closedBall_pos (μ := (volume : Measure E)) (x := (0 : E)) (r := (1 : ℝ)) (by norm_num))
+        (Metric.measure_closedBall_pos (μ := (volume : Measure E))
+          (x := (0 : E)) (r := (1 : ℝ)) (by norm_num))
     exact hpos.ne'
   have hHausBall_ne_top :
       ((μH[(Module.finrank ℝ E : ℝ)] : Measure E) (Metric.closedBall (0 : E) 1)) ≠ ∞ := by
@@ -601,7 +643,8 @@ noncomputable def l2EquivVolumeOnRhoSupportImage' (i : dR.d.ι) (F : Type*)
         0 < (μH[(Module.finrank ℝ E : ℝ)] : Measure E) (Metric.closedBall (0 : E) 1) := by
       simpa using
         (Metric.measure_closedBall_pos
-          (μ := (μH[(Module.finrank ℝ E : ℝ)] : Measure E)) (x := (0 : E)) (r := (1 : ℝ)) (by norm_num))
+          (μ := (μH[(Module.finrank ℝ E : ℝ)] : Measure E))
+          (x := (0 : E)) (r := (1 : ℝ)) (by norm_num))
     exact hpos.ne'
   have hHausDivVol_ne_top :
       ((μH[(Module.finrank ℝ E : ℝ)] (Metric.closedBall (0 : E) 1)) /
@@ -637,17 +680,21 @@ noncomputable def l2EquivVolumeOnRhoSupportImage' (i : dR.d.ι) (F : Type*)
   have hp : (2 : ℝ≥0∞) ≠ ∞ := by simp
   -- `Lp.changeMeasureEquiv` is the identity on functions, but changes the `Lp` carrier measure.
   exact
-    (MeasureTheory.Lp.changeMeasureEquiv (μ := μchart.restrict K) (ν := (volume : Measure E).restrict K)
-      (E := F) (p := (2 : ℝ≥0∞)) hcVolChart hcChartVol hvol_le hμ_le hp)
+    (MeasureTheory.Lp.changeMeasureEquiv
+      (μ := μchart.restrict K) (ν := (volume : Measure E).restrict K)
+      (E := F) (p := (2 : ℝ≥0∞))
+      hcVolChart hcChartVol hvol_le hμ_le hp)
 
 noncomputable def l2EquivVolumeOnRhoSupportImage (i : dR.d.ι) :
     (E →₂[
         (FiniteChartData.chartMeasure (d := dR.d) (I := I)
-              (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) i).restrict
+          (Riemannian.riemannianVolumeMeasure (I := I) (M := M))
+          i).restrict
           (FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i)
       ] ℝ) ≃L[ℝ]
       (E →₂[
-          (volume : Measure E).restrict (FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i)
+        (volume : Measure E).restrict
+          (FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i)
         ] ℝ) :=
   l2EquivVolumeOnRhoSupportImage' (dR := dR) (I := I) (F := ℝ) i
 
@@ -675,14 +722,17 @@ noncomputable def l2ExtendByZeroRangeEquivVolumeOnRhoSupportImage' (i : dR.d.ι)
                 (rhoSupportImage_measurable (dR := dR) (I := I) i)).toLinearMap)) := by
   classical
   intro μM μchart K
-  -- Avoid carrying a local name for `MeasurableSet K` to keep definitional equalities stable across transports.
+  -- Avoid carrying a local name for `MeasurableSet K` to keep definitional
+  -- equalities stable across transports.
   let eChart :=
     MeasureTheory.Lp.extendByZeroₗᵢ (μ := μchart) (E := F) (p := (2 : ℝ≥0∞)) (s := K)
       (rhoSupportImage_measurable (dR := dR) (I := I) i)
   let eVol :=
-    MeasureTheory.Lp.extendByZeroₗᵢ (μ := (volume : Measure E)) (E := F) (p := (2 : ℝ≥0∞)) (s := K)
+    MeasureTheory.Lp.extendByZeroₗᵢ
+      (μ := (volume : Measure E)) (E := F) (p := (2 : ℝ≥0∞)) (s := K)
       (rhoSupportImage_measurable (dR := dR) (I := I) i)
-  -- Identify each range with the corresponding restricted `L²` space, then use `Lp.changeMeasureEquiv`.
+  -- Identify each range with the corresponding restricted `L²` space,
+  -- then use `Lp.changeMeasureEquiv`.
   -- This is packaged as `extendByZeroRangeEquivOfRestrictChangeMeasureEquiv`.
   let cChartVol : ℝ≥0∞ :=
     (((dR.C i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) *

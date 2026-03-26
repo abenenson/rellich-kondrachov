@@ -1,10 +1,10 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H2`
@@ -82,7 +82,7 @@ theorem contDiff_grad_of_contDiff2 {f : E → ℝ} (hf : ContDiff ℝ 2 f) :
 
 theorem continuous_hess {f : E → ℝ} (hf : ContDiff ℝ 2 f) : Continuous (hess (E := E) f) := by
   have hgrad : ContDiff ℝ 1 (grad (E := E) f) := contDiff_grad_of_contDiff2 (E := E) hf
-  have hcont : Continuous (fderiv ℝ (grad (E := E) f)) := hgrad.continuous_fderiv le_rfl
+  have hcont : Continuous (fderiv ℝ (grad (E := E) f)) := hgrad.continuous_fderiv one_ne_zero
   simpa [hess] using hcont
 
 theorem hasCompactSupport_hess {f : E → ℝ} (hf : HasCompactSupport f) :
@@ -91,7 +91,8 @@ theorem hasCompactSupport_hess {f : E → ℝ} (hf : HasCompactSupport f) :
   have : HasCompactSupport (fderiv ℝ (grad (E := E) f)) := hcs_grad.fderiv ℝ
   simpa [hess] using this
 
-theorem memLp_hess_of_mem_C2c {f : E → ℝ} (hf : f ∈ C2c (E := E)) : MemLp (hess (E := E) f) 2 μ := by
+theorem memLp_hess_of_mem_C2c {f : E → ℝ} (hf : f ∈ C2c (E := E)) :
+    MemLp (hess (E := E) f) 2 μ := by
   have hcont : Continuous (hess (E := E) f) := continuous_hess (E := E) hf.1
   have hcs : HasCompactSupport (hess (E := E) f) := hasCompactSupport_hess (E := E) (f := f) hf.2
   exact hcont.memLp_of_hasCompactSupport (μ := μ) (p := (2 : ℝ≥0∞)) hcs
@@ -107,9 +108,9 @@ theorem hess_add {f g : E → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 
       (hg.differentiable (by decide)).differentiableAt
     simp [grad, fderiv_add hdfy hdgy, map_add]
   have hgradf : DifferentiableAt ℝ (grad (E := E) f) x :=
-    ((contDiff_grad_of_contDiff2 (E := E) hf).differentiable le_rfl).differentiableAt
+    ((contDiff_grad_of_contDiff2 (E := E) hf).differentiable one_ne_zero).differentiableAt
   have hgradg : DifferentiableAt ℝ (grad (E := E) g) x :=
-    ((contDiff_grad_of_contDiff2 (E := E) hg).differentiable le_rfl).differentiableAt
+    ((contDiff_grad_of_contDiff2 (E := E) hg).differentiable one_ne_zero).differentiableAt
   simp [hess, hgradFun, fderiv_add hgradf hgradg]
 
 theorem hess_smul (c : ℝ) {f : E → ℝ} (hf : ContDiff ℝ 2 f) :
@@ -121,7 +122,7 @@ theorem hess_smul (c : ℝ) {f : E → ℝ} (hf : ContDiff ℝ 2 f) :
       (hf.differentiable (by decide)).differentiableAt
     simp [grad, fderiv_const_smul hdfy, map_smul]
   have hgradf : DifferentiableAt ℝ (grad (E := E) f) x :=
-    ((contDiff_grad_of_contDiff2 (E := E) hf).differentiable le_rfl).differentiableAt
+    ((contDiff_grad_of_contDiff2 (E := E) hf).differentiable one_ne_zero).differentiableAt
   simp [hess, hgradFun, fderiv_const_smul hgradf]
 
 /-- The `L²` class of the Hessian of a `C²` compactly supported function. -/

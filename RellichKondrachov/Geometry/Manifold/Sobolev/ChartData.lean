@@ -1,11 +1,11 @@
+import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Topology.Compactness.Compact
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.Geometry.Manifold.PartitionOfUnity
-import Mathlib.Topology.Compactness.Compact
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.ChartData`
@@ -55,7 +55,8 @@ structure FiniteChartData (H : Type*) (M : Type*) [TopologicalSpace H] [Topologi
   center : ι → M
   /-- A smooth partition of unity indexed by `ι` on `M`. -/
   ρ : SmoothPartitionOfUnity ι I M univ
-  /-- Subordination to the chart domains: `closure (support (ρ i)) ⊆ (chartAt H (center i)).source`. -/
+  /-- Subordination to the chart domains:
+  `closure (support (ρ i)) ⊆ (chartAt H (center i)).source`. -/
   subordinate : ρ.IsSubordinate fun i => (chartAt H (center i)).source
 
 attribute [instance] FiniteChartData.instFintype
@@ -85,7 +86,8 @@ omit [T2Space M] [CompactSpace M] in
 private theorem isOpen_chartAt_source (x : M) : IsOpen ((chartAt H x).source : Set M) :=
   (chartAt H x).open_source
 
-/-- On a compact smooth manifold, there exists finite chart data subordinate to `chartAt` sources. -/
+/-- On a compact smooth manifold, there exists finite chart data subordinate
+to `chartAt` sources. -/
 theorem exists_finiteChartData_chartAt :
     Nonempty (FiniteChartData.{uE, uH, uM, uM} (H := H) (M := M) I) := by
   classical

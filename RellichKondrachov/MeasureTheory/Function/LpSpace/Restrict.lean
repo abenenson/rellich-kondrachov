@@ -1,11 +1,11 @@
+import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
+import Mathlib.MeasureTheory.Function.LpSpace.Basic
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
-import Mathlib.MeasureTheory.Function.LpSpace.Basic
 
 /-!
 # `RellichKondrachov.MeasureTheory.Function.LpSpace.Restrict`
@@ -171,7 +171,8 @@ noncomputable def extendByZeroₗᵢ : Lp E p (μ.restrict s) →ₗᵢ[ℝ] Lp 
     -- Unfold into `MemLp.toLp` and reduce to `eLpNorm_indicator_eq_eLpNorm_restrict`.
     have hfi :
         MemLp (s.indicator fun x : α => f x) p μ :=
-      (memLp_indicator_iff_restrict (μ := μ) (p := p) (s := s) (f := fun x : α => f x) hs).2 (Lp.memLp f)
+      (memLp_indicator_iff_restrict (μ := μ) (p := p) (s := s)
+        (f := fun x : α => f x) hs).2 (Lp.memLp f)
     -- Norm in the codomain is the `eLpNorm` of the indicator.
     have hnorm_out :
         ‖extendByZeroₗ (μ := μ) (p := p) (s := s) hs f‖ =
@@ -180,7 +181,8 @@ noncomputable def extendByZeroₗᵢ : Lp E p (μ.restrict s) →ₗᵢ[ℝ] Lp 
       simp [norm_toLp (f := s.indicator (fun x : α => f x)) hfi]
     -- Rewrite the `eLpNorm` of the indicator as a restricted `eLpNorm`.
     have hnorm_restrict :
-        eLpNorm (s.indicator fun x : α => f x) p μ = eLpNorm (fun x : α => f x) p (μ.restrict s) := by
+        eLpNorm (s.indicator fun x : α => f x) p μ =
+          eLpNorm (fun x : α => f x) p (μ.restrict s) := by
       simpa using (eLpNorm_indicator_eq_eLpNorm_restrict (μ := μ) (p := p) (s := s)
         (f := fun x : α => f x) hs)
     -- Combine with the definition of the `Lp` norm on the restricted space.

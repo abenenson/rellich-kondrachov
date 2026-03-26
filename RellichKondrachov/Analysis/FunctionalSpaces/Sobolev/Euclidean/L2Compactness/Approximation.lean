@@ -1,9 +1,3 @@
-/-
-Copyright (c) 2026 Adam Benenson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Adam Benenson
--/
-
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Smoothing
 import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
@@ -13,9 +7,14 @@ import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.MeasureTheory.Group.Prod
 import Mathlib.MeasureTheory.Measure.WithDensity
 import Mathlib.MeasureTheory.Measure.Haar.Unique
-import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.Probability.Moments.Variance
+
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
 
 /-!
 # `L²` compactness criterion: approximation-by-translation bounds (Euclidean)
@@ -57,8 +56,8 @@ local instance : MeasurableNeg E := by
 variable {K : Set E} (hK : IsCompact K) (hKm : MeasurableSet K)
 variable (ψ : E → ℝ)
 
-/-- The measure with density `ψ` with respect to Lebesgue measure. This will be a probability measure
-once `ψ ≥ 0` and `∫ ψ = 1`. -/
+/-- The measure with density `ψ` with respect to Lebesgue measure. This will be a probability
+measure once `ψ ≥ 0` and `∫ ψ = 1`. -/
 noncomputable def kernelMeasure : Measure E :=
   (volume : Measure E).withDensity fun x => ENNReal.ofReal (ψ x)
 
@@ -82,7 +81,8 @@ lemma kernelMeasure_univ (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ) (
   -- Conclude using `∫ ψ = 1`.
   simpa [hψint] using (hwd.trans hlin)
 
-local instance instIsProbabilityMeasure_kernelMeasure (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ)
+local instance instIsProbabilityMeasure_kernelMeasure
+    (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ)
     (hψ0 : ∀ x, 0 ≤ ψ x)
     (hψint : ∫ x, ψ x ∂(volume : Measure E) = 1) :
     MeasureTheory.IsProbabilityMeasure (kernelMeasure (E := E) ψ) :=
@@ -94,7 +94,9 @@ lemma integral_kernelMeasure_eq_integral_smul (hψc : Continuous ψ) (hψ0 : ∀
       ∫ x, (ψ x) • (g x) ∂(volume : Measure E) := by
   have hmeas : Measurable fun x => ENNReal.ofReal (ψ x) :=
     (hψc.measurable.ennreal_ofReal : Measurable fun x => ENNReal.ofReal (ψ x))
-  have htop : (MeasureTheory.ae (volume : Measure E)).Eventually (fun x => ENNReal.ofReal (ψ x) < ∞) :=
+  have htop :
+      (MeasureTheory.ae (volume : Measure E)).Eventually
+        (fun x => ENNReal.ofReal (ψ x) < ∞) :=
     Filter.Eventually.of_forall (fun _ => by simp)
   have hwd :=
     (integral_withDensity_eq_integral_toReal_smul (μ := (volume : Measure E))
@@ -184,7 +186,8 @@ lemma norm_sq_translateL2_sub_extendByZeroL2_eq_integral_sq (t : E)
   have hF_shift :
       (fun x : E => (F : E → ℝ) (x - t)) =ᵐ[(volume : Measure E)] fun x => f (x - t) := by
     have hmp :
-        MeasureTheory.MeasurePreserving (fun x : E => x - t) (volume : Measure E) (volume : Measure E) :=
+        MeasureTheory.MeasurePreserving (fun x : E => x - t)
+          (volume : Measure E) (volume : Measure E) :=
       MeasureTheory.measurePreserving_sub_right (μ := (volume : Measure E)) t
     simpa [Function.comp] using (hmp.quasiMeasurePreserving.ae_eq_comp hF_ae)
   -- TranslateL2 gives `F(x - t)` a.e.
@@ -249,7 +252,8 @@ private lemma kernelMeasure_le_smul_volume (hψc : Continuous ψ) (hψcs : HasCo
   refine hle.trans ?_
   simp
 
-lemma smoothFun_sub_extendByZeroFun_sq_le_integral_sq (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ)
+lemma smoothFun_sub_extendByZeroFun_sq_le_integral_sq
+    (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ)
     (hψ0 : ∀ x, 0 ≤ ψ x) (hψint : ∫ x, ψ x ∂(volume : Measure E) = 1) (hKm : MeasurableSet K)
     (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K)) (x : E) :
     (smoothFun (E := E) (K := K) ψ u x - extendByZeroFun (E := E) (K := K) u x) ^ 2 ≤
@@ -271,17 +275,30 @@ lemma smoothFun_sub_extendByZeroFun_sq_le_integral_sq (hψc : Continuous ψ) (h�
     have hF_ae : (fun x : E => (F : E → ℝ) x) =ᵐ[(volume : Measure E)] f :=
       extendByZeroL2_ae_eq (E := E) (K := K) (hKm := hKm) u
     exact (MeasureTheory.memLp_congr_ae hF_ae).1 hF
-  have hmp : MeasureTheory.MeasurePreserving (fun t : E => x - t) (volume : Measure E) (volume : Measure E) := by
+  have hmp :
+      MeasureTheory.MeasurePreserving (fun t : E => x - t)
+        (volume : Measure E) (volume : Measure E) := by
     -- `t ↦ x - t = (-t) + x` is measure-preserving for Lebesgue (Haar) measure.
-    have hneg : MeasureTheory.MeasurePreserving (Neg.neg : E → E) (volume : Measure E) (volume : Measure E) :=
+    have hneg :
+        MeasureTheory.MeasurePreserving (Neg.neg : E → E)
+          (volume : Measure E) (volume : Measure E) :=
       (volume : Measure E).measurePreserving_neg
-    have hadd : MeasureTheory.MeasurePreserving (fun y : E => y + x) (volume : Measure E) (volume : Measure E) :=
-      MeasureTheory.measurePreserving_add_right (μ := (volume : Measure E)) x
+    have hadd :
+        MeasureTheory.MeasurePreserving (fun y : E => y + x)
+          (volume : Measure E) (volume : Measure E) :=
+      MeasureTheory.measurePreserving_add_right
+        (μ := (volume : Measure E)) x
     simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using hadd.comp hneg
-  have hf_shift_vol : MeasureTheory.MemLp (fun t : E => f (x - t)) (2 : ℝ≥0∞) (volume : Measure E) :=
+  have hf_shift_vol :
+      MeasureTheory.MemLp (fun t : E => f (x - t))
+        (2 : ℝ≥0∞) (volume : Measure E) :=
     hf_vol.comp_measurePreserving hmp
-  have hf_shift : MeasureTheory.MemLp (fun t : E => f (x - t)) (2 : ℝ≥0∞) μ := by
-    exact MeasureTheory.MemLp.of_measure_le_smul (μ := (volume : Measure E)) (μ' := μ) (c := c) hc_top hμle hf_shift_vol
+  have hf_shift :
+      MeasureTheory.MemLp (fun t : E => f (x - t))
+        (2 : ℝ≥0∞) μ := by
+    exact MeasureTheory.MemLp.of_measure_le_smul
+      (μ := (volume : Measure E)) (μ' := μ) (c := c)
+      hc_top hμle hf_shift_vol
   have hf_const : MeasureTheory.MemLp (fun _ : E => f x) (2 : ℝ≥0∞) μ :=
     MeasureTheory.memLp_const (μ := μ) (c := f x)
   have hg : MeasureTheory.MemLp (fun t : E => f (x - t) - f x) (2 : ℝ≥0∞) μ :=
@@ -302,7 +319,8 @@ lemma smoothFun_sub_extendByZeroFun_sq_le_integral_sq (hψc : Continuous ψ) (h�
     simpa [hsmooth, hconst] using this
   -- Apply Jensen/variance inequality to `t ↦ f(x - t) - f(x)`.
   have hJ :=
-    sq_integral_le_integral_sq_of_isProbabilityMeasure (μ := μ) (f := fun t : E => f (x - t) - f x) hg
+    sq_integral_le_integral_sq_of_isProbabilityMeasure
+      (μ := μ) (f := fun t : E => f (x - t) - f x) hg
   simpa [hdiff, μ, f] using hJ
 
 theorem norm_sq_smoothL2_sub_extendByZeroL2_le_integral_norm_sq_translateL2_sub_extendByZeroL2
@@ -363,7 +381,8 @@ theorem norm_sq_smoothL2_sub_extendByZeroL2_le_integral_norm_sq_translateL2_sub_
           (volume : Measure E) := by
       simpa [Real.norm_eq_abs, sq_abs] using hv_int
     exact hv_sq.congr (hSF_ae.pow_const 2)
-  -- Show integrability on the product measure, so we can use Fubini/Tonelli for the translation error.
+  -- Show integrability on the product measure, so we can use Fubini/Tonelli for the translation
+  -- error.
   let h : E × E → ℝ := fun z => (f (z.1 - z.2) - f z.1) ^ 2
   have hf_mem : MeasureTheory.MemLp f (2 : ℝ≥0∞) (volume : Measure E) := by
     -- Again use the AE bridge from the `L²` packaging.
@@ -373,7 +392,9 @@ theorem norm_sq_smoothL2_sub_extendByZeroL2_le_integral_norm_sq_translateL2_sub_
   have hf_sq_int : MeasureTheory.Integrable (fun x : E => (f x) ^ 2) (volume : Measure E) := by
     have hf_int :
         MeasureTheory.Integrable (fun x : E => ‖f x‖ ^ (2 : ℕ)) (volume : Measure E) :=
-      MeasureTheory.MemLp.integrable_norm_pow (μ := (volume : Measure E)) (f := f) (p := 2) hf_mem (by decide)
+      MeasureTheory.MemLp.integrable_norm_pow
+        (μ := (volume : Measure E)) (f := f) (p := 2)
+        hf_mem (by decide)
     simpa [Real.norm_eq_abs, sq_abs] using hf_int
   have hfst_map :
       MeasureTheory.Integrable (fun x : E => (f x) ^ 2)
@@ -384,11 +405,14 @@ theorem norm_sq_smoothL2_sub_extendByZeroL2_le_integral_norm_sq_translateL2_sub_
     (MeasureTheory.Integrable.comp_measurable (μ := (volume : Measure E).prod μ) (f := Prod.fst)
       (g := fun x : E => (f x) ^ 2) hfst_map measurable_fst)
   have hsub :
-      MeasureTheory.MeasurePreserving (fun z : E × E => (z.1 - z.2, z.2))
-        ((volume : Measure E).prod μ) ((volume : Measure E).prod μ) :=
+      MeasureTheory.MeasurePreserving
+        (fun z : E × E => (z.1 - z.2, z.2))
+        ((volume : Measure E).prod μ)
+        ((volume : Measure E).prod μ) :=
     MeasureTheory.measurePreserving_sub_prod (μ := (volume : Measure E)) (ν := μ)
   have hf_shift_sq_prod :
-      MeasureTheory.Integrable (fun z : E × E => (f (z.1 - z.2)) ^ 2) ((volume : Measure E).prod μ) := by
+      MeasureTheory.Integrable (fun z : E × E => (f (z.1 - z.2)) ^ 2)
+        ((volume : Measure E).prod μ) := by
     have := (hsub.integrable_comp hf_fst_sq_prod.aestronglyMeasurable).2 hf_fst_sq_prod
     simpa [Function.comp] using this
   have hdom :
@@ -396,13 +420,20 @@ theorem norm_sq_smoothL2_sub_extendByZeroL2_le_integral_norm_sq_translateL2_sub_
         ((volume : Measure E).prod μ) := by
     simpa [mul_add, two_mul] using (hf_shift_sq_prod.add hf_fst_sq_prod).const_mul (2 : ℝ)
   have hf_fst_aesm :
-      MeasureTheory.AEStronglyMeasurable (fun z : E × E => f z.1) ((volume : Measure E).prod μ) := by
-    have hf_map : MeasureTheory.AEStronglyMeasurable f (Measure.map Prod.fst ((volume : Measure E).prod μ)) := by
+      MeasureTheory.AEStronglyMeasurable (fun z : E × E => f z.1)
+        ((volume : Measure E).prod μ) := by
+    have hf_map :
+        MeasureTheory.AEStronglyMeasurable f
+          (Measure.map Prod.fst
+            ((volume : Measure E).prod μ)) := by
       simpa [Measure.map_fst_prod] using hf_mem.1
-    exact MeasureTheory.AEStronglyMeasurable.comp_measurable (μ := (volume : Measure E).prod μ) (f := Prod.fst)
+    exact MeasureTheory.AEStronglyMeasurable.comp_measurable
+      (μ := (volume : Measure E).prod μ) (f := Prod.fst)
       (g := f) hf_map measurable_fst
   have hf_shift_aesm :
-      MeasureTheory.AEStronglyMeasurable (fun z : E × E => f (z.1 - z.2)) ((volume : Measure E).prod μ) := by
+      MeasureTheory.AEStronglyMeasurable
+        (fun z : E × E => f (z.1 - z.2))
+        ((volume : Measure E).prod μ) := by
     have := MeasureTheory.AEStronglyMeasurable.comp_measurePreserving (g := fun z : E × E => f z.1)
       hf_fst_aesm hsub
     simpa [Function.comp] using this
@@ -425,14 +456,16 @@ theorem norm_sq_smoothL2_sub_extendByZeroL2_le_integral_norm_sq_translateL2_sub_
         (add_sq_le (a := f (x - t)) (b := -f x))
     have hnonneg : 0 ≤ (f (x - t) - f x) ^ 2 := by nlinarith
     have hsum_nonneg : 0 ≤ (f (x - t)) ^ 2 + (f x) ^ 2 := by nlinarith
-    simpa [h, Real.norm_eq_abs, abs_of_nonneg hnonneg, abs_mul, abs_of_nonneg (show 0 ≤ (2 : ℝ) by norm_num),
+    simpa [h, Real.norm_eq_abs, abs_of_nonneg hnonneg, abs_mul,
+      abs_of_nonneg (show 0 ≤ (2 : ℝ) by norm_num),
       abs_of_nonneg hsum_nonneg] using hineq
   have hRHS_int :
       MeasureTheory.Integrable
         (fun x : E => ∫ t, (f (x - t) - f x) ^ 2 ∂μ) (volume : Measure E) := by
     simpa [h] using hint_h.integral_prod_left
   have hpoint :
-      (fun x : E => (smoothFun (E := E) (K := K) ψ u x - f x) ^ 2) ≤ᶠ[MeasureTheory.ae (volume : Measure E)]
+      (fun x : E => (smoothFun (E := E) (K := K) ψ u x - f x) ^ 2)
+        ≤ᶠ[MeasureTheory.ae (volume : Measure E)]
         fun x : E => ∫ t, (f (x - t) - f x) ^ 2 ∂μ := by
     refine Filter.Eventually.of_forall ?_
     intro x
@@ -457,7 +490,8 @@ theorem norm_sq_smoothL2_sub_extendByZeroL2_le_integral_norm_sq_translateL2_sub_
     funext t
     -- Use the previously proved integral identity.
     simpa [F, f] using
-      (norm_sq_translateL2_sub_extendByZeroL2_eq_integral_sq (E := E) (K := K) (hKm := hKm) t u).symm
+      (norm_sq_translateL2_sub_extendByZeroL2_eq_integral_sq
+        (E := E) (K := K) (hKm := hKm) t u).symm
   have hRHS_rewrite :
       (∫ t, (∫ x, (f (x - t) - f x) ^ 2 ∂(volume : Measure E)) ∂μ) =
         ∫ t, ‖(translateL2 (μ := (volume : Measure E)) (-t)) F - F‖ ^ 2 ∂μ := by

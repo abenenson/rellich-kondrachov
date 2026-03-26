@@ -1,12 +1,12 @@
+import RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitz
+import RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitzForward
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartData
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitz
-import RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitzForward
-import RellichKondrachov.Geometry.Manifold.Sobolev.ChartData
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.ChartDataRiemannian`
@@ -58,8 +58,9 @@ local instance instBorelSpaceM_SobolevChartDataRiemannian : BorelSpace M := ⟨r
 local instance instMeasurableSpaceE_SobolevChartDataRiemannian : MeasurableSpace E := borel E
 local instance instBorelSpaceE_SobolevChartDataRiemannian : BorelSpace E := ⟨rfl⟩
 
-/-- A `FiniteChartData` together with explicit Lipschitz neighborhoods (in chart coordinates) for the
-inverse extended chart, and a partition-of-unity subordination guarantee to those neighborhoods. -/
+/-- A `FiniteChartData` together with explicit Lipschitz neighborhoods (in
+chart coordinates) for the inverse extended chart, and a partition-of-unity
+subordination guarantee to those neighborhoods. -/
 structure RiemannianFiniteChartData where
   /-- Underlying finite chart data. -/
   d : FiniteChartData.{uE, uH, uM, uM} (H := H) (M := M) I
@@ -75,21 +76,26 @@ structure RiemannianFiniteChartData where
   riemannianLipschitz_symm :
     ∀ i, ∀ y₁ ∈ Metric.ball (extChartAt I (d.center i) (d.center i)) (r i) ∩ range I,
       ∀ y₂ ∈ Metric.ball (extChartAt I (d.center i) (d.center i)) (r i) ∩ range I,
-        riemannianEDist I ((extChartAt I (d.center i)).symm y₁) ((extChartAt I (d.center i)).symm y₂) ≤
+        riemannianEDist I
+          ((extChartAt I (d.center i)).symm y₁)
+          ((extChartAt I (d.center i)).symm y₂) ≤
           (C i : ENNReal) * edist y₁ y₂
   /-- Riemannian-distance Lipschitz control of the (forward) extended chart on the preimage of the
   chart ball (inside the chart source). -/
   riemannianLipschitz :
     ∀ i,
       ∀ x₁ ∈
-        (extChartAt I (d.center i)) ⁻¹' Metric.ball (extChartAt I (d.center i) (d.center i)) (r i) ∩
+        (extChartAt I (d.center i)) ⁻¹'
+            Metric.ball (extChartAt I (d.center i) (d.center i)) (r i) ∩
           (extChartAt I (d.center i)).source,
         ∀ x₂ ∈
-          (extChartAt I (d.center i)) ⁻¹' Metric.ball (extChartAt I (d.center i) (d.center i)) (r i) ∩
+          (extChartAt I (d.center i)) ⁻¹'
+              Metric.ball (extChartAt I (d.center i) (d.center i)) (r i) ∩
             (extChartAt I (d.center i)).source,
           edist (extChartAt I (d.center i) x₁) (extChartAt I (d.center i) x₂) ≤
             (Cfwd i : ENNReal) * riemannianEDist I x₁ x₂
-  /-- The partition-of-unity is subordinate to the preimage of the chart ball (inside the chart source). -/
+  /-- The partition-of-unity is subordinate to the preimage of the chart ball
+  (inside the chart source). -/
   subordinate_ball :
     ∀ i,
       closure (Function.support (d.ρ i : M → ℝ)) ⊆
@@ -150,7 +156,8 @@ theorem exists_riemannianFiniteChartData :
   classical
   -- Build the emetric structure induced by the Riemannian metric, so `riemannianEDist` is the `edist`.
   haveI : T3Space M := by infer_instance
-  letI : EMetricSpace M := EmetricSpace.ofRiemannianMetric I M
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : BorelSpace M := ⟨rfl⟩
   haveI : IsRiemannianManifold I M := by infer_instance
   -- Choose a Lipschitz neighborhood for each point (for the chart inverse in chart coordinates).
   have hLipData :

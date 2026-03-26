@@ -1,14 +1,16 @@
+import Mathlib.Analysis.Normed.Operator.Compact
+import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+import Mathlib.MeasureTheory.Function.LpSpace.Complete
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateH1
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.FrechetKolmogorov
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Kernels
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.TranslationIntegral
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.Analysis.Normed.Operator.Compact
-import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-import Mathlib.MeasureTheory.Function.LpSpace.Complete
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateH1
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2CompactnessCriterion
 
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
@@ -102,13 +104,16 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
     {u |
       L2Compactness.extendByZeroL2 (E := E) (K := K) hKm u ∈
         T '' Metric.closedBall (0 : ↥(h1On (E := E) K hKm)) 1}
-  let C : ℝ := ‖h1ToL2 (μ := (volume : Measure E)) (E := E)‖
+  let C : ℝ :=
+    (h1ToL2 (μ := (volume : Measure E)) (E := E)).opNorm
   have hCnonneg : 0 ≤ C := by
     dsimp [C]
-    exact norm_nonneg (h1ToL2 (μ := (volume : Measure E)) (E := E))
+    exact (h1ToL2 (μ := (volume : Measure E)) (E := E)).opNorm_nonneg
   have hA_ball :
       A ⊆
-        Metric.closedBall (0 : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) ((volume : Measure E).restrict K)) C := by
+        Metric.closedBall
+          (0 : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) ((volume : Measure E).restrict K))
+          C := by
     intro u hu
     rcases hu with ⟨x, hx, hxEq⟩
     have hx' : ‖(x : H1vol)‖ ≤ (1 : ℝ) := by
@@ -144,7 +149,8 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
     intro ε hε
     have hδ : 0 < ε / 2 := by linarith
     rcases
-        L2Compactness.exists_kernel_tsupport_subset_ball_integral_eq_one (E := E) (δ := ε / 2) hδ with
+        L2Compactness.exists_kernel_tsupport_subset_ball_integral_eq_one
+          (E := E) (δ := ε / 2) hδ with
       ⟨ψ, hψc, hψcs, hψ0, hψint, hψsupp⟩
     refine ⟨ψ, hψc, hψcs, hψ0, hψint, ?_⟩
     intro u huA
@@ -201,16 +207,22 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
             (h1ToL2 (μ := (volume : Measure E)) (E := E) (x : H1vol)) ∈
               LinearMap.range
                 ((MeasureTheory.Lp.extendByZeroₗᵢ
-                      (μ := (volume : Measure E)) (E := ℝ) (p := (2 : ℝ≥0∞)) (s := K) hKm).toLinearMap) := by
-          -- Unfold membership in the defining `comap` without letting `simp` use `x.property`
+                      (μ := (volume : Measure E)) (E := ℝ)
+                      (p := (2 : ℝ≥0∞)) (s := K) hKm).toLinearMap) := by
+          -- Unfold membership in the defining `comap` without
+          -- letting `simp` use `x.property`
           -- (which would rewrite the goal to `True`).
-          have hxmem : (x : H1vol) ∈ h1On (E := E) K hKm := x.property
+          have hxmem :
+              (x : H1vol) ∈ h1On (E := E) K hKm := x.property
           dsimp [h1On] at hxmem
           change
-              ((h1ToL2 (μ := (volume : Measure E)) (E := E)).toLinearMap (x : H1vol)) ∈
+              ((h1ToL2 (μ := (volume : Measure E)) (E := E)).toLinearMap
+                    (x : H1vol)) ∈
                 LinearMap.range
                   ((MeasureTheory.Lp.extendByZeroₗᵢ
-                        (μ := (volume : Measure E)) (E := ℝ) (p := (2 : ℝ≥0∞)) (s := K) hKm).toLinearMap)
+                        (μ := (volume : Measure E)) (E := ℝ)
+                        (p := (2 : ℝ≥0∞))
+                        (s := K) hKm).toLinearMap)
           exact hxmem
         rcases hxRange with ⟨u, hu⟩
         have hu0 :
@@ -233,10 +245,11 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
       · intro hy
         rcases hy with ⟨u, huA, rfl⟩
         exact huA
-    have :
-        IsCompact (closure (L2Compactness.extendByZeroL2 (E := E) (K := K) hKm '' A)) :=
-      L2Compactness.isCompact_closure_extendByZeroL2_image_of_forall_exists_translationIntegral_small
-        (E := E) (K := K) (hK := (_hK : IsCompact K)) (hKm := hKm) hR hA_ball hApprox
+    have : IsCompact
+        (closure (L2Compactness.extendByZeroL2 (E := E) (K := K) hKm '' A)) :=
+    L2Compactness.isCompact_closure_extendByZeroL2_image_of_forall_exists_translationIntegral_small
+      (E := E) (K := K) (hK := (_hK : IsCompact K))
+      (hKm := hKm) hR hA_ball hApprox
     simpa [hA_eq] using this
   -- Use the topological definition of `IsCompactOperator` to avoid expensive normed-space
   -- characterizations.
@@ -298,8 +311,11 @@ theorem isCompactOperator_h1OnToL2_codRestrict_range_extendByZero {K : Set E} (h
                     (x : ↥(h1 (μ := (volume : Measure E)) (E := E)))) ∈
                 LinearMap.range
                   ((MeasureTheory.Lp.extendByZeroₗᵢ
-                        (μ := (volume : Measure E)) (E := ℝ) (p := (2 : ℝ≥0∞)) (s := K) hKm).toLinearMap)
-          -- This is exactly the unfolded membership in the `comap`.
+                        (μ := (volume : Measure E)) (E := ℝ)
+                        (p := (2 : ℝ≥0∞))
+                        (s := K) hKm).toLinearMap)
+          -- This is exactly the unfolded membership in
+          -- the `comap`.
           exact hxmem)) := by
   -- First, use Euclidean Rellich compactness into `L²(volume)`.
   have hcomp : IsCompactOperator (h1OnToL2 (E := E) K hKm) :=
@@ -321,9 +337,12 @@ theorem isCompactOperator_h1OnToL2_codRestrict_range_extendByZero {K : Set E} (h
                   (x : ↥(h1 (μ := (volume : Measure E)) (E := E)))) ∈
               LinearMap.range
                 ((MeasureTheory.Lp.extendByZeroₗᵢ
-                      (μ := (volume : Measure E)) (E := ℝ) (p := (2 : ℝ≥0∞)) (s := K) hKm).toLinearMap)
+                      (μ := (volume : Measure E)) (E := ℝ)
+                      (p := (2 : ℝ≥0∞))
+                      (s := K) hKm).toLinearMap)
         exact hxmem)
-      (h_closed := isClosed_range_extendByZero (E := E) K hKm)
+      (h_closed :=
+        isClosed_range_extendByZero (E := E) K hKm)
 
 end Volume
 

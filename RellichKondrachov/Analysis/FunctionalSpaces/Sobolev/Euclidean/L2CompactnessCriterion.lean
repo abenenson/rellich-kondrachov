@@ -1,9 +1,3 @@
-/-
-Copyright (c) 2026 Adam Benenson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Adam Benenson
--/
-
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Smoothing
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Compactness
@@ -12,6 +6,12 @@ import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactne
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.FrechetKolmogorov
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Kernels
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.TranslationIntegral
+
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2CompactnessCriterion`

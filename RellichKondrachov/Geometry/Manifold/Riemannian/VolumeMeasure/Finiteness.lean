@@ -1,11 +1,11 @@
+import RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitz
+import RellichKondrachov.Geometry.Manifold.Riemannian.VolumeMeasure
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitz
-import RellichKondrachov.Geometry.Manifold.Riemannian.VolumeMeasure
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Riemannian.VolumeMeasure.Finiteness`
@@ -14,7 +14,8 @@ Finiteness properties of `riemannianVolumeMeasure`.
 
 ## Main results
 
-- `RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure_isFiniteMeasureOnCompacts`:
+- `RellichKondrachov.Geometry.Manifold.Riemannian.`
+  `riemannianVolumeMeasure_isFiniteMeasureOnCompacts`:
   the Riemannian Hausdorff-volume measure is finite on compact sets.
 - `RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure_isFiniteMeasure`:
   on a compact manifold, the total volume is finite.
@@ -49,7 +50,8 @@ omit [IsManifold I n∞ M] in
 theorem riemannianVolumeMeasure_isFiniteMeasureOnCompacts :
     IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M)) := by
   classical
-  letI : EMetricSpace M := EmetricSpace.ofRiemannianMetric I M
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : BorelSpace M := ⟨rfl⟩
   haveI : IsRiemannianManifold I M := by infer_instance
   have hμ : IsFiniteMeasureOnCompacts (μH[Module.finrank ℝ E] : Measure M) := by
     refine ⟨?_⟩
@@ -81,10 +83,14 @@ theorem riemannianVolumeMeasure_isFiniteMeasureOnCompacts :
               (μH[Module.finrank ℝ E] : Measure E) (Metric.closedBall (extChartAt I x x) r) := by
           gcongr
           intro y hy
-          exact (Metric.ball_subset_closedBall : Metric.ball (extChartAt I x x) r ⊆ Metric.closedBall (extChartAt I x x) r) hy.1
+          exact (Metric.ball_subset_closedBall :
+            Metric.ball (extChartAt I x x) r ⊆
+              Metric.closedBall (extChartAt I x x) r) hy.1
         have hclosed :
             (μH[Module.finrank ℝ E] : Measure E) (Metric.closedBall (extChartAt I x x) r) < ∞ := by
-          haveI : IsFiniteMeasureOnCompacts (μH[Module.finrank ℝ E] : Measure E) := by infer_instance
+          haveI : IsFiniteMeasureOnCompacts
+              (μH[Module.finrank ℝ E] : Measure E) := by
+            infer_instance
           simpa using
             (isCompact_closedBall (extChartAt I x x) r).measure_lt_top
               (μ := (μH[Module.finrank ℝ E] : Measure E))

@@ -1,11 +1,11 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
+import RellichKondrachov.MeasureTheory.Function.LpSpace.Restrict
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
-import RellichKondrachov.MeasureTheory.Function.LpSpace.Restrict
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.SupportedH1`
@@ -52,7 +52,8 @@ variable (μ : Measure E) [IsFiniteMeasureOnCompacts μ] {K : Set E} (hKm : Meas
 
 /-! ## Range characterization for extension-by-zero -/
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E] [IsFiniteMeasureOnCompacts μ] in
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+  [CompleteSpace E] [IsFiniteMeasureOnCompacts μ] in
 /-- If a function is supported in `K`, then its `Lp` class belongs to the range of `extendByZeroₗᵢ`
 from the restricted measure `μ.restrict K`. -/
 lemma mem_range_extendByZeroₗᵢ_toLp_of_tsupport_subset {F : Type*} [NormedAddCommGroup F]
@@ -74,7 +75,9 @@ lemma mem_range_extendByZeroₗᵢ_toLp_of_tsupport_subset {F : Type*} [NormedAd
     exact (ae_restrict_iff' (μ := μ) (s := K) hKm).1 hu_ae_restrict
   have hExt_ae :
       (((MeasureTheory.Lp.extendByZeroₗᵢ
-              (μ := μ) (E := F) (p := (2 : ℝ≥0∞)) (s := K) hKm) u : MeasureTheory.Lp F (2 : ℝ≥0∞) μ) :
+              (μ := μ) (E := F) (p := (2 : ℝ≥0∞))
+              (s := K) hKm) u :
+            MeasureTheory.Lp F (2 : ℝ≥0∞) μ) :
             E → F) =ᵐ[μ] K.indicator fun x : E => (u : E → F) x := by
     simpa using
       (MeasureTheory.Lp.extendByZeroₗᵢ_ae_eq (μ := μ) (E := F) (p := (2 : ℝ≥0∞)) (s := K) hKm u)

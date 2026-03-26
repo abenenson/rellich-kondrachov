@@ -1,14 +1,14 @@
+import Mathlib.Geometry.Manifold.Algebra.Monoid
+import Mathlib.Geometry.Manifold.ContMDiff.Atlas
+import RellichKondrachov.Analysis.Calculus.ContDiff.Support
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartData
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.Geometry.Manifold.Algebra.Monoid
-import Mathlib.Geometry.Manifold.ContMDiff.Atlas
-import RellichKondrachov.Analysis.Calculus.ContDiff.Support
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
-import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasure
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.Localization`
@@ -88,7 +88,8 @@ omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I (1 : WithTop ℕ�
     [T2Space M] in
 theorem isCompact_rhoSupportImage (i : d.ι) : IsCompact (rhoSupportImage (d := d) i) := by
   classical
-  -- `extChartAt` is continuous on its source, hence on `rhoSupportClosure` (which is contained in the source).
+  -- `extChartAt` is continuous on its source, hence on `rhoSupportClosure`
+  -- (which is contained in the source).
   refine (isCompact_rhoSupportClosure (d := d) i).image_of_continuousOn ?_
   exact (continuousOn_extChartAt (I := I) (x := d.center i)).mono
     (rhoSupportClosure_subset_source (d := d) (i := i))
@@ -202,7 +203,8 @@ private theorem contDiffOn_localize_target {f : M → ℝ}
       (hg.comp_contMDiffOn hs)
     -- Convert `ContMDiffOn` to `ContDiffOn` for maps between vector spaces.
     simpa using (contMDiffOn_iff_contDiffOn (𝕜 := ℝ) (E := E) (E' := ℝ)).1 hComp
-  -- Rewrite `localize` as an indicator and use that on the target it's equal to the underlying function.
+  -- Rewrite `localize` as an indicator and use that on the target it's equal to
+  -- the underlying function.
   have hEq :
       EqOn (localize (d := d) f i)
         (fun y =>

@@ -1,12 +1,12 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 /-!
 # `L²` compactness criterion: bounding the translation-integral by a translation modulus
@@ -40,8 +40,8 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDim
 
 local instance instMeasurableSpaceE_L2CompactnessTranslationIntegral : MeasurableSpace E := borel E
 local instance instBorelSpaceE_L2CompactnessTranslationIntegral : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_L2CompactnessTranslationIntegral : OpensMeasurableSpace E := by
-  infer_instance
+local instance instOpensMeasurableSpaceE_L2CompactnessTranslationIntegral :
+    OpensMeasurableSpace E := by infer_instance
 local instance instMeasurableAddE_L2CompactnessTranslationIntegral : MeasurableAdd E := by
   infer_instance
 local instance instMeasurableNegE_L2CompactnessTranslationIntegral : MeasurableNeg E := by
@@ -67,7 +67,9 @@ private lemma kernelMeasure_compl_ball_eq_zero_of_tsupport_subset {δ : ℝ}
     simp [hψzero x hx]
   -- Expand `kernelMeasure` and note the density is identically `0` on the set.
   simp [kernelMeasure, MeasureTheory.withDensity_apply, hmeas,
-    MeasureTheory.setLIntegral_eq_zero (μ := (volume : Measure E)) (s := (Metric.ball (0 : E) δ)ᶜ) hmeas hEq]
+    MeasureTheory.setLIntegral_eq_zero
+      (μ := (volume : Measure E))
+      (s := (Metric.ball (0 : E) δ)ᶜ) hmeas hEq]
 
 theorem integral_norm_sq_translateL2_sub_le_sq_of_tsupport_subset_ball
     (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ) (hψ0 : ∀ x, 0 ≤ ψ x)

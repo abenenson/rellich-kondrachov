@@ -1,12 +1,12 @@
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartData
+import Mathlib.MeasureTheory.Measure.AEMeasurable
+import Mathlib.MeasureTheory.Measure.Typeclasses.Finite
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Sobolev.ChartData
-import Mathlib.MeasureTheory.Measure.AEMeasurable
-import Mathlib.MeasureTheory.Measure.Typeclasses.Finite
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasure`
@@ -57,7 +57,8 @@ variable (d : FiniteChartData (H := H) (M := M) I)
 Given a measure `μ` on `M`, each chart center `d.center i` yields a pushforward measure on `E`
 along the extended chart `extChartAt I (d.center i)`.
 
-We define this as a pushforward of the **restricted** measure `μ.restrict (extChartAt I (d.center i)).source`
+We define this as a pushforward of the **restricted** measure
+`μ.restrict (extChartAt I (d.center i)).source`
 so that the value of `extChartAt` outside its source is irrelevant.
 -/
 

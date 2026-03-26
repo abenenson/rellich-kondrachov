@@ -1,13 +1,13 @@
+import Mathlib.Analysis.Normed.Operator.Compact
+import Mathlib.MeasureTheory.Measure.AbsolutelyContinuous
+import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
+import Mathlib.MeasureTheory.Function.LpSpace.Basic
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.Analysis.Normed.Operator.Compact
-import Mathlib.MeasureTheory.Measure.AbsolutelyContinuous
-import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
-import Mathlib.MeasureTheory.Function.LpSpace.Basic
 
 /-!
 # `RellichKondrachov.MeasureTheory.Function.LpSpace.ChangeMeasureLeSmul`
@@ -143,7 +143,8 @@ private theorem norm_changeMeasureFun_le {c : ℝ≥0∞} (hc : c ≠ ∞) (hν 
         MeasureTheory.eLpNorm (fun x : α => f x) p (c • μ) =
           (c ^ (1 / p).toReal) * MeasureTheory.eLpNorm (fun x : α => f x) p μ := by
       simpa [ENNReal.smul_def, mul_assoc, mul_left_comm, mul_comm] using
-        (MeasureTheory.eLpNorm_smul_measure_of_ne_top (μ := μ) (p := p) (f := fun x : α => f x) hp c)
+        (MeasureTheory.eLpNorm_smul_measure_of_ne_top
+          (μ := μ) (p := p) (f := fun x : α => f x) hp c)
     exact hmono.trans_eq hscale
   have htoReal :
       ENNReal.toReal (MeasureTheory.eLpNorm (fun x : α => f x) p ν) ≤
@@ -176,7 +177,8 @@ noncomputable def changeMeasureL {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤
       intro f
       exact norm_changeMeasureFun_le (μ := μ) (ν := ν) (E := E) (p := p) hc hν f hp)
 
-theorem changeMeasureL_coeFn_ae_eq {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ) (hp : p ≠ ∞) (f : Lp E p μ) :
+theorem changeMeasureL_coeFn_ae_eq {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ)
+    (hp : p ≠ ∞) (f : Lp E p μ) :
     (changeMeasureL (μ := μ) (ν := ν) (E := E) (p := p) hc hν hp f : α → E) =ᵐ[ν] f := by
   -- `mkContinuous` does not change the underlying function.
   simpa [changeMeasureL, changeMeasureₗ, changeMeasureFun] using
@@ -203,8 +205,9 @@ If we have *both* `ν ≤ c₁ • μ` and `μ ≤ c₂ • ν` (with finite con
 map gives a continuous linear equivalence between the two `Lp` spaces.
 -/
 
-/-- If `ν ≤ c₁ • μ` and `μ ≤ c₂ • ν` (with `c₁, c₂ ≠ ∞`) and `p ≠ ∞`, then the identity map induces a
-continuous linear equivalence `Lp E p μ ≃L[ℝ] Lp E p ν`. -/
+/-- If `ν ≤ c₁ • μ` and `μ ≤ c₂ • ν` (with `c₁, c₂ ≠ ∞`) and `p ≠ ∞`,
+then the identity map induces a continuous linear equivalence
+`Lp E p μ ≃L[ℝ] Lp E p ν`. -/
 noncomputable def changeMeasureEquiv {c₁ c₂ : ℝ≥0∞} (hc₁ : c₁ ≠ ∞) (hc₂ : c₂ ≠ ∞)
     (hν : ν ≤ c₁ • μ) (hμ : μ ≤ c₂ • ν) (hp : p ≠ ∞) :
     Lp E p μ ≃L[ℝ] Lp E p ν := by
@@ -245,11 +248,13 @@ noncomputable def changeMeasureEquiv {c₁ c₂ : ℝ≥0∞} (hc₁ : c₁ ≠ 
 
 theorem changeMeasureEquiv_coeFn_ae_eq {c₁ c₂ : ℝ≥0∞} (hc₁ : c₁ ≠ ∞) (hc₂ : c₂ ≠ ∞)
     (hν : ν ≤ c₁ • μ) (hμ : μ ≤ c₂ • ν) (hp : p ≠ ∞) (f : Lp E p μ) :
-    (changeMeasureEquiv (μ := μ) (ν := ν) (E := E) (p := p) hc₁ hc₂ hν hμ hp f : α → E) =ᵐ[ν] f := by
+    (changeMeasureEquiv (μ := μ) (ν := ν) (E := E) (p := p)
+      hc₁ hc₂ hν hμ hp f : α → E) =ᵐ[ν] f := by
   -- Unfold `changeMeasureEquiv` and use the defining `changeMeasureL` coherence lemma.
   classical
   -- The forward map is `changeMeasureL`; it is a.e. equal to the identity under `ν`.
-  simp [changeMeasureEquiv, changeMeasureL_coeFn_ae_eq (μ := μ) (ν := ν) (E := E) (p := p) hc₁ hν hp]
+  simp [changeMeasureEquiv,
+    changeMeasureL_coeFn_ae_eq (μ := μ) (ν := ν) (E := E) (p := p) hc₁ hν hp]
 /-!
 ## Compactness transport
 

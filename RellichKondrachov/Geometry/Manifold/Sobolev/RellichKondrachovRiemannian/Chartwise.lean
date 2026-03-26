@@ -1,10 +1,11 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Rellich
+import RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachovRiemannian.Transport
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachovRiemannian.Transport
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachovRiemannian.Chartwise`
@@ -59,8 +60,10 @@ local instance instOpensMeasurableSpaceE_SobolevRellichKondrachovRiemannian_Char
 -- On compact manifolds, the Riemannian volume measure is finite.
 local instance instIsFiniteMeasure_riemannianVolumeMeasure_Chartwise :
     IsFiniteMeasure
-        (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) :=
-  RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure_isFiniteMeasure (I := I) (M := M)
+        (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure
+          (I := I) (M := M)) :=
+  RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure_isFiniteMeasure
+    (I := I) (M := M)
 
 namespace RiemannianFiniteChartData
 
@@ -79,7 +82,8 @@ open RellichKondrachov.Analysis.FunctionalSpaces
 
 variable (i : dR.d.ι)
 
-private noncomputable def eL2RangeChartVol (i : dR.d.ι) (F : Type*) [NormedAddCommGroup F] [NormedSpace ℝ F] :
+private noncomputable def eL2RangeChartVol (i : dR.d.ι)
+    (F : Type*) [NormedAddCommGroup F] [NormedSpace ℝ F] :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
     let μchart := FiniteChartData.chartMeasure (d := dR.d) (I := I) μM i
@@ -310,7 +314,8 @@ private noncomputable def projToVolumeTarget (i : dR.d.ι) :
 ### Graph compatibility (C¹c generators)
 
 To use Euclidean Rellich compactness for `volume`, we need to know that the volume-side map
-`chartTargetToVolumeTarget` respects the Euclidean graph generators induced by `FiniteChartData.localize`.
+`chartTargetToVolumeTarget` respects the Euclidean graph generators induced by
+`FiniteChartData.localize`.
 -/
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
@@ -322,7 +327,8 @@ private lemma support_subset_of_tsupport_subset {F : Type*} [Zero F]
   exact hsupp.trans h
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-private lemma indicator_ae_eq_of_ae_eq_restrict {F : Type*} [MeasurableSpace F] [Zero F] [MeasurableEq F]
+private lemma indicator_ae_eq_of_ae_eq_restrict
+    {F : Type*} [MeasurableSpace F] [Zero F] [MeasurableEq F]
     {μ : Measure E} {K : Set E} {f g : E → F}
     (hf : AEMeasurable f (μ.restrict K)) (hg : AEMeasurable g (μ.restrict K))
     (hfg : f =ᵐ[μ.restrict K] g) (hsupp : Function.support g ⊆ K) :
@@ -826,21 +832,6 @@ private theorem projToVolumeTarget_fst_mem_extendByZero_range (i : dR.d.ι)
     -- Expand the construction and discharge the remaining proof-term mismatch using
     -- `changeMeasureL_congr`.
     simp [w, l2ChartToVolumeOnRhoSupportImage]
-    refine
-      congrArg
-        (MeasureTheory.Lp.extendByZeroₗᵢ (μ := (volume : Measure E)) (E := ℝ) (p := (2 : ℝ≥0∞)) (s := K)
-          (rhoSupportImage_measurable (dR := dR) (I := I) i)) ?_
-    refine congrArg (l2EquivVolumeOnRhoSupportImage' (dR := dR) (I := I) (i := i) (F := ℝ)) ?_
-    exact
-      congrArg (fun T => T u)
-        (MeasureTheory.Lp.changeMeasureL_congr (μ := μchart) (ν := μchart.restrict K) (E := ℝ)
-          (p := (2 : ℝ≥0∞)) (c := (1 : ℝ≥0∞))
-          (hc₁ := (by simpa using (one_ne_top : (1 : ℝ≥0∞) ≠ ∞)))
-          (hc₂ := _)
-          (hν₁ := restrict_le_one_smul (μ := μchart) (s := K))
-          (hν₂ := _)
-          (hp₁ := (by simpa using (ENNReal.coe_ne_top (2 : ℕ))))
-          (hp₂ := _))
   simpa [hfst, u] using hmem
 
 omit [T2Space M] in

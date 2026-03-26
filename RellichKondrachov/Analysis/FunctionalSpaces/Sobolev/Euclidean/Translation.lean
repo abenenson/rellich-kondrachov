@@ -1,14 +1,14 @@
-/-
-Copyright (c) 2026 Adam Benenson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Adam Benenson
--/
-
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
 import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.MeasureTheory.Group.Measure
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.Topology.Algebra.Group.Basic
+
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+-/
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation`

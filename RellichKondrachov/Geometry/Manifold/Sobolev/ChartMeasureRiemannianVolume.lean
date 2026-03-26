@@ -1,11 +1,11 @@
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureRiemannian
+import RellichKondrachov.MeasureTheory.Measure.HausdorffVolume
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureRiemannian
-import RellichKondrachov.MeasureTheory.Measure.HausdorffVolume
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureRiemannianVolume`
@@ -21,8 +21,10 @@ resulting domination by `volume` on chart balls.
 
 ## Main results
 
- - `RellichKondrachov.Geometry.Manifold.Sobolev.RiemannianFiniteChartData.chartMeasure_restrict_le_volume`
- - `RellichKondrachov.Geometry.Manifold.Sobolev.RiemannianFiniteChartData.volume_restrict_le_chartMeasure`
+ - `RellichKondrachov.Geometry.Manifold.Sobolev.RiemannianFiniteChartData.`
+   `chartMeasure_restrict_le_volume`
+ - `RellichKondrachov.Geometry.Manifold.Sobolev.RiemannianFiniteChartData.`
+   `volume_restrict_le_chartMeasure`
  -/
 
 namespace RellichKondrachov
@@ -53,12 +55,16 @@ variable
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
   [T3Space M]
 
-local instance instMeasurableSpaceM_SobolevChartMeasureRiemannianVolume : MeasurableSpace M := borel M
+local instance instMeasurableSpaceM_SobolevChartMeasureRiemannianVolume :
+    MeasurableSpace M := borel M
 local instance instBorelSpaceM_SobolevChartMeasureRiemannianVolume : BorelSpace M := ⟨rfl⟩
 
-local instance instMeasurableSpaceE_SobolevChartMeasureRiemannianVolume : MeasurableSpace E := borel E
+local instance instMeasurableSpaceE_SobolevChartMeasureRiemannianVolume :
+    MeasurableSpace E := borel E
 local instance instBorelSpaceE_SobolevChartMeasureRiemannianVolume : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevChartMeasureRiemannianVolume : OpensMeasurableSpace E := by
+local instance
+    instOpensMeasurableSpaceE_SobolevChartMeasureRiemannianVolume :
+    OpensMeasurableSpace E := by
   infer_instance
 
 namespace RiemannianFiniteChartData

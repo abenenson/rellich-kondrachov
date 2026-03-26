@@ -1,14 +1,14 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.ContDiff
+import Mathlib.Analysis.Calculus.Deriv.Comp
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Calculus.Deriv.Add
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.ContDiff
-import Mathlib.Analysis.Calculus.Deriv.Comp
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import Mathlib.Analysis.Calculus.Deriv.Add
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimate`
@@ -35,9 +35,12 @@ section
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
-local instance instMeasurableSpaceE_SobolevEuclideanTranslationEstimate : MeasurableSpace E := borel E
-local instance instBorelSpaceE_SobolevEuclideanTranslationEstimate : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevEuclideanTranslationEstimate : OpensMeasurableSpace E := by
+local instance instMeasurableSpaceE_SobolevEuclideanTranslationEstimate :
+    MeasurableSpace E := borel E
+local instance instBorelSpaceE_SobolevEuclideanTranslationEstimate :
+    BorelSpace E := ⟨rfl⟩
+local instance instOpensMeasurableSpaceE_SobolevEuclideanTranslationEstimate :
+    OpensMeasurableSpace E := by
   infer_instance
 
 /-! ## Derivative along a translated line -/
@@ -57,10 +60,12 @@ theorem deriv_line (x a : E) (t : ℝ) :
     deriv (line (x := x) (a := a)) t = a :=
   (hasDerivAt_line (x := x) (a := a) t).deriv
 
-theorem hasDerivAt_comp_line {f : E → ℝ} (hf : ContDiff ℝ 1 f) (x a : E) (t : ℝ) :
-    HasDerivAt (fun t => f (line (x := x) (a := a) t)) (fderiv ℝ f (line (x := x) (a := a) t) a) t := by
+theorem hasDerivAt_comp_line
+    {f : E → ℝ} (hf : ContDiff ℝ 1 f) (x a : E) (t : ℝ) :
+    HasDerivAt (fun t => f (line (x := x) (a := a) t))
+      (fderiv ℝ f (line (x := x) (a := a) t) a) t := by
   have hf' : HasFDerivAt f (fderiv ℝ f (line (x := x) (a := a) t)) (line (x := x) (a := a) t) :=
-    (hf.differentiable le_rfl).differentiableAt.hasFDerivAt
+    (hf.differentiable one_ne_zero).differentiableAt.hasFDerivAt
   exact
     HasFDerivAt.comp_hasDerivAt_of_eq t hf' (hasDerivAt_line (x := x) (a := a) t) rfl
 
@@ -84,7 +89,9 @@ theorem enorm_fderiv_apply_le_enorm_grad_mul (f : E → ℝ) (x a : E) :
   have h₂ : ‖grad (E := E) f x‖ₑ = ‖fderiv ℝ f x‖ₑ := by
     -- `grad f x = (toDual).symm (fderiv f x)` and `toDual.symm` is an isometry.
     simpa [grad] using
-      (LinearIsometry.enorm_map (f := (InnerProductSpace.toDual ℝ E).symm.toLinearIsometry) (fderiv ℝ f x))
+      (LinearIsometry.enorm_map
+        (f := (InnerProductSpace.toDual ℝ E).symm.toLinearIsometry)
+        (fderiv ℝ f x))
   -- Replace the operator norm by the gradient norm.
   simpa [h₂, mul_assoc, mul_left_comm, mul_comm] using h₁
 
@@ -93,9 +100,11 @@ theorem enorm_deriv_comp_line_le (x a : E) {f : E → ℝ} (hf : ContDiff ℝ 1 
       ‖a‖ₑ * ‖grad (E := E) f (line (x := x) (a := a) t)‖ₑ := by
   -- Reduce to the `fderiv` bound.
   have :=
-    (enorm_fderiv_apply_le_enorm_grad_mul (E := E) (f := f) (x := line (x := x) (a := a) t) (a := a))
+    enorm_fderiv_apply_le_enorm_grad_mul
+      (E := E) (f := f) (x := line (x := x) (a := a) t) (a := a)
   -- Rewrite `deriv` and commute the product.
-  simpa [deriv_comp_line (hf := hf) (x := x) (a := a) t, mul_comm, mul_left_comm, mul_assoc] using this
+  simpa [deriv_comp_line (hf := hf) (x := x) (a := a) t,
+    mul_comm, mul_left_comm, mul_assoc] using this
 
 theorem enorm_sub_le_enorm_mul_lintegral_grad (x a : E) {f : E → ℝ} (hf : ContDiff ℝ 1 f) :
     ‖f (x + a) - f x‖ₑ ≤
@@ -116,8 +125,9 @@ theorem enorm_sub_le_enorm_mul_lintegral_grad (x a : E) {f : E → ℝ} (hf : Co
         (a := (0 : ℝ)) (b := 1) hCont (by exact zero_le_one))
   refine hFTC.trans ?_
   have hDerivBound :
-      (fun t : ℝ => ‖deriv (fun t : ℝ => f (x + t • a)) t‖ₑ) ≤ᵐ[Measure.restrict volume (Icc (0 : ℝ) 1)]
-        fun t : ℝ => ‖a‖ₑ * ‖grad (E := E) f (x + t • a)‖ₑ := by
+      (fun t : ℝ => ‖deriv (fun t : ℝ => f (x + t • a)) t‖ₑ)
+        ≤ᵐ[Measure.restrict volume (Icc (0 : ℝ) 1)]
+          fun t : ℝ => ‖a‖ₑ * ‖grad (E := E) f (x + t • a)‖ₑ := by
     -- Pointwise bound holds everywhere.
     refine (ae_of_all _ fun t => ?_)
     -- `deriv` along `t ↦ x + t•a` is controlled by the gradient.

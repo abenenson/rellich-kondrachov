@@ -1,15 +1,15 @@
+import Mathlib.Analysis.Calculus.ContDiff.Operations
+import Mathlib.Analysis.Calculus.FDeriv.Const
+import Mathlib.Analysis.InnerProductSpace.Dual
+import Mathlib.MeasureTheory.Function.LpSpace.Complete
+import Mathlib.MeasureTheory.Function.LpSpace.Indicator
+import Mathlib.Topology.Algebra.Support
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.Analysis.Calculus.ContDiff.Operations
-import Mathlib.Analysis.Calculus.FDeriv.Const
-import Mathlib.Analysis.InnerProductSpace.Dual
-import Mathlib.MeasureTheory.Function.L2Space
-import Mathlib.MeasureTheory.Function.LpSpace.Indicator
-import Mathlib.Topology.Algebra.Support
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1`
@@ -85,7 +85,7 @@ noncomputable def grad (f : E → ℝ) : E → E :=
   fun x => (InnerProductSpace.toDual ℝ E).symm (fderiv ℝ f x)
 
 theorem continuous_grad {f : E → ℝ} (hf : ContDiff ℝ 1 f) : Continuous (grad (E := E) f) := by
-  have hcont : Continuous (fderiv ℝ f) := hf.continuous_fderiv le_rfl
+  have hcont : Continuous (fderiv ℝ f) := hf.continuous_fderiv one_ne_zero
   have : Continuous fun x => (InnerProductSpace.toDual ℝ E).symm (fderiv ℝ f x) :=
     (InnerProductSpace.toDual ℝ E).symm.continuous.comp hcont
   simpa [grad] using this
@@ -103,7 +103,9 @@ theorem tsupport_grad_subset (f : E → ℝ) : tsupport (grad (E := E) f) ⊆ ts
   have hcomp :
       tsupport (grad (E := E) f) ⊆ tsupport (fderiv ℝ f) := by
     simpa [grad, Function.comp] using
-      (tsupport_comp_subset (g := (InnerProductSpace.toDual ℝ E).symm) (hg := by simp) (f := fderiv ℝ f))
+      (tsupport_comp_subset
+        (g := (InnerProductSpace.toDual ℝ E).symm) (hg := by simp)
+        (f := fderiv ℝ f))
   exact hcomp.trans (tsupport_fderiv_subset (𝕜 := ℝ) (f := f))
 
 omit [CompleteSpace E] in
@@ -141,7 +143,9 @@ private theorem toL2_add (f g : ↥(C1c (E := E))) :
     with x hxadd hxf hxg
   -- Rewrite both sides in terms of pointwise evaluation.
   calc
-    f.1 x + g.1 x = (toL2 (μ := μ) (E := E) f : E → ℝ) x + (toL2 (μ := μ) (E := E) g : E → ℝ) x := by
+    f.1 x + g.1 x =
+        (toL2 (μ := μ) (E := E) f : E → ℝ) x +
+          (toL2 (μ := μ) (E := E) g : E → ℝ) x := by
       simp [hxf, hxg]
     _ = ((toL2 (μ := μ) (E := E) f + toL2 (μ := μ) (E := E) g : L2ℝ (μ := μ)) : E → ℝ) x := by
       simpa [Pi.add_apply] using hxadd.symm
@@ -179,9 +183,9 @@ private theorem toL2Grad_add (f g : ↥(C1c (E := E))) :
   filter_upwards [Lp.coeFn_add (toL2Grad (μ := μ) (E := E) f) (toL2Grad (μ := μ) (E := E) g), hf,
     hg] with x hxadd hxf hxg
   have hdf : DifferentiableAt ℝ f.1 x :=
-    (f.2.1.differentiable le_rfl).differentiableAt
+    (f.2.1.differentiable one_ne_zero).differentiableAt
   have hdg : DifferentiableAt ℝ g.1 x :=
-    (g.2.1.differentiable le_rfl).differentiableAt
+    (g.2.1.differentiable one_ne_zero).differentiableAt
   -- Rewrite in terms of pointwise evaluation and use linearity of `grad`.
   have hgrad :
       grad (E := E) (f.1 + g.1) x = grad (E := E) f.1 x + grad (E := E) g.1 x := by
@@ -192,7 +196,9 @@ private theorem toL2Grad_add (f g : ↥(C1c (E := E))) :
         (toL2Grad (μ := μ) (E := E) f : E → E) x +
           (toL2Grad (μ := μ) (E := E) g : E → E) x := by
         simp [hxf, hxg]
-    _ = ((toL2Grad (μ := μ) (E := E) f + toL2Grad (μ := μ) (E := E) g : L2E (μ := μ)) : E → E) x := by
+    _ = ((toL2Grad (μ := μ) (E := E) f +
+            toL2Grad (μ := μ) (E := E) g : L2E (μ := μ)) :
+            E → E) x := by
         simpa [Pi.add_apply] using hxadd.symm
 
 private theorem toL2Grad_smul (c : ℝ) (f : ↥(C1c (E := E))) :
@@ -206,7 +212,7 @@ private theorem toL2Grad_smul (c : ℝ) (f : ↥(C1c (E := E))) :
   refine hcf.trans ?_
   filter_upwards [Lp.coeFn_smul c (toL2Grad (μ := μ) (E := E) f), hf] with x hxsmul hxf
   have hdf : DifferentiableAt ℝ f.1 x :=
-    (f.2.1.differentiable le_rfl).differentiableAt
+    (f.2.1.differentiable one_ne_zero).differentiableAt
   have hgrad : grad (E := E) (c • f.1) x = c • grad (E := E) f.1 x := by
     simp [grad, fderiv_const_smul hdf, map_smul]
   calc

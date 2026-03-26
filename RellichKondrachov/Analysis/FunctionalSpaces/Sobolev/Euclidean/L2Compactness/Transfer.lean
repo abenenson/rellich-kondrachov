@@ -1,12 +1,12 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.ArzelaAscoli
+import Mathlib.MeasureTheory.Function.LpSpace.Basic
+import Mathlib.Topology.MetricSpace.Pseudo.Basic
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.ArzelaAscoli
-import Mathlib.MeasureTheory.Function.LpSpace.Basic
-import Mathlib.Topology.MetricSpace.Pseudo.Basic
 
 /-!
 # `L²` compactness criterion: transfer from `BCF` compactness to `L²` (Euclidean)
@@ -60,7 +60,8 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
   let s : Set E := Kψ (K := K) (ψ := ψ)
   have hs_compact : IsCompact s := isCompact_Kψ (K := K) (ψ := ψ) hK hψcs
   have hs : MeasurableSet s := hs_compact.measurableSet
-  have hs_lt_top : (volume : Measure E) s < ∞ := hs_compact.measure_lt_top (μ := (volume : Measure E))
+  have hs_lt_top : (volume : Measure E) s < ∞ :=
+    hs_compact.measure_lt_top (μ := (volume : Measure E))
   let μs : Measure E := (volume : Measure E).restrict s
   haveI : Fact ((volume : Measure E) s < ∞) := ⟨hs_lt_top⟩
   haveI : IsFiniteMeasure μs := by
@@ -103,7 +104,9 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
     let Fs : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) μs := hg_restrict.toLp g
     -- Show `Fs` is pointwise bounded by `‖Bu - Bv‖` on `μs`.
     have hF_ae :
-        (g =ᵐ[μs] fun x : E => smoothFun (E := E) (K := K) ψ u x - smoothFun (E := E) (K := K) ψ v x) := by
+        (g =ᵐ[μs] fun x : E =>
+          smoothFun (E := E) (K := K) ψ u x -
+            smoothFun (E := E) (K := K) ψ v x) := by
       have hsub :
           (F : E → ℝ) =ᵐ[(volume : Measure E)] (Su : E → ℝ) - (Sv : E → ℝ) := by
         simpa [F, g, Su, Sv] using
@@ -137,8 +140,9 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
         have : ‖(Bu - Bv) x'‖ ≤ ‖Bu - Bv‖ :=
           (Bu - Bv).norm_coe_le_norm x'
         simpa [hBu, hBv] using this
-      filter_upwards [MeasureTheory.ae_restrict_mem (μ := (volume : Measure E)) hs, hFs_ae, hF_ae] with
-        x hx hFs hF
+      filter_upwards
+        [MeasureTheory.ae_restrict_mem (μ := (volume : Measure E)) hs,
+          hFs_ae, hF_ae] with x hx hFs hF
       have := hpoint x hx
       -- rewrite through the AE equalities
       simpa [hFs, hF] using this
@@ -148,7 +152,9 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
       simpa [mS] using this
     -- Relate the `L²` norm on `volume` to the restricted norm on `μs` using extension-by-zero.
     have hsupport :
-        ∀ x : E, x ∉ s → smoothFun (E := E) (K := K) ψ u x - smoothFun (E := E) (K := K) ψ v x = 0 := by
+        ∀ x : E, x ∉ s →
+          smoothFun (E := E) (K := K) ψ u x -
+            smoothFun (E := E) (K := K) ψ v x = 0 := by
       intro x hx
       have hu_supp : Function.support (smoothFun (E := E) (K := K) ψ u) ⊆ s := by
         simpa [s] using
@@ -167,7 +173,9 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
         ∀ᵐ x ∂(volume : Measure E), x ∉ s → g x = 0 := by
       have hF_ae_full :
           (g =ᵐ[(volume : Measure E)]
-            fun x : E => smoothFun (E := E) (K := K) ψ u x - smoothFun (E := E) (K := K) ψ v x) := by
+            fun x : E =>
+              smoothFun (E := E) (K := K) ψ u x -
+                smoothFun (E := E) (K := K) ψ v x) := by
         have hsub :
             (F : E → ℝ) =ᵐ[(volume : Measure E)] (Su : E → ℝ) - (Sv : E → ℝ) := by
           simpa [F, g, Su, Sv] using
@@ -202,11 +210,13 @@ theorem smoothL2_image_closedBall_isCompact (hK : IsCompact K) (hKm : Measurable
       (MeasureTheory.Lp.extendByZeroₗᵢ (μ := (volume : Measure E)) (E := ℝ) (p := (2 : ℝ≥0∞))
         (s := s) hs) Fs
     have hFext_ae :
-        ((Fext : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume : Measure E)) : E → ℝ) =ᵐ[(volume : Measure E)]
+        ((Fext : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume : Measure E)) :
+            E → ℝ) =ᵐ[(volume : Measure E)]
           s.indicator fun x : E => (Fs : E → ℝ) x := by
       simpa [Fext] using
-        (MeasureTheory.Lp.extendByZeroₗᵢ_ae_eq (μ := (volume : Measure E)) (p := (2 : ℝ≥0∞)) (s := s)
-          hs Fs)
+        (MeasureTheory.Lp.extendByZeroₗᵢ_ae_eq
+          (μ := (volume : Measure E)) (p := (2 : ℝ≥0∞))
+          (s := s) hs Fs)
     have hFs_on :
         ∀ᵐ x ∂(volume : Measure E), x ∈ s → (Fs : E → ℝ) x = g x := by
       -- rewrite the AE equality `Fs = g` on the restricted measure as an implication on `volume`

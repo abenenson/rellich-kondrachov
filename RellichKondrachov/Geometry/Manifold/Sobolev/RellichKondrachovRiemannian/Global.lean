@@ -1,10 +1,11 @@
+import RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachov
+import RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachovRiemannian.Chartwise
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachovRiemannian.Chartwise
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.RellichKondrachovRiemannian.Global`
@@ -55,8 +56,10 @@ local instance instOpensMeasurableSpaceE_SobolevRellichKondrachovRiemannian_Glob
 -- On compact manifolds, the Riemannian volume measure is finite.
 local instance instIsFiniteMeasure_riemannianVolumeMeasure_Global :
     IsFiniteMeasure
-        (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) :=
-  RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure_isFiniteMeasure (I := I) (M := M)
+        (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure
+          (I := I) (M := M)) :=
+  Riemannian.riemannianVolumeMeasure_isFiniteMeasure
+    (I := I) (M := M)
 
 namespace RiemannianFiniteChartData
 
@@ -107,7 +110,8 @@ theorem isCompactOperator_h1ToL2_riemannianVolume :
                   (M := M))) =>
       FiniteChartData.h1ToL2 (d := dR.d) (I := I)
         (μ :=
-          RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) x := by
+          RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure
+            (I := I) (M := M)) x := by
   classical
   let μM :=
     RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)

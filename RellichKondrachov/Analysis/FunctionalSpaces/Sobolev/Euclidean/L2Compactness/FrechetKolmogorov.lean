@@ -1,12 +1,12 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Transfer
+import Mathlib.Topology.UniformSpace.Cauchy
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Transfer
-import Mathlib.Topology.UniformSpace.Cauchy
 
 /-!
 # `L²` compactness criterion: Fréchet–Kolmogorov (Euclidean, compact support case)
@@ -15,7 +15,8 @@ This file packages the final “precompactness via smoothing” step behind the 
 compactness criterion used by the Rellich–Kondrachov stack:
 
 - the **smoothing operator** `smoothL2 ψ` has compact image on `Metric.closedBall 0 R`;
-- the **approximation inequality** bounds `‖smoothL2 ψ u - extendByZeroL2 u‖` by a translation error.
+- the **approximation inequality** bounds `‖smoothL2 ψ u - extendByZeroL2 u‖` by a translation
+  error.
 
 We state the criterion at the level needed by the project: families of `L²` functions with common
 compact support (modeled as `Lp ℝ 2 (volume.restrict K)` and embedded into `L²(volume)` via
@@ -53,8 +54,8 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDim
 
 local instance instMeasurableSpaceE_L2CompactnessFrechetKolmogorov : MeasurableSpace E := borel E
 local instance instBorelSpaceE_L2CompactnessFrechetKolmogorov : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_L2CompactnessFrechetKolmogorov : OpensMeasurableSpace E := by
-  infer_instance
+local instance instOpensMeasurableSpaceE_L2CompactnessFrechetKolmogorov :
+    OpensMeasurableSpace E := by infer_instance
 local instance instMeasurableAddE_L2CompactnessFrechetKolmogorov : MeasurableAdd E := by
   infer_instance
 local instance instMeasurableNegE_L2CompactnessFrechetKolmogorov : MeasurableNeg E := by

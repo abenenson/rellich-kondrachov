@@ -1,12 +1,12 @@
+import Mathlib.MeasureTheory.Measure.Hausdorff
+import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+import Mathlib.MeasureTheory.Measure.OpenPos
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.MeasureTheory.Measure.Hausdorff
-import Mathlib.MeasureTheory.Measure.Haar.OfBasis
-import Mathlib.MeasureTheory.Measure.OpenPos
 
 /-!
 # `RellichKondrachov.MeasureTheory.Measure.HausdorffVolume`
@@ -89,7 +89,8 @@ theorem hausdorffMeasure_eq_smul_volume :
 
 /-! ### Inverting the proportionality -/
 
-/-- `volume` is a scalar multiple of `μH[finrank]` on a finite-dimensional real inner product space. -/
+/-- `volume` is a scalar multiple of `μH[finrank]` on a finite-dimensional
+real inner product space. -/
 theorem volume_eq_smul_hausdorffMeasure :
     (volume : Measure E) =
       (((volume : Measure E) (Metric.closedBall (0 : E) 1)) /
@@ -104,7 +105,8 @@ theorem volume_eq_smul_hausdorffMeasure :
       refine ⟨0, ?_⟩
       have : (0 : E) ∈ Metric.ball (0 : E) 1 := Metric.mem_ball_self (by norm_num)
       exact (Metric.ball_subset_interior_closedBall (x := (0 : E)) (ε := (1 : ℝ)) this)
-    exact (MeasureTheory.Measure.measure_pos_of_nonempty_interior (μ := (volume : Measure E)) (s := K) hne).ne'
+    exact (MeasureTheory.Measure.measure_pos_of_nonempty_interior
+      (μ := (volume : Measure E)) (s := K) hne).ne'
   have hvTop : (volume : Measure E) K ≠ ∞ := by
     exact (isCompact_closedBall (x := (0 : E)) (r := (1 : ℝ))).measure_lt_top.ne
   have hμH0 : (μH[(Module.finrank ℝ E : ℝ)] : Measure E) K ≠ 0 := by

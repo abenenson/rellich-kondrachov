@@ -1,12 +1,12 @@
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasure
+import Mathlib.MeasureTheory.Function.LpSpace.Basic
+import Mathlib.MeasureTheory.Measure.Map
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasure
-import Mathlib.MeasureTheory.Function.LpSpace.Basic
-import Mathlib.MeasureTheory.Measure.Map
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureLp`
@@ -14,11 +14,13 @@ import Mathlib.MeasureTheory.Measure.Map
 `L²`-level utilities for chart pushforward measures.
 
 Given `d : FiniteChartData` and a measure `μ` on `M`, `ChartMeasure` defines the pushforward
-measure `chartMeasure μ i` on the model space `E` along the extended chart `extChartAt I (d.center i)`.
+measure `chartMeasure μ i` on the model space `E` along the extended chart
+`extChartAt I (d.center i)`.
 
 This file provides:
 
-- a measurable modification of `extChartAt` (relative to the restricted measure on the chart source);
+- a measurable modification of `extChartAt` (relative to the restricted
+  measure on the chart source);
 - a `MeasurePreserving` witness for that modification;
 - the induced `L²` pullback map as a linear isometry (`MeasureTheory.Lp.compMeasurePreservingₗᵢ`).
 
@@ -49,7 +51,9 @@ local instance instBorelSpaceM_SobolevChartMeasureLp : BorelSpace M := ⟨rfl⟩
 
 local instance instMeasurableSpaceE_SobolevChartMeasureLp : MeasurableSpace E := borel E
 local instance instBorelSpaceE_SobolevChartMeasureLp : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevChartMeasureLp : OpensMeasurableSpace E := by infer_instance
+local instance instOpensMeasurableSpaceE_SobolevChartMeasureLp :
+    OpensMeasurableSpace E := by
+  infer_instance
 
 namespace FiniteChartData
 

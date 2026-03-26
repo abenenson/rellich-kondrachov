@@ -1,10 +1,10 @@
+import Mathlib.Geometry.Manifold.Riemannian.Basic
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import Mathlib.Geometry.Manifold.Riemannian.Basic
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Riemannian.ChartLocalLipschitzForward`
@@ -45,12 +45,14 @@ For the model space `E` (viewed as a manifold), we locally activate the `NormedA
 Mathlib’s approach in `Mathlib.Geometry.Manifold.Riemannian.Basic`).
 -/
 
+@[reducible]
 private def normedAddCommGroupTangentSpaceVectorSpace (x : E) :
     NormedAddCommGroup (TangentSpace (𝓘(ℝ, E)) x) :=
   inferInstanceAs (NormedAddCommGroup E)
 
 attribute [local instance] normedAddCommGroupTangentSpaceVectorSpace
 
+@[reducible]
 private def normedSpaceTangentSpaceVectorSpace (x : E) :
     NormedSpace ℝ (TangentSpace (𝓘(ℝ, E)) x) :=
   inferInstanceAs (NormedSpace ℝ E)
@@ -126,7 +128,8 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
       have hc4 : 0 < (r : ℝ≥0∞) := by
         exact_mod_cast hr_pos
       exact lt_min_iff.2 ⟨hεC, hc4⟩
-    have hdist_ne_top : riemannianEDist I y₁ y₂ ≠ (⊤ : ℝ≥0∞) := ne_of_lt (lt_of_lt_of_le hdist_lt le_top)
+    have hdist_ne_top : riemannianEDist I y₁ y₂ ≠ (⊤ : ℝ≥0∞) :=
+      ne_of_lt (lt_of_lt_of_le hdist_lt le_top)
     have hdist_lt' : riemannianEDist I y₁ y₂ < riemannianEDist I y₁ y₂ + δ :=
       ENNReal.lt_add_right hdist_ne_top (ne_of_gt δ_pos)
     rcases exists_lt_of_riemannianEDist_lt (I := I) (x := y₁) (y := y₂)
@@ -146,7 +149,8 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
           exact_mod_cast (by nlinarith [show (0 : ℝ) < c by exact_mod_cast c_pos] :
             (c : ℝ) / 4 + (c : ℝ) / 4 + (c : ℝ) / 4 < (c : ℝ))
         -- coerce to `ℝ≥0∞`
-        simpa [add_assoc, add_left_comm, add_comm] using (by exact_mod_cast this : (r + r + r : ℝ≥0∞) < (c : ℝ≥0∞))
+        simpa [add_assoc, add_left_comm, add_comm] using
+          (by exact_mod_cast this : (r + r + r : ℝ≥0∞) < (c : ℝ≥0∞))
       have hsum_lt_c : riemannianEDist I y₁ y₂ + δ < (c : ℝ≥0∞) := hsum_lt.trans hc3r
       exact hlen.trans hsum_lt_c
     -- Points along `γ` stay in the `c`-ball around `x`, hence in `P ∩ source`.
@@ -182,8 +186,11 @@ theorem lipschitzOnWith_extChartAt_ofRiemannianMetric
             -- `c = 4r`.
             have : (r + (r + r + r) : ℝ≥0) = c := by
               dsimp [r]
-              exact_mod_cast (by nlinarith : (c : ℝ) / 4 + ((c : ℝ) / 4 + (c : ℝ) / 4 + (c : ℝ) / 4) = (c : ℝ))
-            simpa [add_assoc, add_left_comm, add_comm] using (by exact_mod_cast this : (r + (r + r + r) : ℝ≥0∞) = (c : ℝ≥0∞))
+              exact_mod_cast (by nlinarith :
+                (c : ℝ) / 4 + ((c : ℝ) / 4 + (c : ℝ) / 4 + (c : ℝ) / 4) = (c : ℝ))
+            simpa [add_assoc, add_left_comm, add_comm] using
+              (by exact_mod_cast this :
+                (r + (r + r + r) : ℝ≥0∞) = (c : ℝ≥0∞))
           exact (lt_of_le_of_lt htri (hsum.trans_eq this))
         simpa [IsRiemannianManifold.out (I := I) (M := M)] using hxγt_edist
       exact hc hxγt

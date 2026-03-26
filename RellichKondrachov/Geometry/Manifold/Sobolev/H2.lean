@@ -1,10 +1,11 @@
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasure
+import RellichKondrachov.Geometry.Manifold.Sobolev.LocalizationH2
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Sobolev.LocalizationH2
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.H2`
@@ -101,7 +102,9 @@ private abbrev L2EE (i : d.ι) : Type _ :=
   ↥(E →₂[chartMeasureE (d := d) (I := I) (μ := μ) i] (E →L[ℝ] E))
 
 private abbrev H2TargetE (i : d.ι) : Type _ :=
-  L2ℝ (d := d) (I := I) (μ := μ) i × (L2E (d := d) (I := I) (μ := μ) i × L2EE (d := d) (I := I) (μ := μ) i)
+  L2ℝ (d := d) (I := I) (μ := μ) i ×
+    (L2E (d := d) (I := I) (μ := μ) i ×
+      L2EE (d := d) (I := I) (μ := μ) i)
 
 private abbrev H2Target : Type _ := ∀ i : d.ι, H2TargetE (d := d) (I := I) (μ := μ) i
 
@@ -125,32 +128,53 @@ private noncomputable def localizeToC2c (i : d.ι) :
                 (f.1 + g.1) ((extChartAt I (d.center i)).symm y)) hy)
       have hf :
           localize (d := d) f.1 i y =
-            d.ρ i ((extChartAt I (d.center i)).symm y) * f.1 ((extChartAt I (d.center i)).symm y) := by
+            d.ρ i ((extChartAt I (d.center i)).symm y) *
+              f.1 ((extChartAt I (d.center i)).symm y) := by
         simpa [FiniteChartData.localize] using
-          (Set.indicator_of_mem (s := (extChartAt I (d.center i)).target) (a := y)
-            (f := fun y => d.ρ i ((extChartAt I (d.center i)).symm y) * f.1 ((extChartAt I (d.center i)).symm y)) hy)
+          (Set.indicator_of_mem
+            (s := (extChartAt I (d.center i)).target) (a := y)
+            (f := fun y =>
+              d.ρ i ((extChartAt I (d.center i)).symm y) *
+                f.1 ((extChartAt I (d.center i)).symm y))
+            hy)
       have hg :
           localize (d := d) g.1 i y =
-            d.ρ i ((extChartAt I (d.center i)).symm y) * g.1 ((extChartAt I (d.center i)).symm y) := by
+            d.ρ i ((extChartAt I (d.center i)).symm y) *
+              g.1 ((extChartAt I (d.center i)).symm y) := by
         simpa [FiniteChartData.localize] using
-          (Set.indicator_of_mem (s := (extChartAt I (d.center i)).target) (a := y)
-            (f := fun y => d.ρ i ((extChartAt I (d.center i)).symm y) * g.1 ((extChartAt I (d.center i)).symm y)) hy)
+          (Set.indicator_of_mem
+            (s := (extChartAt I (d.center i)).target) (a := y)
+            (f := fun y =>
+              d.ρ i ((extChartAt I (d.center i)).symm y) *
+                g.1 ((extChartAt I (d.center i)).symm y))
+            hy)
       simp [hfg, hf, hg, mul_add]
     ·
       have hfg : localize (d := d) (f.1 + g.1) i y = 0 := by
         simpa [FiniteChartData.localize] using
-          (Set.indicator_of_notMem (s := (extChartAt I (d.center i)).target) (a := y)
+          (Set.indicator_of_notMem
+            (s := (extChartAt I (d.center i)).target) (a := y)
             (f := fun y =>
               d.ρ i ((extChartAt I (d.center i)).symm y) *
-                (f.1 + g.1) ((extChartAt I (d.center i)).symm y)) hy)
+                (f.1 + g.1)
+                  ((extChartAt I (d.center i)).symm y))
+            hy)
       have hf : localize (d := d) f.1 i y = 0 := by
         simpa [FiniteChartData.localize] using
-          (Set.indicator_of_notMem (s := (extChartAt I (d.center i)).target) (a := y)
-            (f := fun y => d.ρ i ((extChartAt I (d.center i)).symm y) * f.1 ((extChartAt I (d.center i)).symm y)) hy)
+          (Set.indicator_of_notMem
+            (s := (extChartAt I (d.center i)).target) (a := y)
+            (f := fun y =>
+              d.ρ i ((extChartAt I (d.center i)).symm y) *
+                f.1 ((extChartAt I (d.center i)).symm y))
+            hy)
       have hg : localize (d := d) g.1 i y = 0 := by
         simpa [FiniteChartData.localize] using
-          (Set.indicator_of_notMem (s := (extChartAt I (d.center i)).target) (a := y)
-            (f := fun y => d.ρ i ((extChartAt I (d.center i)).symm y) * g.1 ((extChartAt I (d.center i)).symm y)) hy)
+          (Set.indicator_of_notMem
+            (s := (extChartAt I (d.center i)).target) (a := y)
+            (f := fun y =>
+              d.ρ i ((extChartAt I (d.center i)).symm y) *
+                g.1 ((extChartAt I (d.center i)).symm y))
+            hy)
       simp [hfg, hf, hg]
   map_smul' c f := by
     ext y
@@ -158,38 +182,59 @@ private noncomputable def localizeToC2c (i : d.ι) :
     ·
       have hcf :
           localize (d := d) (c • f.1) i y =
-            d.ρ i ((extChartAt I (d.center i)).symm y) * (c • f.1) ((extChartAt I (d.center i)).symm y) := by
+            d.ρ i ((extChartAt I (d.center i)).symm y) *
+              (c • f.1)
+                ((extChartAt I (d.center i)).symm y) := by
         simpa [FiniteChartData.localize] using
-          (Set.indicator_of_mem (s := (extChartAt I (d.center i)).target) (a := y)
+          (Set.indicator_of_mem
+            (s := (extChartAt I (d.center i)).target) (a := y)
             (f := fun y =>
-              d.ρ i ((extChartAt I (d.center i)).symm y) * (c • f.1) ((extChartAt I (d.center i)).symm y)) hy)
+              d.ρ i ((extChartAt I (d.center i)).symm y) *
+                (c • f.1)
+                  ((extChartAt I (d.center i)).symm y))
+            hy)
       have hf :
           localize (d := d) f.1 i y =
-            d.ρ i ((extChartAt I (d.center i)).symm y) * f.1 ((extChartAt I (d.center i)).symm y) := by
+            d.ρ i ((extChartAt I (d.center i)).symm y) *
+              f.1 ((extChartAt I (d.center i)).symm y) := by
         simpa [FiniteChartData.localize] using
-          (Set.indicator_of_mem (s := (extChartAt I (d.center i)).target) (a := y)
-            (f := fun y => d.ρ i ((extChartAt I (d.center i)).symm y) * f.1 ((extChartAt I (d.center i)).symm y)) hy)
-      have : d.ρ i ((extChartAt I (d.center i)).symm y) * (c * f.1 ((extChartAt I (d.center i)).symm y)) =
-          c * (d.ρ i ((extChartAt I (d.center i)).symm y) * f.1 ((extChartAt I (d.center i)).symm y)) := by
+          (Set.indicator_of_mem
+            (s := (extChartAt I (d.center i)).target) (a := y)
+            (f := fun y =>
+              d.ρ i ((extChartAt I (d.center i)).symm y) *
+                f.1 ((extChartAt I (d.center i)).symm y))
+            hy)
+      let φ := (extChartAt I (d.center i)).symm y
+      have :
+          d.ρ i φ * (c * f.1 φ) =
+            c * (d.ρ i φ * f.1 φ) := by
         calc
-          d.ρ i ((extChartAt I (d.center i)).symm y) * (c * f.1 ((extChartAt I (d.center i)).symm y)) =
-              (d.ρ i ((extChartAt I (d.center i)).symm y) * c) * f.1 ((extChartAt I (d.center i)).symm y) := by
+          d.ρ i φ * (c * f.1 φ) =
+              (d.ρ i φ * c) * f.1 φ := by
                 simp [mul_assoc]
-          _ = (c * d.ρ i ((extChartAt I (d.center i)).symm y)) * f.1 ((extChartAt I (d.center i)).symm y) := by
+          _ = (c * d.ρ i φ) * f.1 φ := by
                 simp [mul_comm]
-          _ = c * (d.ρ i ((extChartAt I (d.center i)).symm y) * f.1 ((extChartAt I (d.center i)).symm y)) := by
+          _ = c * (d.ρ i φ * f.1 φ) := by
                 simp [mul_assoc]
       simpa [smul_eq_mul, Pi.smul_apply, hcf, hf] using this
     ·
       have hcf : localize (d := d) (c • f.1) i y = 0 := by
         simpa [FiniteChartData.localize] using
-          (Set.indicator_of_notMem (s := (extChartAt I (d.center i)).target) (a := y)
+          (Set.indicator_of_notMem
+            (s := (extChartAt I (d.center i)).target) (a := y)
             (f := fun y =>
-              d.ρ i ((extChartAt I (d.center i)).symm y) * (c • f.1) ((extChartAt I (d.center i)).symm y)) hy)
+              d.ρ i ((extChartAt I (d.center i)).symm y) *
+                (c • f.1)
+                  ((extChartAt I (d.center i)).symm y))
+            hy)
       have hf : localize (d := d) f.1 i y = 0 := by
         simpa [FiniteChartData.localize] using
-          (Set.indicator_of_notMem (s := (extChartAt I (d.center i)).target) (a := y)
-            (f := fun y => d.ρ i ((extChartAt I (d.center i)).symm y) * f.1 ((extChartAt I (d.center i)).symm y)) hy)
+          (Set.indicator_of_notMem
+            (s := (extChartAt I (d.center i)).target) (a := y)
+            (f := fun y =>
+              d.ρ i ((extChartAt I (d.center i)).symm y) *
+                f.1 ((extChartAt I (d.center i)).symm y))
+            hy)
       simp [hcf, hf]
 
 /-- The per-chart graph map `C²(M) →ₗ h2TargetE` obtained by localization to chart `i` and the
@@ -226,7 +271,8 @@ instance instCompleteSpace_h2 : CompleteSpace (↥(h2 (d := d) (I := I) (μ := �
   classical
   exact (isClosed_h2 (d := d) (I := I) (μ := μ)).isComplete.completeSpace_coe
 
-/-- The continuous projection `H² →` chartwise `L² × (L²(E) × L²(E →L E))` for a fixed chart index. -/
+/-- The continuous projection `H² →` chartwise
+`L² × (L²(E) × L²(E →L E))` for a fixed chart index. -/
 noncomputable def h2ToChart (i : d.ι) :
     (↥(h2 (d := d) (I := I) (μ := μ))) →L[ℝ] h2TargetE (d := d) (I := I) μ i :=
   (ContinuousLinearMap.proj (R := ℝ) i).comp (Submodule.subtypeL (h2 (d := d) (I := I) (μ := μ)))
@@ -244,7 +290,8 @@ noncomputable def h2ToChartL2Grad (i : d.ι) :
 
 /-- The continuous chartwise Hessian map `H² → L²(E →L E)` extracted from `H²`. -/
 noncomputable def h2ToChartL2Hess (i : d.ι) :
-    (↥(h2 (d := d) (I := I) (μ := μ))) →L[ℝ] ↥(E →₂[chartMeasure (d := d) (I := I) μ i] (E →L[ℝ] E)) :=
+    (↥(h2 (d := d) (I := I) (μ := μ))) →L[ℝ]
+      ↥(E →₂[chartMeasure (d := d) (I := I) μ i] (E →L[ℝ] E)) :=
   (ContinuousLinearMap.snd ℝ _ _).comp
     ((ContinuousLinearMap.snd ℝ _ _).comp (h2ToChart (d := d) (I := I) (μ := μ) i))
 

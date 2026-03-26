@@ -1,15 +1,14 @@
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Smoothing
+import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
+import Mathlib.MeasureTheory.Measure.Typeclasses.Finite
+import Mathlib.Topology.Algebra.Monoid
+import Mathlib.Topology.UniformSpace.HeineCantor
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Smoothing
-import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
-import Mathlib.MeasureTheory.Measure.Typeclasses.Finite
-import Mathlib.Topology.Algebra.Monoid
-import Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli
-import Mathlib.Topology.UniformSpace.HeineCantor
 
 /-!
 # `L²` compactness criterion: compact smoothing operator (Euclidean)

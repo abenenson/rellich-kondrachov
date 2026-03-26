@@ -1,13 +1,13 @@
+import RellichKondrachov.Geometry.Manifold.Riemannian.VolumeMeasure
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartDataRiemannian
+import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasure
+import Mathlib.Geometry.Manifold.IsManifold.Basic
+
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
 -/
-
-import RellichKondrachov.Geometry.Manifold.Riemannian.VolumeMeasure
-import RellichKondrachov.Geometry.Manifold.Sobolev.ChartDataRiemannian
-import RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasure
-import Mathlib.Geometry.Manifold.IsManifold.Basic
 
 /-!
 # `RellichKondrachov.Geometry.Manifold.Sobolev.ChartMeasureRiemannian`
@@ -21,7 +21,8 @@ measure on the chart target, restricted to suitable neighborhoods.
 
 ## Main results
 
-- `RellichKondrachov.Geometry.Manifold.Sobolev.RiemannianFiniteChartData.chartMeasure_restrict_le_hausdorff`:
+- `RellichKondrachov.Geometry.Manifold.Sobolev.RiemannianFiniteChartData.`
+  `chartMeasure_restrict_le_hausdorff`:
   on the chart ball, the pushforward of `riemannianVolumeMeasure` is dominated by `μH[dim]` on `E`
   with an explicit constant.
 -/
@@ -59,7 +60,9 @@ local instance instBorelSpaceM_SobolevChartMeasureRiemannian : BorelSpace M := �
 
 local instance instMeasurableSpaceE_SobolevChartMeasureRiemannian : MeasurableSpace E := borel E
 local instance instBorelSpaceE_SobolevChartMeasureRiemannian : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevChartMeasureRiemannian : OpensMeasurableSpace E := by infer_instance
+local instance instOpensMeasurableSpaceE_SobolevChartMeasureRiemannian :
+    OpensMeasurableSpace E := by
+  infer_instance
 
 namespace RiemannianFiniteChartData
 
@@ -80,13 +83,15 @@ private theorem chartBall_subset_ball_range (i : dR.d.ι) :
 dominated by Euclidean Hausdorff measure, with an explicit Lipschitz constant. -/
 theorem chartMeasure_restrict_le_hausdorff (i : dR.d.ι) :
     (FiniteChartData.chartMeasure (d := dR.d) (I := I)
-        (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) i).restrict
+        (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure
+          (I := I) (M := M)) i).restrict
         (chartBall (dR := dR) (I := I) i) ≤
       ((dR.C i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) •
         (μH[(Module.finrank ℝ E : ℝ)] : Measure E).restrict (chartBall (dR := dR) (I := I) i) := by
   classical
   -- Work in the emetric space structure induced by the Riemannian metric, so `μM = μH[dim]`.
-  letI : EMetricSpace M := EmetricSpace.ofRiemannianMetric I M
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : BorelSpace M := ⟨rfl⟩
   haveI : IsRiemannianManifold I M := by infer_instance
   let μM : Measure M :=
     RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
@@ -200,11 +205,13 @@ theorem hausdorff_restrict_le_chartMeasure (i : dR.d.ι) :
     (μH[(Module.finrank ℝ E : ℝ)] : Measure E).restrict (chartBall (dR := dR) (I := I) i) ≤
       ((dR.Cfwd i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) •
         (FiniteChartData.chartMeasure (d := dR.d) (I := I)
-              (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) i).restrict
+              (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure
+                (I := I) (M := M)) i).restrict
           (chartBall (dR := dR) (I := I) i) := by
   classical
   -- Work in the emetric space structure induced by the Riemannian metric, so `μM = μH[dim]`.
-  letI : EMetricSpace M := EmetricSpace.ofRiemannianMetric I M
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : BorelSpace M := ⟨rfl⟩
   haveI : IsRiemannianManifold I M := by infer_instance
   let μM : Measure M :=
     RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
