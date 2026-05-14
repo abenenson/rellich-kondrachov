@@ -227,7 +227,7 @@ noncomputable def h1GraphChart (i : d.ι) :
     (localizeToC1c (d := d) (I := I) i)
 
 omit [T2Space M] in
-theorem h1GraphChart_mem_range_euclidean_graph (i : d.ι)
+lemma h1GraphChart_mem_range_euclidean_graph (i : d.ι)
     (f : ↥(C1 (E := E) (H := H) (M := M) (I := I))) :
     h1GraphChart (d := d) (I := I) (μ := μ) i f ∈
       LinearMap.range
@@ -245,7 +245,7 @@ underlying localized function `localize (d := d) f i`. They are used downstream 
 
 omit [T2Space M] in
 /-- The scalar `L²` component of `h1GraphChart` is the `L²` class of `localize f i`. -/
-theorem h1GraphChart_fst (i : d.ι) (f : ↥(C1 (E := E) (H := H) (M := M) (I := I))) :
+lemma h1GraphChart_fst (i : d.ι) (f : ↥(C1 (E := E) (H := H) (M := M) (I := I))) :
     (h1GraphChart (d := d) (I := I) (μ := μ) i f).1 =
       RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.toL2
         (μ := chartMeasure (d := d) (I := I) μ i)
@@ -258,7 +258,7 @@ theorem h1GraphChart_fst (i : d.ι) (f : ↥(C1 (E := E) (H := H) (M := M) (I :=
 omit [T2Space M] in
 /-- The gradient `L²(E)` component of `h1GraphChart` is the `L²(E)` class
 of `grad (localize f i)`. -/
-theorem h1GraphChart_snd (i : d.ι) (f : ↥(C1 (E := E) (H := H) (M := M) (I := I))) :
+lemma h1GraphChart_snd (i : d.ι) (f : ↥(C1 (E := E) (H := H) (M := M) (I := I))) :
     (h1GraphChart (d := d) (I := I) (μ := μ) i f).2 =
       RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.toL2Grad
         (μ := chartMeasure (d := d) (I := I) μ i)

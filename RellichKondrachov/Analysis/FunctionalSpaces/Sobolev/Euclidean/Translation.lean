@@ -44,17 +44,17 @@ def translate {F : Type*} (a : E) (f : E → F) : E → F :=
   fun x => f (x + a)
 
 omit [CompleteSpace E] in
-theorem contDiff_translate {f : E → ℝ} (hf : ContDiff ℝ 1 f) (a : E) :
+lemma contDiff_translate {f : E → ℝ} (hf : ContDiff ℝ 1 f) (a : E) :
     ContDiff ℝ 1 (translate (E := E) a f) := by
   -- `x ↦ x + a` is `C^∞`; compose.
   simpa [translate] using hf.comp (contDiff_id.add contDiff_const)
 
 omit [InnerProductSpace ℝ E] [CompleteSpace E] in
-theorem hasCompactSupport_translate {F : Type*} [Zero F] {f : E → F}
+lemma hasCompactSupport_translate {F : Type*} [Zero F] {f : E → F}
     (hf : HasCompactSupport f) (a : E) : HasCompactSupport (translate (E := E) a f) := by
   simpa [translate] using hf.comp_homeomorph (Homeomorph.addRight a)
 
-theorem grad_translate (a : E) (f : E → ℝ) (x : E) :
+lemma grad_translate (a : E) (f : E → ℝ) (x : E) :
     grad (E := E) (translate (E := E) a f) x = grad (E := E) f (x + a) := by
   classical
   -- `fderiv` commutes with translation, hence so does `grad`.
@@ -63,7 +63,7 @@ theorem grad_translate (a : E) (f : E → ℝ) (x : E) :
   simpa [translate] using (fderiv_comp_add_right (𝕜 := ℝ) (f := f) (x := x) a)
 
 omit [CompleteSpace E] in
-theorem mem_C1c_translate {f : E → ℝ} (hf : f ∈ C1c (E := E)) (a : E) :
+lemma mem_C1c_translate {f : E → ℝ} (hf : f ∈ C1c (E := E)) (a : E) :
     translate (E := E) a f ∈ C1c (E := E) :=
   ⟨contDiff_translate (E := E) hf.1 a, hasCompactSupport_translate (E := E) hf.2 a⟩
 
@@ -101,7 +101,7 @@ noncomputable def translateL2 {F : Type*} [NormedAddCommGroup F] [NormedSpace �
       (μ := μ) (μb := μ) (f := fun x : E => x + a) (MeasureTheory.measurePreserving_add_right μ a))
 
 omit [InnerProductSpace ℝ E] [CompleteSpace E] in
-theorem translateL2_ae_eq {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] (a : E)
+lemma translateL2_ae_eq {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] (a : E)
     (g : E →₂[μ] F) :
     (translateL2 (μ := μ) (F := F) a g : E → F) =ᵐ[μ] fun x => (g : E → F) (x + a) := by
   classical
@@ -113,7 +113,7 @@ theorem translateL2_ae_eq {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 variable [IsFiniteMeasureOnCompacts μ]
 
 omit [CompleteSpace E] in
-theorem translateL2_toL2 (a : E) (f : ↥(C1c (E := E))) :
+lemma translateL2_toL2 (a : E) (f : ↥(C1c (E := E))) :
     translateL2 (μ := μ) (F := ℝ) a (toL2 (μ := μ) (E := E) f) =
       toL2 (μ := μ) (E := E) (translateC1c (E := E) a f) := by
   apply Lp.ext
@@ -137,7 +137,7 @@ theorem translateL2_toL2 (a : E) (f : ↥(C1c (E := E))) :
       (memLp_of_mem_C1c (μ := μ) (E := E) (translateC1c (E := E) a f).2).coeFn_toLp
   exact h₁.trans h₂.symm
 
-theorem translateL2_toL2Grad (a : E) (f : ↥(C1c (E := E))) :
+lemma translateL2_toL2Grad (a : E) (f : ↥(C1c (E := E))) :
     translateL2 (μ := μ) (F := E) a (toL2Grad (μ := μ) (E := E) f) =
       toL2Grad (μ := μ) (E := E) (translateC1c (E := E) a f) := by
   apply Lp.ext

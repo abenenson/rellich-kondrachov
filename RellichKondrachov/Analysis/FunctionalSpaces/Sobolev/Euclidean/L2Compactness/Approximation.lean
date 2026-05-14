@@ -323,7 +323,7 @@ lemma smoothFun_sub_extendByZeroFun_sq_le_integral_sq
       (μ := μ) (f := fun t : E => f (x - t) - f x) hg
   simpa [hdiff, μ, f] using hJ
 
-theorem norm_sq_smoothL2_sub_extendByZeroL2_le_integral_norm_sq_translateL2_sub_extendByZeroL2
+lemma norm_sq_smoothL2_sub_extendByZeroL2_le_integral_norm_sq_translateL2_sub_extendByZeroL2
     (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ) (hψ0 : ∀ x, 0 ≤ ψ x)
     (hψint : ∫ x, ψ x ∂(volume : Measure E) = 1)
     (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K)) :

@@ -72,7 +72,7 @@ omit
   [IsManifold I (1 : WithTop ℕ∞) M]
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
   [T3Space M] in
-private theorem chartBall_subset_ball_range (i : dR.d.ι) :
+private lemma chartBall_subset_ball_range (i : dR.d.ι) :
     chartBall (dR := dR) (I := I) i ⊆
       Metric.ball (extChartAt I (dR.d.center i) (dR.d.center i)) (dR.r i) ∩ range I := by
   intro y hy
@@ -81,7 +81,7 @@ private theorem chartBall_subset_ball_range (i : dR.d.ι) :
 
 /-- On the chart ball, the chart pushforward measure of the Riemannian Hausdorff volume measure is
 dominated by Euclidean Hausdorff measure, with an explicit Lipschitz constant. -/
-theorem chartMeasure_restrict_le_hausdorff (i : dR.d.ι) :
+lemma chartMeasure_restrict_le_hausdorff (i : dR.d.ι) :
     (FiniteChartData.chartMeasure (d := dR.d) (I := I)
         (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure
           (I := I) (M := M)) i).restrict
@@ -201,7 +201,7 @@ theorem chartMeasure_restrict_le_hausdorff (i : dR.d.ι) :
 
 /-- On the chart ball, Euclidean Hausdorff measure is dominated by the chart pushforward measure of
 the Riemannian Hausdorff volume measure. -/
-theorem hausdorff_restrict_le_chartMeasure (i : dR.d.ι) :
+lemma hausdorff_restrict_le_chartMeasure (i : dR.d.ι) :
     (μH[(Module.finrank ℝ E : ℝ)] : Measure E).restrict (chartBall (dR := dR) (I := I) i) ≤
       ((dR.Cfwd i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) •
         (FiniteChartData.chartMeasure (d := dR.d) (I := I)

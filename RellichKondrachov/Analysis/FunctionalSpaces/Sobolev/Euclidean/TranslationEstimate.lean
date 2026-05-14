@@ -49,18 +49,18 @@ local instance instOpensMeasurableSpaceE_SobolevEuclideanTranslationEstimate :
 def line (x a : E) (t : ℝ) : E :=
   x + t • a
 
-theorem hasDerivAt_line (x a : E) (t : ℝ) :
+lemma hasDerivAt_line (x a : E) (t : ℝ) :
     HasDerivAt (line (x := x) (a := a)) a t := by
   -- `t ↦ t • a` has derivative `a`, and adding the constant `x` preserves the derivative.
   have hsmul : HasDerivAt (fun t : ℝ => t • a) a t := by
     simpa [one_smul] using (hasDerivAt_id t).smul_const a
   exact HasDerivAt.const_add x hsmul
 
-theorem deriv_line (x a : E) (t : ℝ) :
+lemma deriv_line (x a : E) (t : ℝ) :
     deriv (line (x := x) (a := a)) t = a :=
   (hasDerivAt_line (x := x) (a := a) t).deriv
 
-theorem hasDerivAt_comp_line
+lemma hasDerivAt_comp_line
     {f : E → ℝ} (hf : ContDiff ℝ 1 f) (x a : E) (t : ℝ) :
     HasDerivAt (fun t => f (line (x := x) (a := a) t))
       (fderiv ℝ f (line (x := x) (a := a) t) a) t := by
@@ -69,7 +69,7 @@ theorem hasDerivAt_comp_line
   exact
     HasFDerivAt.comp_hasDerivAt_of_eq t hf' (hasDerivAt_line (x := x) (a := a) t) rfl
 
-theorem deriv_comp_line {f : E → ℝ} (hf : ContDiff ℝ 1 f) (x a : E) (t : ℝ) :
+lemma deriv_comp_line {f : E → ℝ} (hf : ContDiff ℝ 1 f) (x a : E) (t : ℝ) :
     deriv (fun t => f (line (x := x) (a := a) t)) t =
       fderiv ℝ f (line (x := x) (a := a) t) a :=
   (hasDerivAt_comp_line (hf := hf) (x := x) (a := a) t).deriv
@@ -80,7 +80,7 @@ section
 
 variable [CompleteSpace E]
 
-theorem enorm_fderiv_apply_le_enorm_grad_mul (f : E → ℝ) (x a : E) :
+lemma enorm_fderiv_apply_le_enorm_grad_mul (f : E → ℝ) (x a : E) :
     ‖fderiv ℝ f x a‖ₑ ≤ ‖grad (E := E) f x‖ₑ * ‖a‖ₑ := by
   -- Use the operator norm bound, then identify `‖fderiv‖` with `‖grad‖` via the Riesz isometry.
   have h₁ :
@@ -95,7 +95,7 @@ theorem enorm_fderiv_apply_le_enorm_grad_mul (f : E → ℝ) (x a : E) :
   -- Replace the operator norm by the gradient norm.
   simpa [h₂, mul_assoc, mul_left_comm, mul_comm] using h₁
 
-theorem enorm_deriv_comp_line_le (x a : E) {f : E → ℝ} (hf : ContDiff ℝ 1 f) (t : ℝ) :
+lemma enorm_deriv_comp_line_le (x a : E) {f : E → ℝ} (hf : ContDiff ℝ 1 f) (t : ℝ) :
     ‖deriv (fun t => f (line (x := x) (a := a) t)) t‖ₑ ≤
       ‖a‖ₑ * ‖grad (E := E) f (line (x := x) (a := a) t)‖ₑ := by
   -- Reduce to the `fderiv` bound.
@@ -106,7 +106,7 @@ theorem enorm_deriv_comp_line_le (x a : E) {f : E → ℝ} (hf : ContDiff ℝ 1 
   simpa [deriv_comp_line (hf := hf) (x := x) (a := a) t,
     mul_comm, mul_left_comm, mul_assoc] using this
 
-theorem enorm_sub_le_enorm_mul_lintegral_grad (x a : E) {f : E → ℝ} (hf : ContDiff ℝ 1 f) :
+lemma enorm_sub_le_enorm_mul_lintegral_grad (x a : E) {f : E → ℝ} (hf : ContDiff ℝ 1 f) :
     ‖f (x + a) - f x‖ₑ ≤
       ‖a‖ₑ * ∫⁻ t in Icc (0 : ℝ) 1, ‖grad (E := E) f (x + t • a)‖ₑ := by
   -- Apply FTC along the segment `t ↦ x + t • a`, then bound the derivative pointwise.

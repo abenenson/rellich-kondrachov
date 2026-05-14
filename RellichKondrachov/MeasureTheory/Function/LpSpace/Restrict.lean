@@ -49,7 +49,7 @@ private noncomputable def extendByZeroFun (f : Lp E p (μ.restrict s)) : Lp E p 
   hfi.toLp (s.indicator fun x : α => f x)
 
 omit [NormedSpace ℝ E] [Fact (1 ≤ p)] in
-private theorem extendByZeroFun_coe (f : Lp E p (μ.restrict s)) :
+private lemma extendByZeroFun_coe (f : Lp E p (μ.restrict s)) :
     extendByZeroFun (μ := μ) (p := p) (s := s) hs f =ᵐ[μ] s.indicator fun x : α => f x := by
   dsimp [extendByZeroFun]
   exact MemLp.coeFn_toLp _
@@ -188,14 +188,14 @@ noncomputable def extendByZeroₗᵢ : Lp E p (μ.restrict s) →ₗᵢ[ℝ] Lp 
     -- Combine with the definition of the `Lp` norm on the restricted space.
     simp [hnorm_out, hnorm_restrict, norm_def]
 
-theorem extendByZeroₗᵢ_ae_eq (f : Lp E p (μ.restrict s)) :
+lemma extendByZeroₗᵢ_ae_eq (f : Lp E p (μ.restrict s)) :
     ((extendByZeroₗᵢ (μ := μ) (p := p) (s := s) hs) f : α → E) =ᵐ[μ]
       s.indicator fun x : α => f x := by
   -- Unfold to the underlying `extendByZeroFun` and use the defining AE equality.
   simpa [extendByZeroₗᵢ, extendByZeroₗ] using
     (extendByZeroFun_coe (μ := μ) (p := p) (s := s) hs f)
 
-theorem extendByZeroₗᵢ_congr (hs₁ hs₂ : MeasurableSet s) :
+lemma extendByZeroₗᵢ_congr (hs₁ hs₂ : MeasurableSet s) :
     extendByZeroₗᵢ (μ := μ) (E := E) (p := p) (s := s) hs₁ =
       extendByZeroₗᵢ (μ := μ) (E := E) (p := p) (s := s) hs₂ := by
   -- `extendByZeroₗᵢ` is characterized by its pointwise representative.

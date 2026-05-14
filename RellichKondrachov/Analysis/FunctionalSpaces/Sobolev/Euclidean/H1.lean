@@ -84,13 +84,13 @@ def C1c : Submodule ℝ (E → ℝ) where
 noncomputable def grad (f : E → ℝ) : E → E :=
   fun x => (InnerProductSpace.toDual ℝ E).symm (fderiv ℝ f x)
 
-theorem continuous_grad {f : E → ℝ} (hf : ContDiff ℝ 1 f) : Continuous (grad (E := E) f) := by
+lemma continuous_grad {f : E → ℝ} (hf : ContDiff ℝ 1 f) : Continuous (grad (E := E) f) := by
   have hcont : Continuous (fderiv ℝ f) := hf.continuous_fderiv one_ne_zero
   have : Continuous fun x => (InnerProductSpace.toDual ℝ E).symm (fderiv ℝ f x) :=
     (InnerProductSpace.toDual ℝ E).symm.continuous.comp hcont
   simpa [grad] using this
 
-theorem hasCompactSupport_grad {f : E → ℝ} (hf : HasCompactSupport f) :
+lemma hasCompactSupport_grad {f : E → ℝ} (hf : HasCompactSupport f) :
     HasCompactSupport (grad (E := E) f) := by
   -- Outside the support of `f`, `fderiv` is identically `0`, hence so is `grad`.
   have hf' : HasCompactSupport (fderiv ℝ f) := hf.fderiv ℝ
@@ -99,7 +99,7 @@ theorem hasCompactSupport_grad {f : E → ℝ} (hf : HasCompactSupport f) :
     (HasCompactSupport.comp_left (f := fderiv ℝ f) (g := (InnerProductSpace.toDual ℝ E).symm)
       hf' (by simp))
 
-theorem tsupport_grad_subset (f : E → ℝ) : tsupport (grad (E := E) f) ⊆ tsupport f := by
+lemma tsupport_grad_subset (f : E → ℝ) : tsupport (grad (E := E) f) ⊆ tsupport f := by
   have hcomp :
       tsupport (grad (E := E) f) ⊆ tsupport (fderiv ℝ f) := by
     simpa [grad, Function.comp] using
@@ -109,10 +109,10 @@ theorem tsupport_grad_subset (f : E → ℝ) : tsupport (grad (E := E) f) ⊆ ts
   exact hcomp.trans (tsupport_fderiv_subset (𝕜 := ℝ) (f := f))
 
 omit [CompleteSpace E] in
-theorem memLp_of_mem_C1c {f : E → ℝ} (hf : f ∈ C1c (E := E)) : MemLp f 2 μ := by
+lemma memLp_of_mem_C1c {f : E → ℝ} (hf : f ∈ C1c (E := E)) : MemLp f 2 μ := by
   exact (hf.1.continuous.memLp_of_hasCompactSupport (μ := μ) (p := (2 : ℝ≥0∞)) hf.2)
 
-theorem memLp_grad_of_mem_C1c {f : E → ℝ} (hf : f ∈ C1c (E := E)) :
+lemma memLp_grad_of_mem_C1c {f : E → ℝ} (hf : f ∈ C1c (E := E)) :
     MemLp (grad (E := E) f) 2 μ := by
   have hcont : Continuous (grad (E := E) f) := continuous_grad (E := E) (f := f) hf.1
   have hcs : HasCompactSupport (grad (E := E) f) := hasCompactSupport_grad (E := E) (f := f) hf.2
@@ -127,7 +127,7 @@ noncomputable def toL2Grad (f : ↥(C1c (E := E))) : L2E (μ := μ) :=
   (memLp_grad_of_mem_C1c (μ := μ) (E := E) f.2).toLp (grad (E := E) f.1)
 
 omit [CompleteSpace E] in
-private theorem toL2_add (f g : ↥(C1c (E := E))) :
+private lemma toL2_add (f g : ↥(C1c (E := E))) :
     toL2 (μ := μ) (E := E) (f + g) =
       toL2 (μ := μ) (E := E) f + toL2 (μ := μ) (E := E) g := by
   apply Lp.ext
@@ -151,7 +151,7 @@ private theorem toL2_add (f g : ↥(C1c (E := E))) :
       simpa [Pi.add_apply] using hxadd.symm
 
 omit [CompleteSpace E] in
-private theorem toL2_smul (c : ℝ) (f : ↥(C1c (E := E))) :
+private lemma toL2_smul (c : ℝ) (f : ↥(C1c (E := E))) :
     toL2 (μ := μ) (E := E) (c • f) = c • toL2 (μ := μ) (E := E) f := by
   apply Lp.ext
   have hf : (toL2 (μ := μ) (E := E) f : E → ℝ) =ᵐ[μ] f.1 :=
@@ -168,7 +168,7 @@ noncomputable def toL2Linear : ↥(C1c (E := E)) →ₗ[ℝ] L2ℝ (μ := μ) wh
   map_add' := toL2_add (μ := μ) (E := E)
   map_smul' := toL2_smul (μ := μ) (E := E)
 
-private theorem toL2Grad_add (f g : ↥(C1c (E := E))) :
+private lemma toL2Grad_add (f g : ↥(C1c (E := E))) :
     toL2Grad (μ := μ) (E := E) (f + g) =
       toL2Grad (μ := μ) (E := E) f + toL2Grad (μ := μ) (E := E) g := by
   apply Lp.ext
@@ -201,7 +201,7 @@ private theorem toL2Grad_add (f g : ↥(C1c (E := E))) :
             E → E) x := by
         simpa [Pi.add_apply] using hxadd.symm
 
-private theorem toL2Grad_smul (c : ℝ) (f : ↥(C1c (E := E))) :
+private lemma toL2Grad_smul (c : ℝ) (f : ↥(C1c (E := E))) :
     toL2Grad (μ := μ) (E := E) (c • f) = c • toL2Grad (μ := μ) (E := E) f := by
   apply Lp.ext
   have hf : (toL2Grad (μ := μ) (E := E) f : E → E) =ᵐ[μ] grad (E := E) f.1 :=

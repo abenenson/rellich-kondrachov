@@ -58,7 +58,7 @@ def C2c : Submodule ℝ (E → ℝ) where
     simpa using (HasCompactSupport.smul_left (f := fun _ : E => c) hf.2)
 
 omit [CompleteSpace E] in
-theorem C2c_le_C1c : C2c (E := E) ≤ C1c (E := E) := by
+lemma C2c_le_C1c : C2c (E := E) ≤ C1c (E := E) := by
   intro f hf
   refine ⟨hf.1.of_le ?_, hf.2⟩
   -- `ContDiff 2` implies `ContDiff 1`.
@@ -72,7 +72,7 @@ noncomputable def C2cToC1cLinear : ↥(C2c (E := E)) →ₗ[ℝ] ↥(C1c (E := E
 noncomputable def hess (f : E → ℝ) : E → (E →L[ℝ] E) :=
   fun x => fderiv ℝ (grad (E := E) f) x
 
-theorem contDiff_grad_of_contDiff2 {f : E → ℝ} (hf : ContDiff ℝ 2 f) :
+lemma contDiff_grad_of_contDiff2 {f : E → ℝ} (hf : ContDiff ℝ 2 f) :
     ContDiff ℝ 1 (grad (E := E) f) := by
   have hfderiv : ContDiff ℝ 1 (fderiv ℝ f) :=
     hf.fderiv_right (m := 1) (n := 2) (by decide)
@@ -80,24 +80,24 @@ theorem contDiff_grad_of_contDiff2 {f : E → ℝ} (hf : ContDiff ℝ 2 f) :
     simpa using hfderiv
   simpa [grad] using (InnerProductSpace.toDual ℝ E).symm.contDiff.comp hfderiv'
 
-theorem continuous_hess {f : E → ℝ} (hf : ContDiff ℝ 2 f) : Continuous (hess (E := E) f) := by
+lemma continuous_hess {f : E → ℝ} (hf : ContDiff ℝ 2 f) : Continuous (hess (E := E) f) := by
   have hgrad : ContDiff ℝ 1 (grad (E := E) f) := contDiff_grad_of_contDiff2 (E := E) hf
   have hcont : Continuous (fderiv ℝ (grad (E := E) f)) := hgrad.continuous_fderiv one_ne_zero
   simpa [hess] using hcont
 
-theorem hasCompactSupport_hess {f : E → ℝ} (hf : HasCompactSupport f) :
+lemma hasCompactSupport_hess {f : E → ℝ} (hf : HasCompactSupport f) :
     HasCompactSupport (hess (E := E) f) := by
   have hcs_grad : HasCompactSupport (grad (E := E) f) := hasCompactSupport_grad (E := E) hf
   have : HasCompactSupport (fderiv ℝ (grad (E := E) f)) := hcs_grad.fderiv ℝ
   simpa [hess] using this
 
-theorem memLp_hess_of_mem_C2c {f : E → ℝ} (hf : f ∈ C2c (E := E)) :
+lemma memLp_hess_of_mem_C2c {f : E → ℝ} (hf : f ∈ C2c (E := E)) :
     MemLp (hess (E := E) f) 2 μ := by
   have hcont : Continuous (hess (E := E) f) := continuous_hess (E := E) hf.1
   have hcs : HasCompactSupport (hess (E := E) f) := hasCompactSupport_hess (E := E) (f := f) hf.2
   exact hcont.memLp_of_hasCompactSupport (μ := μ) (p := (2 : ℝ≥0∞)) hcs
 
-theorem hess_add {f g : E → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g) :
+lemma hess_add {f g : E → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g) :
     hess (E := E) (f + g) = hess (E := E) f + hess (E := E) g := by
   funext x
   have hgradFun : grad (E := E) (f + g) = grad (E := E) f + grad (E := E) g := by
@@ -113,7 +113,7 @@ theorem hess_add {f g : E → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 
     ((contDiff_grad_of_contDiff2 (E := E) hg).differentiable one_ne_zero).differentiableAt
   simp [hess, hgradFun, fderiv_add hgradf hgradg]
 
-theorem hess_smul (c : ℝ) {f : E → ℝ} (hf : ContDiff ℝ 2 f) :
+lemma hess_smul (c : ℝ) {f : E → ℝ} (hf : ContDiff ℝ 2 f) :
     hess (E := E) (c • f) = c • hess (E := E) f := by
   funext x
   have hgradFun : grad (E := E) (c • f) = c • grad (E := E) f := by
@@ -129,7 +129,7 @@ theorem hess_smul (c : ℝ) {f : E → ℝ} (hf : ContDiff ℝ 2 f) :
 noncomputable def toL2Hess (f : ↥(C2c (E := E))) : L2EE (μ := μ) :=
   (memLp_hess_of_mem_C2c (μ := μ) (E := E) f.2).toLp (hess (E := E) f.1)
 
-private theorem toL2Hess_add (f g : ↥(C2c (E := E))) :
+private lemma toL2Hess_add (f g : ↥(C2c (E := E))) :
     toL2Hess (μ := μ) (E := E) (f + g) =
       toL2Hess (μ := μ) (E := E) f + toL2Hess (μ := μ) (E := E) g := by
   apply Lp.ext
@@ -161,7 +161,7 @@ private theorem toL2Hess_add (f g : ↥(C2c (E := E))) :
             E → (E →L[ℝ] E)) x := by
         simpa [Pi.add_apply] using hxadd.symm
 
-private theorem toL2Hess_smul (c : ℝ) (f : ↥(C2c (E := E))) :
+private lemma toL2Hess_smul (c : ℝ) (f : ↥(C2c (E := E))) :
     toL2Hess (μ := μ) (E := E) (c • f) = c • toL2Hess (μ := μ) (E := E) f := by
   apply Lp.ext
   have hf : (toL2Hess (μ := μ) (E := E) f : E → (E →L[ℝ] E)) =ᵐ[μ] hess (E := E) f.1 :=

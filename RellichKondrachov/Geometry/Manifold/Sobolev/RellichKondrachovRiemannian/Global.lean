@@ -66,7 +66,7 @@ namespace RiemannianFiniteChartData
 variable (dR : RiemannianFiniteChartData (H := H) (M := M) I)
 
 omit [T2Space M] in
-private theorem isCompactOperator_chartToGlobalL2_h1ToChartL2 (i : dR.d.ι) :
+private lemma isCompactOperator_chartToGlobalL2_h1ToChartL2 (i : dR.d.ι) :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
     IsCompactOperator fun x : ↥(FiniteChartData.h1 (d := dR.d) (I := I) (μ := μM)) =>

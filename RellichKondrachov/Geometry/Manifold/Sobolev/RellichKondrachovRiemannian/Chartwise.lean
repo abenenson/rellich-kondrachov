@@ -243,7 +243,7 @@ We implement this by restricting to `K`, applying the restricted `L²` change-of
 and extending by zero back to `L²(volume)`.
 -/
 
-private theorem restrict_le_one_smul {α : Type*} [MeasurableSpace α] (μ : Measure α) (s : Set α) :
+private lemma restrict_le_one_smul {α : Type*} [MeasurableSpace α] (μ : Measure α) (s : Set α) :
     μ.restrict s ≤ (1 : ℝ≥0∞) • μ := by
   simpa [one_smul] using (Measure.restrict_le_self (μ := μ) (s := s))
 
@@ -375,7 +375,7 @@ private lemma indicator_ae_eq_of_ae_eq_restrict
   exact this
 
 omit [T2Space M] [I.Boundaryless] in
-private theorem l2EquivVolumeOnRhoSupportImage'_coeFn_ae_eq (i : dR.d.ι) (F : Type*)
+private lemma l2EquivVolumeOnRhoSupportImage'_coeFn_ae_eq (i : dR.d.ι) (F : Type*)
     [NormedAddCommGroup F] [NormedSpace ℝ F]
     (f :
       E →₂[
@@ -417,7 +417,7 @@ private theorem l2EquivVolumeOnRhoSupportImage'_coeFn_ae_eq (i : dR.d.ι) (F : T
       (c₁ := cVolChart) (c₂ := cChartVol) hcVolChart hcChartVol hvol_le hμ_le hp f)
 
 omit [T2Space M] [I.Boundaryless] in
-private theorem l2ChartToVolumeOnRhoSupportImage_toL2_of_tsupport_subset (i : dR.d.ι)
+private lemma l2ChartToVolumeOnRhoSupportImage_toL2_of_tsupport_subset (i : dR.d.ι)
     (g : ↥(RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.C1c (E := E))) :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
@@ -518,7 +518,7 @@ private theorem l2ChartToVolumeOnRhoSupportImage_toL2_of_tsupport_subset (i : dR
   exact hT.trans (hInd.trans hy.symm)
 
 omit [T2Space M] [I.Boundaryless] in
-private theorem l2ChartToVolumeOnRhoSupportImage_toL2Grad_of_tsupport_subset (i : dR.d.ι)
+private lemma l2ChartToVolumeOnRhoSupportImage_toL2Grad_of_tsupport_subset (i : dR.d.ι)
     (g : ↥(RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.C1c (E := E))) :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
@@ -642,7 +642,7 @@ private theorem l2ChartToVolumeOnRhoSupportImage_toL2Grad_of_tsupport_subset (i 
   exact hT.trans (hInd.trans hy.symm)
 
 omit [T2Space M] in
-private theorem chartTargetToVolumeTarget_h1GraphChart (i : dR.d.ι)
+private lemma chartTargetToVolumeTarget_h1GraphChart (i : dR.d.ι)
     (f : ↥(FiniteChartData.C1 (I := I) (E := E) (H := H) (M := M))) :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
@@ -701,7 +701,7 @@ This sets up the application of Euclidean Rellich compactness on `volume` in lat
 -/
 
 omit [T2Space M] in
-private theorem projToVolumeTarget_h1Graph (i : dR.d.ι)
+private lemma projToVolumeTarget_h1Graph (i : dR.d.ι)
     (f : ↥(FiniteChartData.C1 (I := I) (E := E) (H := H) (M := M))) :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
@@ -731,7 +731,7 @@ private theorem projToVolumeTarget_h1Graph (i : dR.d.ι)
     (chartTargetToVolumeTarget_h1GraphChart (dR := dR) (I := I) (i := i) f)
 
 omit [T2Space M] in
-private theorem projToVolumeTarget_mem_euclidean_h1 (i : dR.d.ι)
+private lemma projToVolumeTarget_mem_euclidean_h1 (i : dR.d.ι)
     (x :
       ↥(FiniteChartData.h1 (d := dR.d) (I := I)
             (μ :=
@@ -794,7 +794,7 @@ private theorem projToVolumeTarget_mem_euclidean_h1 (i : dR.d.ι)
   simpa [T] using this
 
 omit [T2Space M] [I.Boundaryless] in
-private theorem projToVolumeTarget_fst_mem_extendByZero_range (i : dR.d.ι)
+private lemma projToVolumeTarget_fst_mem_extendByZero_range (i : dR.d.ι)
     (y :
       FiniteChartData.h1Target (d := dR.d) (I := I)
         (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M))) :
@@ -894,7 +894,7 @@ private noncomputable def h1ToChartVolH1On (i : dR.d.ι) :
       (y := (x.1 : FiniteChartData.h1Target (d := dR.d) (I := I) μM)))
 
 omit [T2Space M] in
- private theorem eL2RangeChartVol_h1ToChartL2Range_coe (i : dR.d.ι)
+ private lemma eL2RangeChartVol_h1ToChartL2Range_coe (i : dR.d.ι)
     (x :
       ↥(FiniteChartData.h1 (d := dR.d) (I := I)
             (μ :=

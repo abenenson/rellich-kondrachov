@@ -115,7 +115,7 @@ noncomputable def c1ToL2 (μ : Measure M) [IsFiniteMeasure μ] :
       ((LinearMap.fst ℝ _ _).comp (h1GraphChart (d := d) (I := I) (μ := μ) i))
 
 omit [T2Space M] in
-theorem h1ToL2_c1ToH1 (μ : Measure M) [IsFiniteMeasure μ]
+lemma h1ToL2_c1ToH1 (μ : Measure M) [IsFiniteMeasure μ]
     (f : ↥(C1 (E := E) (H := H) (M := M) (I := I))) :
     h1ToL2 (d := d) (I := I) (μ := μ) (c1ToH1 (d := d) (I := I) (μ := μ) f) =
       c1ToL2 (d := d) (I := I) (μ := μ) f := by
@@ -144,7 +144,7 @@ noncomputable def c2ToL2 (μ : Measure M) [IsFiniteMeasure μ] :
       ((LinearMap.fst ℝ _ _).comp (h2GraphChart (d := d) (I := I) (μ := μ) i))
 
 omit [IsManifold I (1 : WithTop ℕ∞) M] [T2Space M] in
-theorem h2ToL2_c2ToH2 (μ : Measure M) [IsFiniteMeasure μ]
+lemma h2ToL2_c2ToH2 (μ : Measure M) [IsFiniteMeasure μ]
     (f : ↥(C2 (E := E) (H := H) (M := M) (I := I))) :
     h2ToL2 (d := d) (I := I) (μ := μ) (c2ToH2 (d := d) (I := I) (μ := μ) f) =
       c2ToL2 (d := d) (I := I) (μ := μ) f := by

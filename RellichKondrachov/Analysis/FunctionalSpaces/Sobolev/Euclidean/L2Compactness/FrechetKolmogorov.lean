@@ -63,7 +63,7 @@ local instance instMeasurableNegE_L2CompactnessFrechetKolmogorov : MeasurableNeg
 
 variable {K : Set E} {ψ : E → ℝ}
 
-theorem norm_smoothL2_sub_extendByZeroL2_le_of_integral_translateL2_sub_extendByZeroL2_le
+lemma norm_smoothL2_sub_extendByZeroL2_le_of_integral_translateL2_sub_extendByZeroL2_le
     (hK : IsCompact K) (hKm : MeasurableSet K)
     (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ) (hψ0 : ∀ x, 0 ≤ ψ x)
     (hψint : ∫ x, ψ x ∂(volume : Measure E) = 1) {η : ℝ} (hη : 0 ≤ η)

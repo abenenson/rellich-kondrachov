@@ -103,14 +103,14 @@ noncomputable def extendByZeroL2 (hKm : MeasurableSet K)
           (s := K) (f := fun x : E => u x) hKm).2 hu
   exact hm.toLp (extendByZeroFun (K := K) u)
 
-theorem extendByZeroL2_ae_eq (hKm : MeasurableSet K)
+lemma extendByZeroL2_ae_eq (hKm : MeasurableSet K)
     (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K)) :
     (extendByZeroL2 (E := E) (K := K) hKm u : E → ℝ) =ᵐ[(volume : Measure E)]
       extendByZeroFun (E := E) (K := K) u := by
   classical
   simp [extendByZeroL2, MeasureTheory.MemLp.coeFn_toLp]
 
-theorem extendByZeroL2_eq_extendByZeroₗᵢ (hKm : MeasurableSet K)
+lemma extendByZeroL2_eq_extendByZeroₗᵢ (hKm : MeasurableSet K)
     (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K)) :
     extendByZeroL2 (E := E) (K := K) hKm u =
       (MeasureTheory.Lp.extendByZeroₗᵢ (μ := (volume : Measure E)) (E := ℝ) (p := (2 : ℝ≥0∞))
@@ -132,7 +132,7 @@ theorem extendByZeroL2_eq_extendByZeroₗᵢ (hKm : MeasurableSet K)
         (p := (2 : ℝ≥0∞)) (s := K) hKm u)
   exact h1.trans h2.symm
 
-theorem norm_extendByZeroL2 (hKm : MeasurableSet K)
+lemma norm_extendByZeroL2 (hKm : MeasurableSet K)
     (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K)) :
     ‖extendByZeroL2 (E := E) (K := K) hKm u‖ = ‖u‖ := by
   classical
@@ -211,7 +211,7 @@ noncomputable def smoothL2 (hK : IsCompact K) (hKm : MeasurableSet K) (hψc : Co
     exact hc.memLp_of_hasCompactSupport (μ := (volume : Measure E)) hs
   hm.toLp (smoothFun (K := K) ψ u)
 
-theorem smoothL2_ae_eq (hK : IsCompact K) (hKm : MeasurableSet K) (hψc : Continuous ψ)
+lemma smoothL2_ae_eq (hK : IsCompact K) (hKm : MeasurableSet K) (hψc : Continuous ψ)
     (hψcs : HasCompactSupport ψ)
     (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K)) :
     (smoothL2 (E := E) (K := K) ψ hK hKm hψc hψcs u : E → ℝ) =ᵐ[(volume : Measure E)]

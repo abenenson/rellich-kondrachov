@@ -273,7 +273,7 @@ convenient compact map to the restricted `L²` space.
 -/
 
 omit [CompleteSpace E] in
-theorem isClosed_range_extendByZero (K : Set E) (hKm : MeasurableSet K) :
+lemma isClosed_range_extendByZero (K : Set E) (hKm : MeasurableSet K) :
     IsClosed
       (LinearMap.range
           ((MeasureTheory.Lp.extendByZeroₗᵢ

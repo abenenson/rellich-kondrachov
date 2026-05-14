@@ -93,7 +93,7 @@ omit
   [T3Space M]
   [T2Space M]
   [CompactSpace M] in
-theorem rhoSupportImage_subset_chartBall (i : dR.d.ι) :
+lemma rhoSupportImage_subset_chartBall (i : dR.d.ι) :
     FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i ⊆ chartBall dR i := by
   classical
   intro y hy
@@ -117,7 +117,7 @@ lemma above lets us restrict those inequalities to the compact support set
 `FiniteChartData.rhoSupportImage`.
 -/
 
-private theorem restrict_le_of_subset {α : Type*} [MeasurableSpace α] {μ ν : Measure α}
+private lemma restrict_le_of_subset {α : Type*} [MeasurableSpace α] {μ ν : Measure α}
     {s t : Set α} {c : ℝ≥0∞} (ht : MeasurableSet t) (hts : t ⊆ s)
     (h : μ.restrict s ≤ c • ν.restrict s) :
     μ.restrict t ≤ c • ν.restrict t := by
@@ -133,7 +133,7 @@ omit [FiniteDimensional ℝ E]
   [I.Boundaryless]
   [T3Space M]
   [T2Space M] in
-theorem rhoSupportImage_measurable (i : dR.d.ι) :
+lemma rhoSupportImage_measurable (i : dR.d.ι) :
     MeasurableSet (FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i) := by
   have hK : IsCompact (FiniteChartData.rhoSupportImage (d := dR.d) (I := I) i) :=
     FiniteChartData.isCompact_rhoSupportImage (d := dR.d) (I := I) i
@@ -155,7 +155,7 @@ coordinate of a manifold `H¹` element belongs to the corresponding Euclidean `H
 -/
 
 omit [T2Space M] in
-private theorem h1ToChart_mem_euclidean_h1 (i : dR.d.ι)
+private lemma h1ToChart_mem_euclidean_h1 (i : dR.d.ι)
     (x :
       ↥(FiniteChartData.h1 (d := dR.d) (I := I)
             (μ :=
@@ -250,7 +250,7 @@ chartwise Euclidean `H¹` element to the supported subspace `h1OnMeasure μchart
 -/
 
 omit [T2Space M] in
-private theorem h1GraphChart_fst_mem_extendByZero_range (i : dR.d.ι)
+private lemma h1GraphChart_fst_mem_extendByZero_range (i : dR.d.ι)
     (f : ↥(FiniteChartData.C1 (I := I) (E := E) (H := H) (M := M))) :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
@@ -297,7 +297,7 @@ private theorem h1GraphChart_fst_mem_extendByZero_range (i : dR.d.ι)
       hfK htsupp)
 
 omit [T2Space M] in
-private theorem h1GraphChart_snd_mem_extendByZero_range (i : dR.d.ι)
+private lemma h1GraphChart_snd_mem_extendByZero_range (i : dR.d.ι)
     (f : ↥(FiniteChartData.C1 (I := I) (E := E) (H := H) (M := M))) :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
@@ -352,7 +352,7 @@ private theorem h1GraphChart_snd_mem_extendByZero_range (i : dR.d.ι)
       hfK htsuppGrad)
 
 omit [T2Space M] in
-theorem h1ToChartL2_mem_extendByZero_range (i : dR.d.ι)
+lemma h1ToChartL2_mem_extendByZero_range (i : dR.d.ι)
     (x :
       ↥(FiniteChartData.h1 (d := dR.d) (I := I)
             (μ :=
@@ -421,7 +421,7 @@ theorem h1ToChartL2_mem_extendByZero_range (i : dR.d.ι)
   simpa [fTarget, FiniteChartData.h1ToChartL2, FiniteChartData.h1ToChart] using this
 
 omit [T2Space M] in
-theorem h1ToChartL2Grad_mem_extendByZero_range (i : dR.d.ι)
+lemma h1ToChartL2Grad_mem_extendByZero_range (i : dR.d.ι)
     (x :
       ↥(FiniteChartData.h1 (d := dR.d) (I := I)
             (μ :=
@@ -484,7 +484,7 @@ theorem h1ToChartL2Grad_mem_extendByZero_range (i : dR.d.ι)
     FiniteChartData.h1ToChart] using this
 
 omit [T2Space M] in
-private theorem h1ToChartH1_mem_h1OnMeasure (i : dR.d.ι)
+private lemma h1ToChartH1_mem_h1OnMeasure (i : dR.d.ι)
     (x :
       ↥(FiniteChartData.h1 (d := dR.d) (I := I)
             (μ :=
@@ -539,7 +539,7 @@ private noncomputable def h1ToChartH1OnMeasure (i : dR.d.ι) :
   simpa [hKm] using (h1ToChartH1_mem_h1OnMeasure (dR := dR) (I := I) (E := E) i x)
 
 omit [I.Boundaryless] [T2Space M] in
-theorem chartMeasure_restrict_rhoSupportImage_le_volume (i : dR.d.ι) :
+lemma chartMeasure_restrict_rhoSupportImage_le_volume (i : dR.d.ι) :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
     let μchart := FiniteChartData.chartMeasure (d := dR.d) (I := I) μM i
@@ -559,7 +559,7 @@ theorem chartMeasure_restrict_rhoSupportImage_le_volume (i : dR.d.ι) :
     restrict_le_of_subset (ht := rhoSupportImage_measurable (dR := dR) (I := I) i) (hts := hKsub) h
 
 omit [I.Boundaryless] [T2Space M] in
-theorem volume_restrict_rhoSupportImage_le_chartMeasure (i : dR.d.ι) :
+lemma volume_restrict_rhoSupportImage_le_chartMeasure (i : dR.d.ι) :
     let μM :=
       RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)
     let μchart := FiniteChartData.chartMeasure (d := dR.d) (I := I) μM i

@@ -93,7 +93,7 @@ private lemma lintegral_rpow_two_le_lintegral_rpow_two
         (1 / (2 : ℝ)) (2 : ℝ)).symm))
 
 /-- `L²` translation estimate for `C¹_c` functions under a right-invariant measure. -/
-theorem enorm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
+lemma enorm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
     ‖translateL2 (μ := μ) (F := ℝ) a (toL2 (μ := μ) (E := E) f) -
         toL2 (μ := μ) (E := E) f‖ₑ ≤
       ‖a‖ₑ * ‖toL2Grad (μ := μ) (E := E) f‖ₑ := by
@@ -326,7 +326,7 @@ theorem enorm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
   simpa [hL2, hGrad] using hCore
 
 /-- Real-norm form of `enorm_translateL2_sub_toL2_le`. -/
-theorem norm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
+lemma norm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
     ‖translateL2 (μ := μ) (F := ℝ) a (toL2 (μ := μ) (E := E) f) -
         toL2 (μ := μ) (E := E) f‖ ≤
       ‖a‖ * ‖toL2Grad (μ := μ) (E := E) f‖ := by

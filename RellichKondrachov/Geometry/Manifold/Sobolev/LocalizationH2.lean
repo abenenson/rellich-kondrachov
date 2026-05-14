@@ -57,7 +57,7 @@ private abbrev Iℝ : ModelWithCorners ℝ ℝ ℝ := 𝓘(ℝ, ℝ)
 
 omit [CompleteSpace E] [IsManifold I (1 : WithTop ℕ∞) M]
     [I.Boundaryless] [T2Space M] [CompactSpace M] in
-private theorem contDiffOn_localize_target {f : M → ℝ}
+private lemma contDiffOn_localize_target {f : M → ℝ}
     (hf : ContMDiff I Iℝ 2 f) (i : d.ι) :
     ContDiffOn ℝ 2 (localize (d := d) f i) (chart (d := d) i).target := by
   classical
@@ -101,7 +101,7 @@ omit [CompleteSpace E] [IsManifold I (1 : WithTop ℕ∞) M] [T2Space M]
 
 /-- For a `C²` function on a compact manifold, the chart-localization is a Euclidean `C2c`
 function. -/
-theorem localize_mem_C2c {f : M → ℝ} (hf : ContMDiff I Iℝ 2 f) (i : d.ι) :
+lemma localize_mem_C2c {f : M → ℝ} (hf : ContMDiff I Iℝ 2 f) (i : d.ι) :
     localize (d := d) f i ∈
       RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.C2c (E := E) := by
   classical

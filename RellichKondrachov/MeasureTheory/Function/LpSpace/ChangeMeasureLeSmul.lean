@@ -37,7 +37,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {p : ℝ≥0∞} [Fact (1 ≤ p)]
 
 omit [NormedSpace ℝ E] [Fact (1 ≤ p)] in
-private theorem memLp_changeMeasure {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ) (f : Lp E p μ) :
+private lemma memLp_changeMeasure {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ) (f : Lp E p μ) :
     MeasureTheory.MemLp (fun x : α => f x) p ν := by
   have hfμ : MeasureTheory.MemLp (fun x : α => f x) p μ := by
     simpa using (MeasureTheory.Lp.memLp f)
@@ -50,7 +50,7 @@ private noncomputable def changeMeasureFun {c : ℝ≥0∞} (hc : c ≠ ∞) (h�
   (memLp_changeMeasure (μ := μ) (ν := ν) (p := p) hc hν f).toLp fun x : α => f x
 
 omit [NormedSpace ℝ E] [Fact (1 ≤ p)] in
-private theorem changeMeasureFun_coe {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ) (f : Lp E p μ) :
+private lemma changeMeasureFun_coe {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ) (f : Lp E p μ) :
     (changeMeasureFun (μ := μ) (ν := ν) (p := p) hc hν f : α → E) =ᵐ[ν] f := by
     simpa [changeMeasureFun] using
       (MeasureTheory.MemLp.coeFn_toLp (memLp_changeMeasure (μ := μ) (ν := ν) (p := p) hc hν f))
@@ -118,7 +118,7 @@ noncomputable def changeMeasureₗ {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν �
             simp [hf]
       _ = (r • changeMeasureFun (μ := μ) (ν := ν) (p := p) hc hν f) x := hsmul'
 
-private theorem norm_changeMeasureFun_le {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ) (f : Lp E p μ) :
+private lemma norm_changeMeasureFun_le {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ) (f : Lp E p μ) :
     p ≠ ∞ →
     ‖changeMeasureₗ (μ := μ) (ν := ν) (E := E) (p := p) hc hν f‖ ≤
       ENNReal.toReal (c ^ (1 / p).toReal) * ‖f‖ := by
@@ -177,14 +177,14 @@ noncomputable def changeMeasureL {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤
       intro f
       exact norm_changeMeasureFun_le (μ := μ) (ν := ν) (E := E) (p := p) hc hν f hp)
 
-theorem changeMeasureL_coeFn_ae_eq {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ)
+lemma changeMeasureL_coeFn_ae_eq {c : ℝ≥0∞} (hc : c ≠ ∞) (hν : ν ≤ c • μ)
     (hp : p ≠ ∞) (f : Lp E p μ) :
     (changeMeasureL (μ := μ) (ν := ν) (E := E) (p := p) hc hν hp f : α → E) =ᵐ[ν] f := by
   -- `mkContinuous` does not change the underlying function.
   simpa [changeMeasureL, changeMeasureₗ, changeMeasureFun] using
     (changeMeasureFun_coe (μ := μ) (ν := ν) (E := E) (p := p) (c := c) hc hν f)
 
-theorem changeMeasureL_congr {c : ℝ≥0∞} (hc₁ hc₂ : c ≠ ∞) (hν₁ hν₂ : ν ≤ c • μ) (hp₁ hp₂ : p ≠ ∞) :
+lemma changeMeasureL_congr {c : ℝ≥0∞} (hc₁ hc₂ : c ≠ ∞) (hν₁ hν₂ : ν ≤ c • μ) (hp₁ hp₂ : p ≠ ∞) :
     changeMeasureL (μ := μ) (ν := ν) (E := E) (p := p) hc₁ hν₁ hp₁ =
       changeMeasureL (μ := μ) (ν := ν) (E := E) (p := p) hc₂ hν₂ hp₂ := by
   refine ContinuousLinearMap.ext ?_
@@ -246,7 +246,7 @@ noncomputable def changeMeasureEquiv {c₁ c₂ : ℝ≥0∞} (hc₁ : c₁ ≠ 
     filter_upwards [hbwd, hfwdμ] with x hbwd hfwd
     exact hbwd.trans hfwd
 
-theorem changeMeasureEquiv_coeFn_ae_eq {c₁ c₂ : ℝ≥0∞} (hc₁ : c₁ ≠ ∞) (hc₂ : c₂ ≠ ∞)
+lemma changeMeasureEquiv_coeFn_ae_eq {c₁ c₂ : ℝ≥0∞} (hc₁ : c₁ ≠ ∞) (hc₂ : c₂ ≠ ∞)
     (hν : ν ≤ c₁ • μ) (hμ : μ ≤ c₂ • ν) (hp : p ≠ ∞) (f : Lp E p μ) :
     (changeMeasureEquiv (μ := μ) (ν := ν) (E := E) (p := p)
       hc₁ hc₂ hν hμ hp f : α → E) =ᵐ[ν] f := by
@@ -261,7 +261,7 @@ theorem changeMeasureEquiv_coeFn_ae_eq {c₁ c₂ : ℝ≥0∞} (hc₁ : c₁ �
 Pre- and post-composition by continuous linear equivalences preserves compactness.
 -/
 
-theorem isCompactOperator_comp_continuousLinearEquiv_iff {F : Type*} [TopologicalSpace F]
+lemma isCompactOperator_comp_continuousLinearEquiv_iff {F : Type*} [TopologicalSpace F]
     [AddCommMonoid F] [Module ℝ F] (e : Lp E p μ ≃L[ℝ] Lp E p ν) (T : Lp E p ν →L[ℝ] F) :
     IsCompactOperator (T.comp e.toContinuousLinearMap) ↔ IsCompactOperator T := by
   constructor

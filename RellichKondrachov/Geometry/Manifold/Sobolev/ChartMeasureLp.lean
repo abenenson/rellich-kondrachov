@@ -64,14 +64,14 @@ on the chart source. -/
 noncomputable def extChartAtMk (μ : Measure M) (i : d.ι) : M → E :=
   (aemeasurable_extChartAt (d := d) (I := I) (μ := μ) i).mk
 
-theorem extChartAt_ae_eq_extChartAtMk (μ : Measure M) (i : d.ι) :
+lemma extChartAt_ae_eq_extChartAtMk (μ : Measure M) (i : d.ι) :
     extChartAt I (d.center i) =ᵐ[μ.restrict (extChartAt I (d.center i)).source]
       extChartAtMk (d := d) (I := I) μ i :=
   (aemeasurable_extChartAt (d := d) (I := I) (μ := μ) i).ae_eq_mk
 
 /-- The measurable modification `extChartAtMk` is measure-preserving from the restricted measure on
 the chart source to `chartMeasure`. -/
-theorem measurePreserving_extChartAtMk (μ : Measure M) (i : d.ι) :
+lemma measurePreserving_extChartAtMk (μ : Measure M) (i : d.ι) :
     MeasurePreserving (extChartAtMk (d := d) (I := I) μ i)
       (μ.restrict (extChartAt I (d.center i)).source) (chartMeasure (d := d) (I := I) μ i) := by
   classical

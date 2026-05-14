@@ -77,13 +77,13 @@ section Compact
 variable [T2Space M] [CompactSpace M]
 
 omit [T2Space M] [CompactSpace M] in
-private theorem univ_subset_iUnion_chartAt_source :
+private lemma univ_subset_iUnion_chartAt_source :
     (univ : Set M) ⊆ ⋃ x : M, (chartAt H x).source := by
   intro x hx
   exact mem_iUnion_of_mem x (mem_chart_source H x)
 
 omit [T2Space M] [CompactSpace M] in
-private theorem isOpen_chartAt_source (x : M) : IsOpen ((chartAt H x).source : Set M) :=
+private lemma isOpen_chartAt_source (x : M) : IsOpen ((chartAt H x).source : Set M) :=
   (chartAt H x).open_source
 
 /-- On a compact smooth manifold, there exists finite chart data subordinate

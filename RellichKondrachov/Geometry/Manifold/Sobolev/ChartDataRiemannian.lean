@@ -136,7 +136,7 @@ omit
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
   [T2Space M]
   [CompactSpace M] in
-private theorem isOpen_chartBallSource (x : M) (r : ℝ) :
+private lemma isOpen_chartBallSource (x : M) (r : ℝ) :
     IsOpen ((extChartAt I x) ⁻¹' Metric.ball (extChartAt I x x) r ∩ (extChartAt I x).source) := by
   have hs : IsOpen ((extChartAt I x).source : Set M) :=
     isOpen_extChartAt_source (I := I) (x := x)

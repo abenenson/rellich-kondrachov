@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
 
 /-- If `f` is `C^n` on an open set `s` and `tsupport f ⊆ s`, then `f` is globally `C^n`. -/
-theorem contDiff_of_contDiffOn_of_tsupport_subset {n : WithTop ℕ∞} {f : E → F} {s : Set E}
+lemma contDiff_of_contDiffOn_of_tsupport_subset {n : WithTop ℕ∞} {f : E → F} {s : Set E}
     (hs : IsOpen s) (hf : ContDiffOn 𝕜 n f s) (hSupp : tsupport f ⊆ s) :
     ContDiff 𝕜 n f := by
   rw [contDiff_iff_contDiffAt]

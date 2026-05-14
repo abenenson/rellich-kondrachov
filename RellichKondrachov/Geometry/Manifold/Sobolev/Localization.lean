@@ -71,13 +71,13 @@ def rhoSupportClosure (i : d.ι) : Set M :=
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I (1 : WithTop ℕ∞) M]
     [I.Boundaryless] [T2Space M] [CompactSpace M] in
-theorem rhoSupportClosure_subset_source (i : d.ι) :
+lemma rhoSupportClosure_subset_source (i : d.ι) :
     rhoSupportClosure (d := d) i ⊆ (chart (d := d) i).source := by
   simp [rhoSupportClosure, chart]
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I (1 : WithTop ℕ∞) M] [I.Boundaryless]
     [T2Space M] in
-theorem isCompact_rhoSupportClosure (i : d.ι) : IsCompact (rhoSupportClosure (d := d) i) :=
+lemma isCompact_rhoSupportClosure (i : d.ι) : IsCompact (rhoSupportClosure (d := d) i) :=
   (isClosed_closure.isCompact)
 
 /-- A compact subset of the chart model space containing the supports of all localizations. -/
@@ -86,7 +86,7 @@ def rhoSupportImage (i : d.ι) : Set E :=
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I (1 : WithTop ℕ∞) M] [I.Boundaryless]
     [T2Space M] in
-theorem isCompact_rhoSupportImage (i : d.ι) : IsCompact (rhoSupportImage (d := d) i) := by
+lemma isCompact_rhoSupportImage (i : d.ι) : IsCompact (rhoSupportImage (d := d) i) := by
   classical
   -- `extChartAt` is continuous on its source, hence on `rhoSupportClosure`
   -- (which is contained in the source).
@@ -96,7 +96,7 @@ theorem isCompact_rhoSupportImage (i : d.ι) : IsCompact (rhoSupportImage (d := 
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I (1 : WithTop ℕ∞) M] [I.Boundaryless]
     [T2Space M] [CompactSpace M] in
-theorem support_localize_subset_rhoSupportImage (f : M → ℝ) (i : d.ι) :
+lemma support_localize_subset_rhoSupportImage (f : M → ℝ) (i : d.ι) :
     Function.support (localize (d := d) f i) ⊆ rhoSupportImage (d := d) i := by
   intro y hy
   have hyT : y ∈ (chart (d := d) i).target := by
@@ -140,7 +140,7 @@ theorem support_localize_subset_rhoSupportImage (f : M → ℝ) (i : d.ι) :
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I (1 : WithTop ℕ∞) M] [I.Boundaryless]
     [T2Space M] in
-theorem tsupport_localize_subset_rhoSupportImage (f : M → ℝ) (i : d.ι) :
+lemma tsupport_localize_subset_rhoSupportImage (f : M → ℝ) (i : d.ι) :
     tsupport (localize (d := d) f i) ⊆ rhoSupportImage (d := d) i := by
   have hImgClosed : IsClosed (rhoSupportImage (d := d) i) :=
     (isCompact_rhoSupportImage (d := d) i).isClosed
@@ -148,7 +148,7 @@ theorem tsupport_localize_subset_rhoSupportImage (f : M → ℝ) (i : d.ι) :
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I (1 : WithTop ℕ∞) M] [I.Boundaryless]
     [T2Space M] [CompactSpace M] in
-theorem rhoSupportImage_subset_target (i : d.ι) :
+lemma rhoSupportImage_subset_target (i : d.ι) :
     rhoSupportImage (d := d) i ⊆ (chart (d := d) i).target := by
   intro y hy
   rcases hy with ⟨x, hx, rfl⟩
@@ -156,14 +156,14 @@ theorem rhoSupportImage_subset_target (i : d.ι) :
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I (1 : WithTop ℕ∞) M] [I.Boundaryless]
     [T2Space M] in
-theorem tsupport_localize_subset_target (f : M → ℝ) (i : d.ι) :
+lemma tsupport_localize_subset_target (f : M → ℝ) (i : d.ι) :
     tsupport (localize (d := d) f i) ⊆ (chart (d := d) i).target :=
   (tsupport_localize_subset_rhoSupportImage (d := d) f i).trans
     (rhoSupportImage_subset_target (d := d) i)
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I (1 : WithTop ℕ∞) M] [I.Boundaryless]
     [T2Space M] in
-theorem hasCompactSupport_localize (f : M → ℝ) (i : d.ι) :
+lemma hasCompactSupport_localize (f : M → ℝ) (i : d.ι) :
     HasCompactSupport (localize (d := d) f i) := by
   -- `HasCompactSupport` is `IsCompact` of `tsupport`.
   have hClosed : IsClosed (tsupport (localize (d := d) f i)) :=
@@ -172,7 +172,7 @@ theorem hasCompactSupport_localize (f : M → ℝ) (i : d.ι) :
     (tsupport_localize_subset_rhoSupportImage (d := d) f i)
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M] [CompactSpace M] in
-private theorem contDiffOn_localize_target {f : M → ℝ}
+private lemma contDiffOn_localize_target {f : M → ℝ}
     (hf : ContMDiff I Iℝ 1 f) (i : d.ι) :
     ContDiffOn ℝ 1 (localize (d := d) f i) (chart (d := d) i).target := by
   classical
@@ -223,7 +223,7 @@ omit [CompleteSpace E] [FiniteDimensional ℝ E] [T2Space M]
 
 /-- For a `C^1` function on a compact manifold, the chart-localization is a Euclidean `C1c`
 function. -/
-theorem localize_mem_C1c {f : M → ℝ} (hf : ContMDiff I Iℝ 1 f) (i : d.ι) :
+lemma localize_mem_C1c {f : M → ℝ} (hf : ContMDiff I Iℝ 1 f) (i : d.ι) :
     localize (d := d) f i ∈
       RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.C1c (E := E) := by
   classical

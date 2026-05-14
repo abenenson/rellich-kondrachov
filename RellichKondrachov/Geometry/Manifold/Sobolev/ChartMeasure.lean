@@ -41,7 +41,7 @@ local instance : BorelSpace E := ⟨rfl⟩
 local instance : OpensMeasurableSpace E := by infer_instance
 
 /-- Any finite measure is finite on compact sets. -/
-theorem isFiniteMeasureOnCompacts_of_isFiniteMeasure {α : Type*} [TopologicalSpace α]
+lemma isFiniteMeasureOnCompacts_of_isFiniteMeasure {α : Type*} [TopologicalSpace α]
     [MeasurableSpace α] {μ : Measure α} [IsFiniteMeasure μ] :
     IsFiniteMeasureOnCompacts μ :=
   ⟨fun K _hK =>
@@ -71,7 +71,7 @@ section
 omit [FiniteDimensional ℝ E]
 
 /-- The extended chart is a.e.-measurable with respect to the restricted measure on its source. -/
-theorem aemeasurable_extChartAt (μ : Measure M) (i : d.ι) :
+lemma aemeasurable_extChartAt (μ : Measure M) (i : d.ι) :
     AEMeasurable (extChartAt I (d.center i))
       (μ.restrict (extChartAt I (d.center i)).source) := by
   classical

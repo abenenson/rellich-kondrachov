@@ -78,7 +78,7 @@ The comparison lemmas in this file produce explicit `ℝ≥0∞` constants. For 
 of-measure equivalences we also need these constants to be finite (`≠ ∞`).
 -/
 
-private theorem volume_closedBall_unit_ne_zero :
+private lemma volume_closedBall_unit_ne_zero :
     ((volume : Measure E) (Metric.closedBall (0 : E) 1)) ≠ 0 := by
   have hpos :
       0 < (volume : Measure E) (Metric.closedBall (0 : E) 1) := by
@@ -86,20 +86,20 @@ private theorem volume_closedBall_unit_ne_zero :
       (by norm_num))
   exact hpos.ne'
 
-private theorem hausdorff_closedBall_unit_ne_top :
+private lemma hausdorff_closedBall_unit_ne_top :
     ((μH[(Module.finrank ℝ E : ℝ)] : Measure E) (Metric.closedBall (0 : E) 1)) ≠ ∞ := by
   -- `μH[dim]` is finite on compact sets, and closed balls are compact in finite-dimensional spaces.
   have hcompact : IsCompact (Metric.closedBall (0 : E) (1 : ℝ)) :=
     isCompact_closedBall (x := (0 : E)) (r := (1 : ℝ))
   exact hcompact.measure_ne_top (μ := (μH[(Module.finrank ℝ E : ℝ)] : Measure E))
 
-private theorem volume_closedBall_unit_ne_top :
+private lemma volume_closedBall_unit_ne_top :
     ((volume : Measure E) (Metric.closedBall (0 : E) 1)) ≠ ∞ := by
   have hcompact : IsCompact (Metric.closedBall (0 : E) (1 : ℝ)) :=
     isCompact_closedBall (x := (0 : E)) (r := (1 : ℝ))
   exact hcompact.measure_ne_top (μ := (volume : Measure E))
 
-private theorem hausdorff_div_volume_closedBall_unit_ne_top :
+private lemma hausdorff_div_volume_closedBall_unit_ne_top :
     ((μH[(Module.finrank ℝ E : ℝ)] (Metric.closedBall (0 : E) 1)) /
         ((volume : Measure E) (Metric.closedBall (0 : E) 1))) ≠ ∞ := by
   -- `a / b = a * b⁻¹`, and both factors are finite once `b ≠ 0`.
@@ -112,7 +112,7 @@ private theorem hausdorff_div_volume_closedBall_unit_ne_top :
   -- Expand `/` and use `mul_ne_top`.
   simpa [div_eq_mul_inv] using (ENNReal.mul_ne_top hnum hdenInv)
 
-private theorem volume_div_hausdorff_closedBall_unit_ne_top :
+private lemma volume_div_hausdorff_closedBall_unit_ne_top :
     (((volume : Measure E) (Metric.closedBall (0 : E) 1)) /
         ((μH[(Module.finrank ℝ E : ℝ)] : Measure E) (Metric.closedBall (0 : E) 1))) ≠ ∞ := by
   have hnum : ((volume : Measure E) (Metric.closedBall (0 : E) 1)) ≠ ∞ :=
@@ -133,7 +133,7 @@ private theorem volume_div_hausdorff_closedBall_unit_ne_top :
 omit [IsManifold I (1 : WithTop ℕ∞) M]
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
   [T3Space M] in
-theorem chartMeasure_volume_constant_ne_top (i : dR.d.ι) :
+lemma chartMeasure_volume_constant_ne_top (i : dR.d.ι) :
     ((((dR.C i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ)) *
           ((μH[(Module.finrank ℝ E : ℝ)] (Metric.closedBall (0 : E) 1)) /
             ((volume : Measure E) (Metric.closedBall (0 : E) 1))))) ≠ ∞ := by
@@ -150,7 +150,7 @@ theorem chartMeasure_volume_constant_ne_top (i : dR.d.ι) :
 omit [IsManifold I (1 : WithTop ℕ∞) M]
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
   [T3Space M] in
-theorem volume_chartMeasure_constant_ne_top (i : dR.d.ι) :
+lemma volume_chartMeasure_constant_ne_top (i : dR.d.ι) :
     ((((volume : Measure E) (Metric.closedBall (0 : E) 1)) /
               ((μH[(Module.finrank ℝ E : ℝ)] : Measure E) (Metric.closedBall (0 : E) 1))) *
             ((dR.Cfwd i : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ))) ≠ ∞ := by
@@ -166,7 +166,7 @@ theorem volume_chartMeasure_constant_ne_top (i : dR.d.ι) :
 
 /-- On the chart ball, the chart pushforward measure of the Riemannian Hausdorff volume measure is
 dominated by Lebesgue `volume` on the chart model space. -/
-theorem chartMeasure_restrict_le_volume (i : dR.d.ι) :
+lemma chartMeasure_restrict_le_volume (i : dR.d.ι) :
     (FiniteChartData.chartMeasure (d := dR.d) (I := I)
         (RellichKondrachov.Geometry.Manifold.Riemannian.riemannianVolumeMeasure (I := I) (M := M)) i).restrict
         (chartBall (dR := dR) (I := I) i) ≤
@@ -212,7 +212,7 @@ theorem chartMeasure_restrict_le_volume (i : dR.d.ι) :
 
 /-- On the chart ball, Lebesgue `volume` on the chart model space is dominated by the chart
 pushforward measure of the Riemannian Hausdorff volume measure. -/
-theorem volume_restrict_le_chartMeasure (i : dR.d.ι) :
+lemma volume_restrict_le_chartMeasure (i : dR.d.ι) :
     (volume : Measure E).restrict (chartBall (dR := dR) (I := I) i) ≤
       (((((volume : Measure E) (Metric.closedBall (0 : E) 1)) /
               ((μH[(Module.finrank ℝ E : ℝ)] : Measure E) (Metric.closedBall (0 : E) 1))) *

@@ -60,7 +60,7 @@ namespace FiniteChartData
 
 variable (d : FiniteChartData (H := H) (M := M) I)
 
-private theorem isCompactOperator_fintype_sum {X Y : Type*} [TopologicalSpace X] [AddCommMonoid X]
+private lemma isCompactOperator_fintype_sum {X Y : Type*} [TopologicalSpace X] [AddCommMonoid X]
     [TopologicalSpace Y] [AddCommMonoid Y] [ContinuousAdd Y]
     {ι : Type*} [Fintype ι] (f : ι → X → Y) (hf : ∀ i, IsCompactOperator (f i)) :
     IsCompactOperator fun x : X => ∑ i : ι, f i x := by
