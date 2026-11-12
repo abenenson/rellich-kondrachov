@@ -1,3 +1,5 @@
 .lake/
 lake-packages/
 /.lake
+docbuild/
+public-docs/

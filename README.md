@@ -1,5 +1,7 @@
 # rellich-kondrachov
 
+[![Lean Action CI](https://github.com/abenenson/rellich-kondrachov/actions/workflows/lean_action_ci.yml/badge.svg?branch=main)](https://github.com/abenenson/rellich-kondrachov/actions/workflows/lean_action_ci.yml)
+
 Lean 4 proof of the **Rellich–Kondrachov compact embedding theorem**: the Sobolev embedding H¹ → L² is compact on compact Riemannian manifolds.
 
 > **Historical build status:** Verified on Lean v4.29.1 with Mathlib. Zero sorries.
