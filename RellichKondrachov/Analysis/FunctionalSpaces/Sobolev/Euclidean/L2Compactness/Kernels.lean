@@ -22,7 +22,7 @@ such that:
 The construction uses mathlib’s `exists_smooth_tsupport_subset` bump-function lemma and normalizes
 by its (positive) integral.
 
-Tracking: Beads `lean-103.5.2.26.5.3.2.2.5`.
+Normalization preserves nonnegativity and compact support while fixing the integral to one.
 -/
 
 namespace RellichKondrachov

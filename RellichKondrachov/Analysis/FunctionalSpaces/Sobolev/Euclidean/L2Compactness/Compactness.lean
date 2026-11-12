@@ -25,7 +25,7 @@ Fréchet–Kolmogorov / Riesz–Kolmogorov approach to Euclidean Rellich–Kondr
 The Arzelà–Ascoli compactness statement for `smoothBCF` lives in
 `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.ArzelaAscoli`.
 
-This is tracked under Beads `lean-103.5.2.26.5.3.2.2.1`.
+The bounds below provide the hypotheses for compactness of the smoothed family.
 -/
 
 namespace RellichKondrachov
@@ -143,8 +143,8 @@ private lemma integrable_norm_L2_restrict (hK : IsCompact K)
   exact (memLp_one_iff_integrable.mp hu1).norm
 
 /-!
-The remainder of the compactness proof (Arzelà–Ascoli on the family `smoothBCF '' closedBall`)
-is tracked as part of `lean-103.5.2.26.5.3.2.2.1`.
+The Arzelà–Ascoli argument for the family `smoothBCF '' closedBall` is proved in
+`L2Compactness.ArzelaAscoli`.
 
 We intentionally keep the helper lemmas above in this file so the final proof can stay short and
 only reference re-usable bounds.

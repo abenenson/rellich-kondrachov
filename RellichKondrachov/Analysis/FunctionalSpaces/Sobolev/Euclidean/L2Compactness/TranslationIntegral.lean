@@ -19,7 +19,7 @@ The core observation is that if `ψ` is supported in a neighborhood where the tr
 ≤ `η`, then the averaged squared translation error against the probability measure
 `kernelMeasure ψ` is ≤ `η²`.
 
-Tracking: Beads `lean-103.5.2.26.5.3.2.2.4`.
+The probability normalization of the kernel turns a uniform bound into an integral bound.
 -/
 
 namespace RellichKondrachov

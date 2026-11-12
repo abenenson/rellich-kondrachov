@@ -19,7 +19,7 @@ This file provides the key analytic inequality used later in the Euclidean Relli
 translation differences are controlled by the `L²`-gradient.
 
 At this stage we only prove *pointwise* inequalities along the segment `t ↦ x + t • a`.
-The measure-theoretic lifting to `L²` is tracked separately under `lean-103.5.2.26.5.3.2.3`.
+The `L²` translation bounds are established in `TranslationEstimateL2` and `TranslationEstimateH1`.
 -/
 
 namespace RellichKondrachov

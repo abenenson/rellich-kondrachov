@@ -37,8 +37,8 @@ compact support and their gradients (expressed using the Riesz representation `t
 - `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.h1ToL2Grad`:
   the continuous gradient map `H¹ → L²(E)`.
 
-No analytic “Sobolev theorems” are proved here; those are tracked separately (Rellich / elliptic
-regularity beads).
+This file constructs the Sobolev completion and its continuous maps. The compact embedding
+for functions with fixed compact support is proved in `Euclidean.Rellich`.
 -/
 
 namespace RellichKondrachov

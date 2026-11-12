@@ -23,7 +23,7 @@ Fréchet–Kolmogorov / Riesz–Kolmogorov approach to Euclidean Rellich–Kondr
   `{ smoothFun ψ u | ‖u‖ ≤ R }` restricted to the compact set `K + tsupport ψ`
   has compact closure in `BoundedContinuousFunction`.
 
-Tracking: Beads `lean-103.5.2.26.5.3.2.2.1.1`.
+Compactness follows from uniform bounds and equicontinuity of the smoothed family.
 -/
 
 namespace RellichKondrachov

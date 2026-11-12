@@ -40,7 +40,7 @@ The proof uses:
 - `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.isCompactOperator_h1OnToL2`:
   compactness of the inclusion.
 
-Tracking: Beads `lean-103.5.2.26.5.3.2.1`.
+The fixed compact support and uniform gradient bound supply the compactness criterion.
 -/
 
 namespace RellichKondrachov

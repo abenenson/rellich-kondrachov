@@ -19,5 +19,5 @@ Authors: Adam Benenson
 Aggregator module for the Euclidean `L²` precompactness (Fréchet–Kolmogorov / Riesz–Kolmogorov)
 machinery used in the Euclidean Rellich–Kondrachov proof stack.
 
-This is tracked under Beads `lean-103.5.2.26.5.3.2.2.*`.
+The imported modules combine smoothing, translation bounds, and compactness transfer.
 -/

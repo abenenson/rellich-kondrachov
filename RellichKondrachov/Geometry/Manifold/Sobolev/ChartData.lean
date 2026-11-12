@@ -12,9 +12,8 @@ Authors: Adam Benenson
 
 Chart/partition-of-unity data for defining Sobolev spaces on compact manifolds.
 
-For the Laplace–Beltrami compact-resolvent discharge (`lean-103.5.2.26`), we ultimately need
-Sobolev spaces `H¹`, `H²` on a compact smooth manifold `M` together with continuous maps to `L²`
-and to suitable “derivative” targets.
+Sobolev spaces `H¹`, `H²` on a compact smooth manifold `M` use finite chart data to define
+continuous maps to `L²` and coordinate derivative targets.
 
 At the current Mathlib pin, the most robust starting point is to make the analytic definitions
 relative to *explicit finite chart data* and a *smooth partition of unity* subordinate to those

@@ -20,7 +20,7 @@ This file transfers the Arzelà–Ascoli compactness of the `BoundedContinuousFu
   For a compact set `K` and a continuous compactly supported kernel `ψ`, the family
   `{ smoothL2 ψ u | ‖u‖ ≤ R }` has compact closure in `L²(volume)`.
 
-Tracking: Beads `lean-103.5.2.26.5.3.2.2.1.2`.
+The continuous map from bounded continuous functions to `L²` transports compactness.
 -/
 
 namespace RellichKondrachov

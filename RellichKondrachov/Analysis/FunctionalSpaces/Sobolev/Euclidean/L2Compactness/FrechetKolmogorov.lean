@@ -33,7 +33,7 @@ compact support (modeled as `Lp ‚Ñù 2 (volume.restrict K)` and embedded into `L¬
 - `isCompact_closure_extendByZeroL2_image_of_forall_exists_translationIntegral_small`:
   the corresponding compact-closure statement.
 
-Tracking: Beads `lean-103.5.2.26.5.3.2.2.3`.
+Uniform approximation by relatively compact smoothed families gives total boundedness.
 -/
 
 namespace RellichKondrachov

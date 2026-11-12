@@ -21,7 +21,7 @@ and the identity map induces a bounded linear operator `Lp E p μ →L[ℝ] Lp E
 If the measures are mutually comparable (`ν ≤ c₁ • μ` and `μ ≤ c₂ • ν`), we get a continuous linear
 equivalence between `Lp` spaces, and compactness of operators can be transported across it.
 
-Tracking: Beads `lean-103.5.2.26.5.3.3.1`.
+The comparison constants control the operator norms of the change-of-measure maps.
 -/
 
 namespace MeasureTheory
