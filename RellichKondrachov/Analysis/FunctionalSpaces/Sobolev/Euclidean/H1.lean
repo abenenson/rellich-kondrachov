@@ -1,15 +1,16 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
+-/
+
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.FDeriv.Const
 import Mathlib.Analysis.InnerProductSpace.Dual
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import Mathlib.MeasureTheory.Function.LpSpace.Indicator
 import Mathlib.Topology.Algebra.Support
-
-/-
-Copyright (c) 2026 Adam Benenson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Adam Benenson
--/
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1`
@@ -55,15 +56,21 @@ section
 variable
   {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
 
-local instance : MeasurableSpace E := borel E
-local instance : BorelSpace E := ⟨rfl⟩
-local instance : OpensMeasurableSpace E := by infer_instance
+/-- Borel σ-algebra on the model space `E`. -/
+local instance instMeasurableSpaceH1 : MeasurableSpace E := borel E
+/-- The chosen measurable structure on the model space is its Borel σ-algebra. -/
+local instance instBorelSpaceH1 : BorelSpace E := ⟨rfl⟩
+/-- Open subsets of the model space are Borel measurable. -/
+local instance instOpensMeasurableSpaceH1 : OpensMeasurableSpace E := by infer_instance
 
 variable (μ : Measure E) [IsFiniteMeasureOnCompacts μ]
 
-private abbrev L2ℝ : Type _ := ↥(E →₂[μ] ℝ)
-private abbrev L2E : Type _ := ↥(E →₂[μ] E)
-private abbrev H1Target : Type _ := L2ℝ (μ := μ) × L2E (μ := μ)
+/-- The space of square-integrable real-valued functions. -/
+abbrev L2ℝ : Type _ := ↥(E →₂[μ] ℝ)
+/-- The space of square-integrable vector-valued functions. -/
+abbrev L2E : Type _ := ↥(E →₂[μ] E)
+/-- The product space containing a function and its first derivative. -/
+abbrev H1Target : Type _ := L2ℝ (μ := μ) × L2E (μ := μ)
 
 /-- `C¹` real-valued functions on `E` with compact support, as a submodule of `E → ℝ`. -/
 def C1c : Submodule ℝ (E → ℝ) where
@@ -78,40 +85,46 @@ def C1c : Submodule ℝ (E → ℝ) where
     intro c f hf
     refine ⟨hf.1.const_smul c, ?_⟩
     -- `HasCompactSupport` is stable under pointwise scalar multiplication.
-    simpa using (HasCompactSupport.smul_left (f := fun _ : E => c) hf.2)
+    exact (HasCompactSupport.smul_left (f := fun _ : E => c) hf.2)
 
 /-- The pointwise gradient (as an `E`-valued function), via Riesz representation. -/
 noncomputable def grad (f : E → ℝ) : E → E :=
   fun x => (InnerProductSpace.toDual ℝ E).symm (fderiv ℝ f x)
 
+/-- The gradient of a continuously differentiable real function is continuous. -/
 lemma continuous_grad {f : E → ℝ} (hf : ContDiff ℝ 1 f) : Continuous (grad (E := E) f) := by
   have hcont : Continuous (fderiv ℝ f) := hf.continuous_fderiv one_ne_zero
   have : Continuous fun x => (InnerProductSpace.toDual ℝ E).symm (fderiv ℝ f x) :=
     (InnerProductSpace.toDual ℝ E).symm.continuous.comp hcont
-  simpa [grad] using this
+  exact this
 
+/-- Taking the gradient preserves compact support. -/
 lemma hasCompactSupport_grad {f : E → ℝ} (hf : HasCompactSupport f) :
     HasCompactSupport (grad (E := E) f) := by
   -- Outside the support of `f`, `fderiv` is identically `0`, hence so is `grad`.
   have hf' : HasCompactSupport (fderiv ℝ f) := hf.fderiv ℝ
   -- `grad` is composition with a linear map sending `0` to `0`.
-  simpa [grad] using
+  exact
     (HasCompactSupport.comp_left (f := fderiv ℝ f) (g := (InnerProductSpace.toDual ℝ E).symm)
       hf' (by simp))
 
+/-- The topological support of the gradient lies in that of the function. -/
 lemma tsupport_grad_subset (f : E → ℝ) : tsupport (grad (E := E) f) ⊆ tsupport f := by
   have hcomp :
       tsupport (grad (E := E) f) ⊆ tsupport (fderiv ℝ f) := by
-    simpa [grad, Function.comp] using
+    exact
       (tsupport_comp_subset
         (g := (InnerProductSpace.toDual ℝ E).symm) (hg := by simp)
         (f := fderiv ℝ f))
   exact hcomp.trans (tsupport_fderiv_subset (𝕜 := ℝ) (f := f))
 
 omit [CompleteSpace E] in
+/-- A compactly supported continuously differentiable function is square-integrable. -/
 lemma memLp_of_mem_C1c {f : E → ℝ} (hf : f ∈ C1c (E := E)) : MemLp f 2 μ := by
   exact (hf.1.continuous.memLp_of_hasCompactSupport (μ := μ) (p := (2 : ℝ≥0∞)) hf.2)
 
+/-- The gradient of a compactly supported continuously differentiable function is
+square-integrable. -/
 lemma memLp_grad_of_mem_C1c {f : E → ℝ} (hf : f ∈ C1c (E := E)) :
     MemLp (grad (E := E) f) 2 μ := by
   have hcont : Continuous (grad (E := E) f) := continuous_grad (E := E) (f := f) hf.1
@@ -165,8 +178,8 @@ private lemma toL2_smul (c : ℝ) (f : ↥(C1c (E := E))) :
 /-- Linear map sending `C¹_c` functions to their `L²` classes. -/
 noncomputable def toL2Linear : ↥(C1c (E := E)) →ₗ[ℝ] L2ℝ (μ := μ) where
   toFun := toL2 (μ := μ) (E := E)
-  map_add' := toL2_add (μ := μ) (E := E)
-  map_smul' := toL2_smul (μ := μ) (E := E)
+  map_add' := by exact toL2_add (μ := μ) (E := E)
+  map_smul' := by exact toL2_smul (μ := μ) (E := E)
 
 private lemma toL2Grad_add (f g : ↥(C1c (E := E))) :
     toL2Grad (μ := μ) (E := E) (f + g) =
@@ -226,8 +239,8 @@ private lemma toL2Grad_smul (c : ℝ) (f : ↥(C1c (E := E))) :
 /-- Linear map sending `C¹_c` functions to the `L²` class of their gradient. -/
 noncomputable def toL2GradLinear : ↥(C1c (E := E)) →ₗ[ℝ] L2E (μ := μ) where
   toFun := toL2Grad (μ := μ) (E := E)
-  map_add' := toL2Grad_add (μ := μ) (E := E)
-  map_smul' := toL2Grad_smul (μ := μ) (E := E)
+  map_add' := by exact toL2Grad_add (μ := μ) (E := E)
+  map_smul' := by exact toL2Grad_smul (μ := μ) (E := E)
 
 /-- The graph map `f ↦ (f, ∇f)` into `L² × L²(E)`. -/
 noncomputable def graph : ↥(C1c (E := E)) →ₗ[ℝ] H1Target (μ := μ) :=

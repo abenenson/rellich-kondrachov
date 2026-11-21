@@ -1,12 +1,13 @@
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.MeasureTheory.Integral.Bochner.Set
-import Mathlib.Topology.Algebra.Support
-
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
 -/
+
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.MeasureTheory.Integral.Bochner.Set
+import Mathlib.Topology.Algebra.Support
 
 /-!
 # `L²` compactness criterion: existence of small-support probability kernels (Euclidean)
@@ -41,9 +42,12 @@ section Volume
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 
-local instance instMeasurableSpaceE_L2CompactnessKernels : MeasurableSpace E := borel E
-local instance instBorelSpaceE_L2CompactnessKernels : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_L2CompactnessKernels : OpensMeasurableSpace E := by
+/-- Borel σ-algebra on the model space `E`. -/
+local instance instMeasurableSpaceEL2CompactnessKernels : MeasurableSpace E := borel E
+/-- The chosen measurable structure on the model space is its Borel σ-algebra. -/
+local instance instBorelSpaceEL2CompactnessKernels : BorelSpace E := ⟨rfl⟩
+/-- Open subsets of the model space are Borel measurable. -/
+local instance instOpensMeasurableSpaceEL2CompactnessKernels : OpensMeasurableSpace E := by
   infer_instance
 
 /-- For any `δ > 0`, there exists a continuous compactly supported kernel `ψ` supported in
@@ -77,9 +81,9 @@ theorem exists_kernel_tsupport_subset_ball_integral_eq_one {δ : ℝ} (hδ : 0 <
   -- Normalize: `ψ = I⁻¹ • f`.
   let ψ : E → ℝ := fun x => I⁻¹ * f x
   have hψc : Continuous ψ := by
-    simpa [ψ] using (continuous_const.mul hf_cont)
+    exact (continuous_const.mul hf_cont)
   have hψcs : HasCompactSupport ψ := by
-    simpa [ψ, smul_eq_mul] using
+    exact
       (HasCompactSupport.smul_left (f := fun _x : E => I⁻¹) (f' := f) hf_cs)
   have hψ0 : ∀ x, 0 ≤ ψ x := by
     intro x

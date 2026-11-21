@@ -1,11 +1,12 @@
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateL2
-import Mathlib.Topology.Order.OrderClosed
-
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
 -/
+
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateL2
+import Mathlib.Topology.Order.OrderClosed
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateH1`
@@ -33,14 +34,18 @@ section
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
 
-local instance instMeasurableSpaceE_SobolevEuclideanTranslationEstimateH1 :
+/-- Borel σ-algebra on the model space `E`. -/
+local instance instMeasurableSpaceTranslationEstimateH1 :
     MeasurableSpace E := borel E
-local instance instBorelSpaceE_SobolevEuclideanTranslationEstimateH1 :
+/-- The chosen measurable structure on the model space is its Borel σ-algebra. -/
+local instance instBorelSpaceTranslationEstimateH1 :
     BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevEuclideanTranslationEstimateH1 :
+/-- Open subsets of the model space are Borel measurable. -/
+local instance instOpensMeasurableSpaceTranslationEstimateH1 :
     OpensMeasurableSpace E := by
   infer_instance
-local instance instMeasurableAddE_SobolevEuclideanTranslationEstimateH1 : MeasurableAdd E := by
+/-- Addition is measurable for the Borel structure on the model space. -/
+local instance instMeasurableAddTranslationEstimateH1 : MeasurableAdd E := by
   infer_instance
 
 variable (μ : Measure E) [μ.IsAddRightInvariant] [IsFiniteMeasureOnCompacts μ] [SFinite μ]
@@ -73,14 +78,14 @@ theorem norm_translateL2_sub_h1ToL2_le (a : E) (u : ↥(h1 (μ := μ) (E := E)))
       have hsub :
           Continuous fun v : V =>
             translateL2 (μ := μ) (F := ℝ) a v.1 - v.1 := by
-        simpa [sub_eq_add_neg] using htr.sub hfst
-      simpa using (continuous_norm.comp hsub)
+        exact htr.sub hfst
+      exact (continuous_norm.comp hsub)
     have hg :
         Continuous fun v : V =>
           ‖a‖ * ‖v.2‖ := by
       have hsnd : Continuous fun v : V => v.2 := continuous_snd
       have hnorm : Continuous fun v : V => ‖v.2‖ := continuous_norm.comp hsnd
-      simpa [mul_assoc] using (continuous_const.mul hnorm)
+      exact (continuous_const.mul hnorm)
     exact isClosed_le hf hg
   have hRange : (LinearMap.range (graph (μ := μ) (E := E)) : Set V) ⊆ S := by
     rintro v ⟨f, rfl⟩

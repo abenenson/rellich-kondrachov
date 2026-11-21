@@ -1,14 +1,15 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
+-/
+
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.H1
 import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.MeasureTheory.Group.Measure
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.Topology.Algebra.Group.Basic
-
-/-
-Copyright (c) 2026 Adam Benenson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Adam Benenson
--/
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation`
@@ -44,25 +45,30 @@ def translate {F : Type*} (a : E) (f : E → F) : E → F :=
   fun x => f (x + a)
 
 omit [CompleteSpace E] in
+/-- Translation preserves continuous differentiability. -/
 lemma contDiff_translate {f : E → ℝ} (hf : ContDiff ℝ 1 f) (a : E) :
     ContDiff ℝ 1 (translate (E := E) a f) := by
   -- `x ↦ x + a` is `C^∞`; compose.
-  simpa [translate] using hf.comp (contDiff_id.add contDiff_const)
+  exact hf.comp (contDiff_id.add contDiff_const)
 
 omit [InnerProductSpace ℝ E] [CompleteSpace E] in
+/-- Translation preserves compact support. -/
 lemma hasCompactSupport_translate {F : Type*} [Zero F] {f : E → F}
     (hf : HasCompactSupport f) (a : E) : HasCompactSupport (translate (E := E) a f) := by
-  simpa [translate] using hf.comp_homeomorph (Homeomorph.addRight a)
+  exact hf.comp_homeomorph (Homeomorph.addRight a)
 
+/-- The gradient of a translate at a point is the original gradient at the translated point. -/
 lemma grad_translate (a : E) (f : E → ℝ) (x : E) :
     grad (E := E) (translate (E := E) a f) x = grad (E := E) f (x + a) := by
   classical
   -- `fderiv` commutes with translation, hence so does `grad`.
-  simp [grad]
-  -- Reduce to the standard `fderiv` translation lemma.
-  simpa [translate] using (fderiv_comp_add_right (𝕜 := ℝ) (f := f) (x := x) a)
+  -- Reduce to the standard `fderiv` translation lemma, applied under the Riesz dual map.
+  have hfderiv : fderiv ℝ (translate (E := E) a f) x = fderiv ℝ f (x + a) :=
+    fderiv_comp_add_right (𝕜 := ℝ) (f := f) (x := x) a
+  simp only [grad, hfderiv]
 
 omit [CompleteSpace E] in
+/-- Translation maps compactly supported continuously differentiable functions to the same space. -/
 lemma mem_C1c_translate {f : E → ℝ} (hf : f ∈ C1c (E := E)) (a : E) :
     translate (E := E) a f ∈ C1c (E := E) :=
   ⟨contDiff_translate (E := E) hf.1 a, hasCompactSupport_translate (E := E) hf.2 a⟩
@@ -83,11 +89,15 @@ section Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
 
-local instance instMeasurableSpaceE_SobolevEuclideanTranslation : MeasurableSpace E := borel E
-local instance instBorelSpaceE_SobolevEuclideanTranslation : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevEuclideanTranslation : OpensMeasurableSpace E := by
+/-- Borel σ-algebra on the model space `E`. -/
+local instance instMeasurableSpaceTranslation : MeasurableSpace E := borel E
+/-- The chosen measurable structure on the model space is its Borel σ-algebra. -/
+local instance instBorelSpaceTranslation : BorelSpace E := ⟨rfl⟩
+/-- Open subsets of the model space are Borel measurable. -/
+local instance instOpensMeasurableSpaceTranslation : OpensMeasurableSpace E := by
   infer_instance
-local instance instMeasurableAddE_SobolevEuclideanTranslation : MeasurableAdd E := by
+/-- Addition is measurable for the Borel structure on the model space. -/
+local instance instMeasurableAddTranslation : MeasurableAdd E := by
   infer_instance
 
 variable (μ : Measure E) [μ.IsAddRightInvariant]
@@ -101,18 +111,20 @@ noncomputable def translateL2 {F : Type*} [NormedAddCommGroup F] [NormedSpace �
       (μ := μ) (μb := μ) (f := fun x : E => x + a) (MeasureTheory.measurePreserving_add_right μ a))
 
 omit [InnerProductSpace ℝ E] [CompleteSpace E] in
+/-- The L² translation agrees almost everywhere with pointwise translation. -/
 lemma translateL2_ae_eq {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] (a : E)
     (g : E →₂[μ] F) :
     (translateL2 (μ := μ) (F := F) a g : E → F) =ᵐ[μ] fun x => (g : E → F) (x + a) := by
   classical
   -- Reduce to `Lp.coeFn_compMeasurePreserving`.
-  simpa [translateL2] using
+  exact
     (MeasureTheory.Lp.coeFn_compMeasurePreserving (g := (g : MeasureTheory.Lp F (2 : ENNReal) μ))
       (hf := MeasureTheory.measurePreserving_add_right μ a))
 
 variable [IsFiniteMeasureOnCompacts μ]
 
 omit [CompleteSpace E] in
+/-- Taking the scalar L² representative commutes with translation of a test function. -/
 lemma translateL2_toL2 (a : E) (f : ↥(C1c (E := E))) :
     translateL2 (μ := μ) (F := ℝ) a (toL2 (μ := μ) (E := E) f) =
       toL2 (μ := μ) (E := E) (translateC1c (E := E) a f) := by
@@ -125,7 +137,7 @@ lemma translateL2_toL2 (a : E) (f : ↥(C1c (E := E))) :
     have hf' :
         (fun x => (toL2 (μ := μ) (E := E) f : E → ℝ) (x + a)) =ᵐ[μ] fun x => f.1 (x + a) := by
       -- Move the a.e. equality through a measure-preserving map.
-      simpa [Function.comp, Pi.add_apply] using
+      exact
         (Measure.QuasiMeasurePreserving.ae_eq_comp
           (MeasureTheory.measurePreserving_add_right μ a).quasiMeasurePreserving hf)
     exact (translateL2_ae_eq (μ := μ) (F := ℝ) a (toL2 (μ := μ) (E := E) f)).trans hf'
@@ -133,10 +145,11 @@ lemma translateL2_toL2 (a : E) (f : ↥(C1c (E := E))) :
       (toL2 (μ := μ) (E := E) (translateC1c (E := E) a f) : E → ℝ) =ᵐ[μ]
         fun x => f.1 (x + a) := by
     -- `toL2` agrees a.e. with the underlying translated function.
-    simpa [translateC1c, translate] using
+    exact
       (memLp_of_mem_C1c (μ := μ) (E := E) (translateC1c (E := E) a f).2).coeFn_toLp
   exact h₁.trans h₂.symm
 
+/-- Taking the L² gradient representative commutes with translation of a test function. -/
 lemma translateL2_toL2Grad (a : E) (f : ↥(C1c (E := E))) :
     translateL2 (μ := μ) (F := E) a (toL2Grad (μ := μ) (E := E) f) =
       toL2Grad (μ := μ) (E := E) (translateC1c (E := E) a f) := by
@@ -150,7 +163,7 @@ lemma translateL2_toL2Grad (a : E) (f : ↥(C1c (E := E))) :
     have hf' :
         (fun x => (toL2Grad (μ := μ) (E := E) f : E → E) (x + a)) =ᵐ[μ]
           fun x => grad (E := E) f.1 (x + a) := by
-      simpa [Function.comp, Pi.add_apply] using
+      exact
         (Measure.QuasiMeasurePreserving.ae_eq_comp
           (MeasureTheory.measurePreserving_add_right μ a).quasiMeasurePreserving hf)
     exact

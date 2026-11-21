@@ -1,13 +1,14 @@
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimate
-import Mathlib.MeasureTheory.Integral.MeanInequalities
-import Mathlib.MeasureTheory.Measure.Prod
-
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
 -/
+
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimate
+import Mathlib.MeasureTheory.Integral.MeanInequalities
+import Mathlib.MeasureTheory.Measure.Prod
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateL2`
@@ -40,19 +41,23 @@ section
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
 
-local instance instMeasurableSpaceE_SobolevEuclideanTranslationEstimateL2 :
+/-- Borel σ-algebra on the model space `E`. -/
+local instance instMeasurableSpaceTranslationEstimateL2 :
     MeasurableSpace E := borel E
-local instance instBorelSpaceE_SobolevEuclideanTranslationEstimateL2 :
+/-- The chosen measurable structure on the model space is its Borel σ-algebra. -/
+local instance instBorelSpaceTranslationEstimateL2 :
     BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevEuclideanTranslationEstimateL2 :
+/-- Open subsets of the model space are Borel measurable. -/
+local instance instOpensMeasurableSpaceTranslationEstimateL2 :
     OpensMeasurableSpace E := by
   infer_instance
-local instance instMeasurableAddE_SobolevEuclideanTranslationEstimateL2 : MeasurableAdd E := by
+/-- Addition is measurable for the Borel structure on the model space. -/
+local instance instMeasurableAddTranslationEstimateL2 : MeasurableAdd E := by
   infer_instance
 
 variable (μ : Measure E) [μ.IsAddRightInvariant] [IsFiniteMeasureOnCompacts μ] [SFinite μ]
 
-private abbrev μI : Measure ℝ := (volume.restrict (Icc (0 : ℝ) 1))
+private abbrev μI : Measure ℝ := (volume.restrict (Set.Icc (0 : ℝ) 1))
 
 private lemma μI_univ : (μI : Measure ℝ) Set.univ = (1 : ℝ≥0∞) := by
   simp [μI, Measure.restrict_apply, Real.volume_Icc]
@@ -92,7 +97,145 @@ private lemma lintegral_rpow_two_le_lintegral_rpow_two
         (∫⁻ t, g t ^ (2 : ℝ) ∂(μI : Measure ℝ))
         (1 / (2 : ℝ)) (2 : ℝ)).symm))
 
+omit [IsFiniteMeasureOnCompacts μ] in
 /-- `L²` translation estimate for `C¹_c` functions under a right-invariant measure. -/
+private lemma lintegral_enorm_sub_sq_le (a : E) (f : ↥(C1c (E := E))) :
+    (∫⁻ x, ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ≤
+      ‖a‖ₑ ^ (2 : ℝ) * (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) := by
+  -- Pointwise: Cauchy–Schwarz in `t`, then Tonelli in `(x,t)`.
+  have hpt :
+      ∀ x : E,
+        ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ≤
+          ‖a‖ₑ ^ (2 : ℝ) *
+            ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) := by
+    intro x
+    have h0 := enorm_sub_le_enorm_mul_lintegral_grad (E := E) (x := x) (a := a) (f := f.1)
+      (hf := f.2.1)
+    -- Square both sides and apply Cauchy–Schwarz in `t`.
+    have h1 :
+        ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ≤
+          (‖a‖ₑ * ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ∂(μI : Measure ℝ)) ^ (2 : ℝ) := by
+      exact ENNReal.rpow_le_rpow h0 (by norm_num)
+    have hcs :
+        (∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ∂(μI : Measure ℝ)) ^ (2 : ℝ) ≤
+          ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) := by
+      refine lintegral_rpow_two_le_lintegral_rpow_two (g := fun t : ℝ =>
+        ‖grad (E := E) f.1 (x + t • a)‖ₑ) ?_
+      -- measurability from continuity of `grad`.
+      have hgrad : Continuous (grad (E := E) f.1) := continuous_grad (E := E) (f := f.1) f.2.1
+      have hline : Continuous fun t : ℝ => x + t • a := by
+        fun_prop
+      exact (hgrad.comp hline).measurable.enorm.aemeasurable
+    -- Combine and rewrite.
+    calc
+      ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ)
+          ≤ (‖a‖ₑ * ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ∂(μI : Measure ℝ)) ^ (2 : ℝ) := h1
+      _ = ‖a‖ₑ ^ (2 : ℝ) *
+          (∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ
+            ∂(μI : Measure ℝ)) ^ (2 : ℝ) := by
+          simpa using
+            (ENNReal.mul_rpow_of_nonneg ‖a‖ₑ
+              (∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ
+                ∂(μI : Measure ℝ))
+              (show (0 : ℝ) ≤ (2 : ℝ) by norm_num))
+      _ ≤ ‖a‖ₑ ^ (2 : ℝ) *
+          ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ)
+            ∂(μI : Measure ℝ) := by
+          gcongr
+      _ = ‖a‖ₑ ^ (2 : ℝ) *
+          ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ)
+            ∂(μI : Measure ℝ) := rfl
+  -- Integrate over `x` and apply Tonelli to swap integrals.
+  let F : E × ℝ → ℝ≥0∞ :=
+    fun z => ‖grad (E := E) f.1 (z.1 + z.2 • a)‖ₑ ^ (2 : ℝ)
+  have hmeas :
+      AEMeasurable
+        F (μ.prod (μI : Measure ℝ)) := by
+    have hgrad : Continuous (grad (E := E) f.1) := continuous_grad (E := E) (f := f.1) f.2.1
+    have hcont : Continuous fun z : E × ℝ => z.1 + z.2 • a := by
+      fun_prop
+    have hbase : Measurable fun z : E × ℝ => ‖grad (E := E) f.1 (z.1 + z.2 • a)‖ₑ := by
+      exact (hgrad.comp hcont).measurable.enorm
+    have hpow : Measurable fun r : ℝ≥0∞ => r ^ (2 : ℝ) :=
+      (ENNReal.continuous_rpow_const (y := (2 : ℝ))).measurable
+    exact (hpow.comp hbase).aemeasurable
+  have hTonelli :
+      (∫⁻ x, ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) ∂μ) =
+        ∫⁻ t, ∫⁻ x, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂μ ∂(μI : Measure ℝ) := by
+    -- Tonelli in both orders, via the product measure.
+    have hprod :
+        (∫⁻ z, F z ∂μ.prod (μI : Measure ℝ)) =
+          ∫⁻ x, ∫⁻ t, F (x, t) ∂(μI : Measure ℝ) ∂μ :=
+      MeasureTheory.lintegral_prod (μ := μ) (ν := (μI : Measure ℝ)) F hmeas
+    have hprod_symm :
+        (∫⁻ z, F z ∂μ.prod (μI : Measure ℝ)) =
+          ∫⁻ t, ∫⁻ x, F (x, t) ∂μ ∂(μI : Measure ℝ) :=
+      MeasureTheory.lintegral_prod_symm (μ := μ) (ν := (μI : Measure ℝ)) F hmeas
+    calc
+      (∫⁻ x, ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) ∂μ)
+          = ∫⁻ z, F z ∂μ.prod (μI : Measure ℝ) := by
+              simpa [F] using hprod.symm
+      _ = ∫⁻ t, ∫⁻ x, F (x, t) ∂μ ∂(μI : Measure ℝ) := hprod_symm
+      _ = ∫⁻ t, ∫⁻ x, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂μ ∂(μI : Measure ℝ) := by
+              simp [F]
+  -- Now use measure-preserving translation in `x` and evaluate the `t`-integral.
+  have hShift :
+      (∫⁻ t, ∫⁻ x, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂μ ∂(μI : Measure ℝ)) =
+        ∫⁻ t, (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ∂(μI : Measure ℝ) := by
+    refine MeasureTheory.lintegral_congr fun t => ?_
+    -- Change of variables `x ↦ x + t•a`.
+    have hmeas' : Measurable fun x : E => ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) := by
+      have hgrad : Continuous (grad (E := E) f.1) := continuous_grad (E := E) (f := f.1) f.2.1
+      have hbase : Measurable fun x : E => ‖grad (E := E) f.1 x‖ₑ := hgrad.measurable.enorm
+      have hpow : Measurable fun r : ℝ≥0∞ => r ^ (2 : ℝ) :=
+        (ENNReal.continuous_rpow_const (y := (2 : ℝ))).measurable
+      exact hpow.comp hbase
+    simpa [Function.comp, add_assoc] using
+      (MeasureTheory.measurePreserving_add_right μ (t • a)).lintegral_comp (μ := μ) (ν := μ)
+        (f := fun x : E => ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ)) hmeas'
+  have hEval :
+      (∫⁻ t, (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ∂(μI : Measure ℝ)) =
+        (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) := by
+    -- `μI` has total mass `1`.
+    simp [μI, Measure.restrict_apply, Real.volume_Icc]
+  -- Put everything together.
+  have hInt :
+      (∫⁻ x, ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ≤
+        ‖a‖ₑ ^ (2 : ℝ) * (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) := by
+    calc
+      (∫⁻ x, ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ∂μ)
+          ≤ ∫⁻ x, ‖a‖ₑ ^ (2 : ℝ) *
+                ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) ∂μ := by
+            refine MeasureTheory.lintegral_mono ?_
+            intro x
+            exact hpt x
+      _ = ‖a‖ₑ ^ (2 : ℝ) *
+            (∫⁻ x, ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) ∂μ) := by
+            -- Pull out the constant using `lintegral_const_mul''`.
+            have hInner :
+                AEMeasurable
+                  (fun x : E =>
+                    ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ)) μ := by
+              -- Measurability of the inner integral follows
+              -- from `hmeas` via
+              -- `AEMeasurable.lintegral_prod_right'`.
+              simpa [F] using (hmeas.lintegral_prod_right' (μ := μ) (ν := (μI : Measure ℝ)))
+            simpa [mul_assoc] using
+              (MeasureTheory.lintegral_const_mul'' (μ := μ) (r := ‖a‖ₑ ^ (2 : ℝ))
+                (f := fun x : E =>
+                  ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ)) hInner)
+      _ = ‖a‖ₑ ^ (2 : ℝ) *
+            (∫⁻ t, ∫⁻ x, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂μ ∂(μI : Measure ℝ)) := by
+            exact congrArg (fun z => ‖a‖ₑ ^ (2 : ℝ) * z) hTonelli
+      _ = ‖a‖ₑ ^ (2 : ℝ) *
+            (∫⁻ t, (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ∂(μI : Measure ℝ)) := by
+            exact congrArg (fun z => ‖a‖ₑ ^ (2 : ℝ) * z) hShift
+      _ = ‖a‖ₑ ^ (2 : ℝ) * (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) := by
+            exact congrArg (fun z => ‖a‖ₑ ^ (2 : ℝ) * z) hEval
+  exact hInt
+
+/-- The L² translation error of a test function is bounded by the shift length times its L²
+gradient norm. -/
 lemma enorm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
     ‖translateL2 (μ := μ) (F := ℝ) a (toL2 (μ := μ) (E := E) f) -
         toL2 (μ := μ) (E := E) f‖ₑ ≤
@@ -112,7 +255,7 @@ lemma enorm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
         (memLp_of_mem_C1c (μ := μ) (E := E) f.2).coeFn_toLp
       have hf' :
           (fun x => (toL2 (μ := μ) (E := E) f : E → ℝ) (x + a)) =ᵐ[μ] fun x => f.1 (x + a) := by
-        simpa [Function.comp, Pi.add_apply] using
+        exact
           (Measure.QuasiMeasurePreserving.ae_eq_comp
             (MeasureTheory.measurePreserving_add_right μ a).quasiMeasurePreserving hf)
       exact (translateL2_ae_eq (μ := μ) (F := ℝ) a (toL2 (μ := μ) (E := E) f)).trans hf'
@@ -159,144 +302,23 @@ lemma enorm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
         ‖a‖ₑ * MeasureTheory.eLpNorm (fun x : E => grad (E := E) f.1 x) (2 : ℝ≥0∞) μ := by
     -- Expand the definition of `eLpNorm` at exponent `2`.
     have h2_ne0 : (2 : ℝ≥0∞) ≠ 0 := by simp
-    have h2_netop : (2 : ℝ≥0∞) ≠ ∞ := by simp
-    simp_rw [MeasureTheory.eLpNorm_eq_lintegral_rpow_enorm_toReal
-      h2_ne0 h2_netop, ENNReal.toReal_ofNat] at *
+    have h2_netop : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by simp
+    have hf_meas : MeasureTheory.AEStronglyMeasurable (fun x : E => f.1 x) μ :=
+      (memLp_of_mem_C1c (μ := μ) (E := E) f.2).aestronglyMeasurable
+    have hshift_meas :
+        MeasureTheory.AEStronglyMeasurable (fun x : E => f.1 (x + a) - f.1 x) μ := by
+      have hshift : MeasureTheory.AEStronglyMeasurable (fun x : E => f.1 (x + a)) μ :=
+        hf_meas.comp_quasiMeasurePreserving
+          (MeasureTheory.measurePreserving_add_right μ a).quasiMeasurePreserving
+      exact hshift.sub hf_meas
+    have hgrad_meas :
+        MeasureTheory.AEStronglyMeasurable (fun x : E => grad (E := E) f.1 x) μ :=
+      (memLp_grad_of_mem_C1c (μ := μ) (E := E) f.2).aestronglyMeasurable
+    rw [MeasureTheory.eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne0 h2_netop hshift_meas,
+      MeasureTheory.eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne0 h2_netop hgrad_meas,
+      ENNReal.toReal_ofNat]
     -- It suffices to compare the squared integrals.
-    have hsq :
-        (∫⁻ x, ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ≤
-          ‖a‖ₑ ^ (2 : ℝ) * (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) := by
-      -- Pointwise: Cauchy–Schwarz in `t`, then Tonelli in `(x,t)`.
-      have hpt :
-          ∀ x : E,
-            ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ≤
-              ‖a‖ₑ ^ (2 : ℝ) *
-                ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) := by
-        intro x
-        have h0 := enorm_sub_le_enorm_mul_lintegral_grad (E := E) (x := x) (a := a) (f := f.1)
-          (hf := f.2.1)
-        -- Square both sides and apply Cauchy–Schwarz in `t`.
-        have h1 :
-            ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ≤
-              (‖a‖ₑ * ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ∂(μI : Measure ℝ)) ^ (2 : ℝ) := by
-          exact ENNReal.rpow_le_rpow h0 (by norm_num)
-        have hcs :
-            (∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ∂(μI : Measure ℝ)) ^ (2 : ℝ) ≤
-              ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) := by
-          refine lintegral_rpow_two_le_lintegral_rpow_two (g := fun t : ℝ =>
-            ‖grad (E := E) f.1 (x + t • a)‖ₑ) ?_
-          -- measurability from continuity of `grad`.
-          have hgrad : Continuous (grad (E := E) f.1) := continuous_grad (E := E) (f := f.1) f.2.1
-          have hline : Continuous fun t : ℝ => x + t • a := by
-            fun_prop
-          exact (hgrad.comp hline).measurable.enorm.aemeasurable
-        -- Combine and rewrite.
-        calc
-          ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ)
-              ≤ (‖a‖ₑ * ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ∂(μI : Measure ℝ)) ^ (2 : ℝ) := h1
-          _ = ‖a‖ₑ ^ (2 : ℝ) *
-              (∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ
-                ∂(μI : Measure ℝ)) ^ (2 : ℝ) := by
-              simpa using
-                (ENNReal.mul_rpow_of_nonneg ‖a‖ₑ
-                  (∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ
-                    ∂(μI : Measure ℝ))
-                  (show (0 : ℝ) ≤ (2 : ℝ) by norm_num))
-          _ ≤ ‖a‖ₑ ^ (2 : ℝ) *
-              ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ)
-                ∂(μI : Measure ℝ) := by
-              gcongr
-          _ = ‖a‖ₑ ^ (2 : ℝ) *
-              ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ)
-                ∂(μI : Measure ℝ) := rfl
-      -- Integrate over `x` and apply Tonelli to swap integrals.
-      let F : E × ℝ → ℝ≥0∞ :=
-        fun z => ‖grad (E := E) f.1 (z.1 + z.2 • a)‖ₑ ^ (2 : ℝ)
-      have hmeas :
-          AEMeasurable
-            F (μ.prod (μI : Measure ℝ)) := by
-        have hgrad : Continuous (grad (E := E) f.1) := continuous_grad (E := E) (f := f.1) f.2.1
-        have hcont : Continuous fun z : E × ℝ => z.1 + z.2 • a := by
-          fun_prop
-        have hbase : Measurable fun z : E × ℝ => ‖grad (E := E) f.1 (z.1 + z.2 • a)‖ₑ := by
-          exact (hgrad.comp hcont).measurable.enorm
-        have hpow : Measurable fun r : ℝ≥0∞ => r ^ (2 : ℝ) :=
-          (ENNReal.continuous_rpow_const (y := (2 : ℝ))).measurable
-        simpa [F] using (hpow.comp hbase).aemeasurable
-      have hTonelli :
-          (∫⁻ x, ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) ∂μ) =
-            ∫⁻ t, ∫⁻ x, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂μ ∂(μI : Measure ℝ) := by
-        -- Tonelli in both orders, via the product measure.
-        have hprod :
-            (∫⁻ z, F z ∂μ.prod (μI : Measure ℝ)) =
-              ∫⁻ x, ∫⁻ t, F (x, t) ∂(μI : Measure ℝ) ∂μ :=
-          MeasureTheory.lintegral_prod (μ := μ) (ν := (μI : Measure ℝ)) F hmeas
-        have hprod_symm :
-            (∫⁻ z, F z ∂μ.prod (μI : Measure ℝ)) =
-              ∫⁻ t, ∫⁻ x, F (x, t) ∂μ ∂(μI : Measure ℝ) :=
-          MeasureTheory.lintegral_prod_symm (μ := μ) (ν := (μI : Measure ℝ)) F hmeas
-        calc
-          (∫⁻ x, ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) ∂μ)
-              = ∫⁻ z, F z ∂μ.prod (μI : Measure ℝ) := by
-                  simpa [F] using hprod.symm
-          _ = ∫⁻ t, ∫⁻ x, F (x, t) ∂μ ∂(μI : Measure ℝ) := hprod_symm
-          _ = ∫⁻ t, ∫⁻ x, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂μ ∂(μI : Measure ℝ) := by
-                  simp [F]
-      -- Now use measure-preserving translation in `x` and evaluate the `t`-integral.
-      have hShift :
-          (∫⁻ t, ∫⁻ x, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂μ ∂(μI : Measure ℝ)) =
-            ∫⁻ t, (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ∂(μI : Measure ℝ) := by
-        refine MeasureTheory.lintegral_congr fun t => ?_
-        -- Change of variables `x ↦ x + t•a`.
-        have hmeas' : Measurable fun x : E => ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) := by
-          have hgrad : Continuous (grad (E := E) f.1) := continuous_grad (E := E) (f := f.1) f.2.1
-          have hbase : Measurable fun x : E => ‖grad (E := E) f.1 x‖ₑ := hgrad.measurable.enorm
-          have hpow : Measurable fun r : ℝ≥0∞ => r ^ (2 : ℝ) :=
-            (ENNReal.continuous_rpow_const (y := (2 : ℝ))).measurable
-          exact hpow.comp hbase
-        simpa [Function.comp, add_assoc] using
-          (MeasureTheory.measurePreserving_add_right μ (t • a)).lintegral_comp (μ := μ) (ν := μ)
-            (f := fun x : E => ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ)) hmeas'
-      have hEval :
-          (∫⁻ t, (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ∂(μI : Measure ℝ)) =
-            (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) := by
-        -- `μI` has total mass `1`.
-        simp [μI, Measure.restrict_apply, Real.volume_Icc]
-      -- Put everything together.
-      have hInt :
-          (∫⁻ x, ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ≤
-            ‖a‖ₑ ^ (2 : ℝ) * (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) := by
-        calc
-          (∫⁻ x, ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ∂μ)
-              ≤ ∫⁻ x, ‖a‖ₑ ^ (2 : ℝ) *
-                    ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) ∂μ := by
-                refine MeasureTheory.lintegral_mono ?_
-                intro x
-                exact hpt x
-          _ = ‖a‖ₑ ^ (2 : ℝ) *
-                (∫⁻ x, ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ) ∂μ) := by
-                -- Pull out the constant using `lintegral_const_mul''`.
-                have hInner :
-                    AEMeasurable
-                      (fun x : E =>
-                        ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ)) μ := by
-                  -- Measurability of the inner integral follows
-                  -- from `hmeas` via
-                  -- `AEMeasurable.lintegral_prod_right'`.
-                  simpa [F] using (hmeas.lintegral_prod_right' (μ := μ) (ν := (μI : Measure ℝ)))
-                simpa [mul_assoc] using
-                  (MeasureTheory.lintegral_const_mul'' (μ := μ) (r := ‖a‖ₑ ^ (2 : ℝ))
-                    (f := fun x : E =>
-                      ∫⁻ t, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂(μI : Measure ℝ)) hInner)
-          _ = ‖a‖ₑ ^ (2 : ℝ) *
-                (∫⁻ t, ∫⁻ x, ‖grad (E := E) f.1 (x + t • a)‖ₑ ^ (2 : ℝ) ∂μ ∂(μI : Measure ℝ)) := by
-                exact congrArg (fun z => ‖a‖ₑ ^ (2 : ℝ) * z) hTonelli
-          _ = ‖a‖ₑ ^ (2 : ℝ) *
-                (∫⁻ t, (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ∂(μI : Measure ℝ)) := by
-                exact congrArg (fun z => ‖a‖ₑ ^ (2 : ℝ) * z) hShift
-          _ = ‖a‖ₑ ^ (2 : ℝ) * (∫⁻ x, ‖grad (E := E) f.1 x‖ₑ ^ (2 : ℝ) ∂μ) := by
-                exact congrArg (fun z => ‖a‖ₑ ^ (2 : ℝ) * z) hEval
-      exact hInt
+    have hsq := lintegral_enorm_sub_sq_le (μ := μ) a f
     -- Take the `1/2` power on both sides and simplify.
     have hsq' :
         (∫⁻ x, ‖f.1 (x + a) - f.1 x‖ₑ ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤
@@ -333,12 +355,12 @@ lemma norm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
   have h := enorm_translateL2_sub_toL2_le (μ := μ) (E := E) a f
   have hA_ne_top :
       (‖translateL2 (μ := μ) (F := ℝ) a (toL2 (μ := μ) (E := E) f) -
-            toL2 (μ := μ) (E := E) f‖ₑ : ℝ≥0∞) ≠ ∞ := by
+            toL2 (μ := μ) (E := E) f‖ₑ : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by
     simp [enorm]
   have hGrad_ne_top :
-      (‖toL2Grad (μ := μ) (E := E) f‖ₑ : ℝ≥0∞) ≠ ∞ := by
+      (‖toL2Grad (μ := μ) (E := E) f‖ₑ : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by
     simp [enorm]
-  have hB_ne_top : (‖a‖ₑ * ‖toL2Grad (μ := μ) (E := E) f‖ₑ : ℝ≥0∞) ≠ ∞ := by
+  have hB_ne_top : (‖a‖ₑ * ‖toL2Grad (μ := μ) (E := E) f‖ₑ : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by
     refine ENNReal.mul_ne_top ?_ hGrad_ne_top
     simp [enorm]
   have h' :
@@ -346,7 +368,7 @@ lemma norm_translateL2_sub_toL2_le (a : E) (f : ↥(C1c (E := E))) :
             toL2 (μ := μ) (E := E) f‖ₑ).toReal ≤
         (‖a‖ₑ * ‖toL2Grad (μ := μ) (E := E) f‖ₑ).toReal := by
     exact (ENNReal.toReal_le_toReal hA_ne_top hB_ne_top).2 h
-  simpa [ENNReal.toReal_mul, toReal_enorm'] using h'
+  simpa only [ENNReal.toReal_mul, toReal_enorm] using h'
 
 end
 

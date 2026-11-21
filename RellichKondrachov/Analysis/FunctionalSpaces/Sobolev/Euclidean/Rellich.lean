@@ -1,19 +1,17 @@
-import Mathlib.Analysis.Normed.Operator.Compact
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
+-/
+
+import Mathlib.Analysis.Normed.Operator.Compact.Basic
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.TranslationEstimateH1
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.FrechetKolmogorov
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Kernels
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.TranslationIntegral
-
-/-
-Copyright (c) 2026 Adam Benenson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Adam Benenson
--/
-
-set_option linter.unusedTactic false
-set_option linter.unreachableTactic false
 
 /-!
 # `RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Rellich`
@@ -59,15 +57,21 @@ section Volume
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
   [CompleteSpace E]
 
-local instance instMeasurableSpaceE_SobolevEuclideanRellich : MeasurableSpace E := borel E
-local instance instBorelSpaceE_SobolevEuclideanRellich : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_SobolevEuclideanRellich : OpensMeasurableSpace E := by
+/-- Borel σ-algebra on the model space `E`. -/
+local instance instMeasurableSpaceRellich : MeasurableSpace E := borel E
+/-- The chosen measurable structure on the model space is its Borel σ-algebra. -/
+local instance instBorelSpaceRellich : BorelSpace E := ⟨rfl⟩
+/-- Open subsets of the model space are Borel measurable. -/
+local instance instOpensMeasurableSpaceRellich : OpensMeasurableSpace E := by
   infer_instance
-local instance instMeasurableAddE_SobolevEuclideanRellich : MeasurableAdd E := by
+/-- Addition is measurable for the Borel structure on the model space. -/
+local instance instMeasurableAddRellich : MeasurableAdd E := by
   infer_instance
-local instance instMeasurableNegE_SobolevEuclideanRellich : MeasurableNeg E := by
+/-- Negation is measurable for the Borel structure on the model space. -/
+local instance instMeasurableNegRellich : MeasurableNeg E := by
   infer_instance
-local instance instFactOneLeTwo_SobolevEuclideanRellich : Fact (1 ≤ (2 : ℝ≥0∞)) := ⟨by norm_num⟩
+/-- The exponent two satisfies the lower bound for the norm on `Lp`. -/
+local instance instFactOneLeTwoSobolevEuclideanRellich : Fact (1 ≤ (2 : ℝ≥0∞)) := ⟨by norm_num⟩
 
 /-! ### Supported `H¹` subspace -/
 
@@ -90,7 +94,6 @@ noncomputable def h1OnToL2 (K : Set E) (hKm : MeasurableSet K) :
 
 /-! ### Euclidean Rellich on fixed compact support -/
 
-set_option maxHeartbeats 2000000 in
 /-- Euclidean Rellich–Kondrachov compactness (Lebesgue): on a fixed compact support `K`, the
 inclusion `H¹ → L²` is a compact operator. -/
 theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : MeasurableSet K) :
@@ -105,10 +108,9 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
       L2Compactness.extendByZeroL2 (E := E) (K := K) hKm u ∈
         T '' Metric.closedBall (0 : ↥(h1On (E := E) K hKm)) 1}
   let C : ℝ :=
-    (h1ToL2 (μ := (volume : Measure E)) (E := E)).opNorm
+    ‖h1ToL2 (μ := (volume : Measure E)) (E := E)‖
   have hCnonneg : 0 ≤ C := by
-    dsimp [C]
-    exact (h1ToL2 (μ := (volume : Measure E)) (E := E)).opNorm_nonneg
+    exact norm_nonneg (h1ToL2 (μ := (volume : Measure E)) (E := E))
   have hA_ball :
       A ⊆
         Metric.closedBall
@@ -119,7 +121,7 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
     have hx' : ‖(x : H1vol)‖ ≤ (1 : ℝ) := by
       -- `h1On` inherits the ambient norm, so this is definitional.
       change ‖x‖ ≤ (1 : ℝ)
-      exact (mem_closedBall_zero_iff.mp hx)
+      simpa only [Metric.mem_closedBall,dist_zero_right x] using hx
     have hTx' : ‖T x‖ ≤ C := by
       have hTx : ‖T x‖ ≤ C * ‖(x : H1vol)‖ := by
         have h :=
@@ -157,13 +159,13 @@ theorem isCompactOperator_h1OnToL2 {K : Set E} (_hK : IsCompact K) (hKm : Measur
     rcases huA with ⟨x, hx, hxEq⟩
     have hxH1 : ‖(x : H1vol)‖ ≤ (1 : ℝ) := by
       change ‖x‖ ≤ (1 : ℝ)
-      exact (mem_closedBall_zero_iff.mp hx)
+      simpa only [Metric.mem_closedBall,dist_zero_right x] using hx
     have hmod :
         ∀ t : E, t ∈ Metric.ball (0 : E) (ε / 2) →
           ‖(translateL2 (μ := (volume : Measure E)) (-t)) (T x) - T x‖ ≤ ε / 2 := by
       intro t ht
       have ht' : ‖t‖ ≤ ε / 2 := le_of_lt (by
-        simpa [Metric.ball, dist_eq_norm, mem_setOf_eq] using ht)
+        simpa [Metric.ball, dist_eq_norm, mem_ofPred_eq] using ht)
       have hgrad_le :
           ‖h1ToL2Grad (μ := (volume : Measure E)) (E := E) (x : H1vol)‖ ≤ ‖(x : H1vol)‖ := by
         let V : Type _ := (E →₂[(volume : Measure E)] ℝ) × (E →₂[(volume : Measure E)] E)
@@ -273,6 +275,7 @@ convenient compact map to the restricted `L²` space.
 -/
 
 omit [CompleteSpace E] in
+/-- The linear isometry extending L² functions by zero has closed range. -/
 lemma isClosed_range_extendByZero (K : Set E) (hKm : MeasurableSet K) :
     IsClosed
       (LinearMap.range
@@ -292,6 +295,8 @@ lemma isClosed_range_extendByZero (K : Set E) (hKm : MeasurableSet K) :
     constructor <;> rintro ⟨u, rfl⟩ <;> exact ⟨u, rfl⟩
   simpa [hEq] using hcr
 
+/-- The supported Sobolev inclusion stays compact when its codomain is restricted to zero
+extensions. -/
 theorem isCompactOperator_h1OnToL2_codRestrict_range_extendByZero {K : Set E} (hK : IsCompact K)
     (hKm : MeasurableSet K) :
     IsCompactOperator

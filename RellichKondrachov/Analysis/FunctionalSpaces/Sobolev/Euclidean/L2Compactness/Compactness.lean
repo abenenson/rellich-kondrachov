@@ -1,14 +1,15 @@
+/-
+Copyright (c) 2026 Adam Benenson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
+-/
+
 import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Smoothing
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 import Mathlib.MeasureTheory.Measure.Typeclasses.Finite
 import Mathlib.Topology.Algebra.Monoid
 import Mathlib.Topology.UniformSpace.HeineCantor
-
-/-
-Copyright (c) 2026 Adam Benenson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Adam Benenson
--/
 
 /-!
 # `L²` compactness criterion: compact smoothing operator (Euclidean)
@@ -44,13 +45,18 @@ section Volume
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 
-local instance instMeasurableSpaceE_L2CompactnessCompactness : MeasurableSpace E := borel E
-local instance instBorelSpaceE_L2CompactnessCompactness : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_L2CompactnessCompactness : OpensMeasurableSpace E := by
+/-- Borel σ-algebra on the model space `E`. -/
+local instance instMeasurableSpaceEL2CompactnessCompactness : MeasurableSpace E := borel E
+/-- The chosen measurable structure on the model space is its Borel σ-algebra. -/
+local instance instBorelSpaceEL2CompactnessCompactness : BorelSpace E := ⟨rfl⟩
+/-- Open subsets of the model space are Borel measurable. -/
+local instance instOpensMeasurableSpaceEL2CompactnessCompactness : OpensMeasurableSpace E := by
   infer_instance
-local instance instMeasurableAddE_L2CompactnessCompactness : MeasurableAdd E := by
+/-- Addition is measurable for the Borel structure on the model space. -/
+local instance instMeasurableAddEL2CompactnessCompactness : MeasurableAdd E := by
   infer_instance
-local instance instMeasurableNegE_L2CompactnessCompactness : MeasurableNeg E := by
+/-- Negation is measurable for the Borel structure on the model space. -/
+local instance instMeasurableNegEL2CompactnessCompactness : MeasurableNeg E := by
   infer_instance
 
 variable {K : Set E}
@@ -61,18 +67,20 @@ def Kψ : Set E :=
   K + tsupport ψ
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+/-- The sum of the compact support set and the compact support of the kernel is compact. -/
 lemma isCompact_Kψ (hK : IsCompact K) (hψcs : HasCompactSupport ψ) :
     IsCompact (Kψ (K := K) (ψ := ψ)) :=
   IsCompact.add hK hψcs.isCompact
 
-private def smoothOn (hKm : MeasurableSet K) (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ)
+/-- Restrict the smoothed function to its compact domain as a continuous map. -/
+def smoothOn (hKm : MeasurableSet K) (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ)
     (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K)) :
     C(↥(Kψ (K := K) (ψ := ψ)), ℝ) where
   toFun x := smoothFun (E := E) (K := K) ψ u x
   continuous_toFun := by
     have : Continuous (smoothFun (E := E) (K := K) ψ u) :=
       continuous_smoothFun (E := E) (K := K) (ψ := ψ) (hKm := hKm) hψc hψcs u
-    simpa using this.comp continuous_subtype_val
+    exact this.comp continuous_subtype_val
 
 /-- `smoothFun` packaged as a `BoundedContinuousFunction` on the compact set `K + tsupport ψ`. -/
 def smoothBCF (hK : IsCompact K) (hKm : MeasurableSet K) (hψc : Continuous ψ)
@@ -83,6 +91,8 @@ def smoothBCF (hK : IsCompact K) (hKm : MeasurableSet K) (hψc : Continuous ψ)
     isCompact_iff_compactSpace.1 (isCompact_Kψ (K := K) (ψ := ψ) hK hψcs)
   BoundedContinuousFunction.mkOfCompact (smoothOn (E := E) (K := K) (ψ := ψ) hKm hψc hψcs u)
 
+/-- The bounded continuous representative evaluates to the smoothed function on its support
+domain. -/
 @[simp] lemma smoothBCF_apply (hK : IsCompact K) (hKm : MeasurableSet K) (hψc : Continuous ψ)
     (hψcs : HasCompactSupport ψ)
     (u : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K))
@@ -92,6 +102,7 @@ def smoothBCF (hK : IsCompact K) (hKm : MeasurableSet K) (hψc : Continuous ψ)
   rfl
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+/-- A continuous compactly supported smoothing kernel is uniformly continuous. -/
 lemma uniformContinuous_ψ (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ) :
     UniformContinuous ψ := by
   classical
@@ -106,7 +117,7 @@ lemma uniformContinuous_ψ (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ)
   -- If `ψ x` is `ε`-far from `0`, then `ψ x ≠ 0`, hence `x` belongs to the support and therefore
   -- to the topological support.
   have hx' : ¬ dist (ψ x) 0 < ε := by
-    simpa [Set.mem_compl_iff, Set.mem_setOf_eq] using hx
+    simpa [Set.mem_compl_iff, Set.mem_ofPred_eq] using hx
   have hxε : ε ≤ dist (ψ x) 0 := le_of_not_gt (by simpa [gt_iff_lt] using hx')
   have hx0 : ψ x ≠ 0 := by
     intro hψ0
@@ -130,10 +141,10 @@ private lemma integrable_norm_L2_restrict (hK : IsCompact K)
     Integrable (fun x : E => ‖u x‖) (volume.restrict K) := by
   classical
   -- On a finite measure space, `L² ⊆ L¹`.
-  have hμ : (volume : Measure E) K < ∞ :=
+  have hμ : (volume : Measure E) K < (⊤ : ℝ≥0∞) :=
     (hK.measure_lt_top (μ := (volume : Measure E)))
-  letI : Fact ((volume : Measure E) K < ∞) := ⟨hμ⟩
-  haveI : IsFiniteMeasure (volume.restrict K) := by
+  let : Fact ((volume : Measure E) K < (⊤ : ℝ≥0∞)) := ⟨hμ⟩
+  have : IsFiniteMeasure (volume.restrict K) := by
     infer_instance
   have hu2 : MemLp (fun x : E => u x) (2 : ℝ≥0∞) (volume.restrict K) :=
     MeasureTheory.Lp.memLp u
