@@ -33,6 +33,10 @@ theorem isCompactOperator_h1ToL2_riemannianVolume
 
 Lean 4 + [Mathlib](https://github.com/leanprover-community/mathlib4). No external dependencies.
 
+The manifold development on `main` uses Lean 4.29.1. For Euclidean compactness
+on Lean 4.34.1, the compatibility branch provides the focused Sobolev import,
+a Lake dependency example, and two checked consumer proofs. [Install the Euclidean library](https://github.com/abenenson/rellich-kondrachov/tree/compat/euclidean-lean-v4.34.1#use-from-another-project).
+
 For more detail on the internal organization of the development, see
 [`docs/overview.md`](docs/overview.md).
 
