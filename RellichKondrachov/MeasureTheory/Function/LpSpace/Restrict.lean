@@ -1,16 +1,17 @@
-import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
-import Mathlib.MeasureTheory.Function.LpSpace.Basic
-
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
 -/
+
+import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
+import Mathlib.MeasureTheory.Function.LpSpace.Basic
 
 /-!
 # `RellichKondrachov.MeasureTheory.Function.LpSpace.Restrict`
 
-`L^p` extension-by-zero maps for restricted measures.
+`«L»^p` extension-by-zero maps for restricted measures.
 
 Mathlib provides the equivalence
 
@@ -42,7 +43,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {p : ℝ≥0∞} [Fact (1 ≤ p)]
 variable {s : Set α} (hs : MeasurableSet s)
 
-private noncomputable def extendByZeroFun (f : Lp E p (μ.restrict s)) : Lp E p μ :=
+/-- Extend an Lp function from a restricted measure by zero outside the set. -/
+noncomputable def extendByZeroFun (f : Lp E p (μ.restrict s)) : Lp E p μ :=
   let hf : MemLp (fun x : α => f x) p (μ.restrict s) := Lp.memLp f
   let hfi : MemLp (s.indicator fun x : α => f x) p μ :=
     (memLp_indicator_iff_restrict (μ := μ) (p := p) (s := s) (f := fun x : α => f x) hs).2 hf
@@ -63,7 +65,7 @@ noncomputable def extendByZeroₗ : Lp E p (μ.restrict s) →ₗ[ℝ] Lp E p μ
     refine Lp.ext ?_
     have h_add_restrict :
         (fun x : α => (f + g) x) =ᵐ[μ.restrict s] fun x : α => f x + g x := by
-      simpa using (Lp.coeFn_add (μ := μ.restrict s) f g)
+      exact (Lp.coeFn_add (μ := μ.restrict s) f g)
     have h_add_on :
         ∀ᵐ x : α ∂μ, x ∈ s → (f + g) x = f x + g x :=
       (ae_restrict_iff' (μ := μ) (s := s) hs).1 h_add_restrict
@@ -95,8 +97,7 @@ noncomputable def extendByZeroₗ : Lp E p (μ.restrict s) →ₗ[ℝ] Lp E p μ
             simp [hf, hg]
         _ = (extendByZeroFun (μ := μ) (p := p) (s := s) hs f +
               extendByZeroFun (μ := μ) (p := p) (s := s) hs g) x := hadd'
-    ·
-      have hadd' :
+    · have hadd' :
           extendByZeroFun (μ := μ) (p := p) (s := s) hs f x +
               extendByZeroFun (μ := μ) (p := p) (s := s) hs g x =
             (extendByZeroFun (μ := μ) (p := p) (s := s) hs f +
@@ -117,7 +118,7 @@ noncomputable def extendByZeroₗ : Lp E p (μ.restrict s) →ₗ[ℝ] Lp E p μ
     refine Lp.ext ?_
     have h_smul_restrict :
         (fun x : α => (c • f) x) =ᵐ[μ.restrict s] fun x : α => c • f x := by
-      simpa using (Lp.coeFn_smul (μ := μ.restrict s) c f)
+      exact (Lp.coeFn_smul (μ := μ.restrict s) c f)
     have h_smul_on :
         ∀ᵐ x : α ∂μ, x ∈ s → (c • f) x = c • f x :=
       (ae_restrict_iff' (μ := μ) (s := s) hs).1 h_smul_restrict
@@ -141,8 +142,7 @@ noncomputable def extendByZeroₗ : Lp E p (μ.restrict s) →ₗ[ℝ] Lp E p μ
         _ = c • s.indicator (fun x : α => f x) x := by simp [Set.indicator_of_mem, hx]
         _ = c • extendByZeroFun (μ := μ) (p := p) (s := s) hs f x := by simp [hf]
         _ = (c • extendByZeroFun (μ := μ) (p := p) (s := s) hs f) x := hsmul'
-    ·
-      have hsmul' :
+    · have hsmul' :
           c • extendByZeroFun (μ := μ) (p := p) (s := s) hs f x =
             (c • extendByZeroFun (μ := μ) (p := p) (s := s) hs f) x := by
         simpa [Pi.smul_apply] using hsmul.symm
@@ -188,6 +188,8 @@ noncomputable def extendByZeroₗᵢ : Lp E p (μ.restrict s) →ₗᵢ[ℝ] Lp 
     -- Combine with the definition of the `Lp` norm on the restricted space.
     simp [hnorm_out, hnorm_restrict, norm_def]
 
+/-- The isometric extension from the restricted measure agrees almost everywhere with the
+indicator extension. -/
 lemma extendByZeroₗᵢ_ae_eq (f : Lp E p (μ.restrict s)) :
     ((extendByZeroₗᵢ (μ := μ) (p := p) (s := s) hs) f : α → E) =ᵐ[μ]
       s.indicator fun x : α => f x := by
@@ -195,6 +197,7 @@ lemma extendByZeroₗᵢ_ae_eq (f : Lp E p (μ.restrict s)) :
   simpa [extendByZeroₗᵢ, extendByZeroₗ] using
     (extendByZeroFun_coe (μ := μ) (p := p) (s := s) hs f)
 
+/-- The extension isometry is independent of the proof that the restriction set is measurable. -/
 lemma extendByZeroₗᵢ_congr (hs₁ hs₂ : MeasurableSet s) :
     extendByZeroₗᵢ (μ := μ) (E := E) (p := p) (s := s) hs₁ =
       extendByZeroₗᵢ (μ := μ) (E := E) (p := p) (s := s) hs₂ := by

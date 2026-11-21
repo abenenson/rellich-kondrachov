@@ -1,12 +1,13 @@
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
-
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
 -/
+
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Translation
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 /-!
 # `L²` compactness criterion: bounding the translation-integral by a translation modulus
@@ -38,13 +39,18 @@ section Volume
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 
-local instance instMeasurableSpaceE_L2CompactnessTranslationIntegral : MeasurableSpace E := borel E
-local instance instBorelSpaceE_L2CompactnessTranslationIntegral : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_L2CompactnessTranslationIntegral :
+/-- Borel σ-algebra on the model space `E`. -/
+local instance instMeasurableSpaceEL2CompactnessTranslationIntegral : MeasurableSpace E := borel E
+/-- The chosen measurable structure on the model space is its Borel σ-algebra. -/
+local instance instBorelSpaceEL2CompactnessTranslationIntegral : BorelSpace E := ⟨rfl⟩
+/-- Open subsets of the model space are Borel measurable. -/
+local instance instOpensMeasurableSpaceEL2CompactnessTranslationIntegral :
     OpensMeasurableSpace E := by infer_instance
-local instance instMeasurableAddE_L2CompactnessTranslationIntegral : MeasurableAdd E := by
+/-- Addition is measurable for the Borel structure on the model space. -/
+local instance instMeasurableAddEL2CompactnessTranslationIntegral : MeasurableAdd E := by
   infer_instance
-local instance instMeasurableNegE_L2CompactnessTranslationIntegral : MeasurableNeg E := by
+/-- Negation is measurable for the Borel structure on the model space. -/
+local instance instMeasurableNegEL2CompactnessTranslationIntegral : MeasurableNeg E := by
   infer_instance
 
 variable {ψ : E → ℝ}
@@ -71,6 +77,7 @@ private lemma kernelMeasure_compl_ball_eq_zero_of_tsupport_subset {δ : ℝ}
       (μ := (volume : Measure E))
       (s := (Metric.ball (0 : E) δ)ᶜ) hmeas hEq]
 
+/-- A uniform translation bound on the kernel support bounds the kernel average of squared errors. -/
 theorem integral_norm_sq_translateL2_sub_le_sq_of_tsupport_subset_ball
     (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ) (hψ0 : ∀ x, 0 ≤ ψ x)
     (hψint : ∫ x, ψ x ∂(volume : Measure E) = 1)
@@ -84,7 +91,7 @@ theorem integral_norm_sq_translateL2_sub_le_sq_of_tsupport_subset_ball
       ∂kernelMeasure (E := E) ψ ≤ η ^ 2 := by
   classical
   let μ : Measure E := kernelMeasure (E := E) ψ
-  haveI : MeasureTheory.IsProbabilityMeasure μ :=
+  have : MeasureTheory.IsProbabilityMeasure μ :=
     ⟨kernelMeasure_univ (E := E) (ψ := ψ) hψc hψcs hψ0 hψint⟩
   have hμzero : μ ((Metric.ball (0 : E) δ)ᶜ) = 0 := by
     simpa [μ] using kernelMeasure_compl_ball_eq_zero_of_tsupport_subset (E := E) (ψ := ψ) hψsupp

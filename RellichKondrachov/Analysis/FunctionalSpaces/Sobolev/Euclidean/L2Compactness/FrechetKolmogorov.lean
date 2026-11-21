@@ -1,12 +1,13 @@
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
-import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Transfer
-import Mathlib.Topology.UniformSpace.Cauchy
-
 /-
 Copyright (c) 2026 Adam Benenson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Benenson
+Lean 4.34.1 compatibility changes adapted from the Apache-2.0 patch in openai/math.
 -/
+
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Approximation
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.L2Compactness.Transfer
+import Mathlib.Topology.UniformSpace.Cauchy
 
 /-!
 # `L²` compactness criterion: Fréchet–Kolmogorov (Euclidean, compact support case)
@@ -52,17 +53,24 @@ section Volume
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 
-local instance instMeasurableSpaceE_L2CompactnessFrechetKolmogorov : MeasurableSpace E := borel E
-local instance instBorelSpaceE_L2CompactnessFrechetKolmogorov : BorelSpace E := ⟨rfl⟩
-local instance instOpensMeasurableSpaceE_L2CompactnessFrechetKolmogorov :
+/-- Borel σ-algebra on the model space `E`. -/
+local instance instMeasurableSpaceEL2CompactnessFrechetKolmogorov : MeasurableSpace E := borel E
+/-- The chosen measurable structure on the model space is its Borel σ-algebra. -/
+local instance instBorelSpaceEL2CompactnessFrechetKolmogorov : BorelSpace E := ⟨rfl⟩
+/-- Open subsets of the model space are Borel measurable. -/
+local instance instOpensMeasurableSpaceEL2CompactnessFrechetKolmogorov :
     OpensMeasurableSpace E := by infer_instance
-local instance instMeasurableAddE_L2CompactnessFrechetKolmogorov : MeasurableAdd E := by
+/-- Addition is measurable for the Borel structure on the model space. -/
+local instance instMeasurableAddEL2CompactnessFrechetKolmogorov : MeasurableAdd E := by
   infer_instance
-local instance instMeasurableNegE_L2CompactnessFrechetKolmogorov : MeasurableNeg E := by
+/-- Negation is measurable for the Borel structure on the model space. -/
+local instance instMeasurableNegEL2CompactnessFrechetKolmogorov : MeasurableNeg E := by
   infer_instance
 
 variable {K : Set E} {ψ : E → ℝ}
 
+/-- A bound on the averaged squared translation error yields the corresponding L² smoothing
+estimate. -/
 lemma norm_smoothL2_sub_extendByZeroL2_le_of_integral_translateL2_sub_extendByZeroL2_le
     (hK : IsCompact K) (hKm : MeasurableSet K)
     (hψc : Continuous ψ) (hψcs : HasCompactSupport ψ) (hψ0 : ∀ x, 0 ≤ ψ x)
@@ -85,6 +93,8 @@ lemma norm_smoothL2_sub_extendByZeroL2_le_of_integral_translateL2_sub_extendByZe
         (E := E) (K := K) (ψ := ψ) (hK := hK) (hKm := hKm) hψc hψcs hψ0 hψint u
   exact (sq_le_sq₀ (norm_nonneg _) hη).1 hsq
 
+/-- Uniform control of averaged translations makes a bounded family of zero extensions totally
+bounded. -/
 theorem totallyBounded_extendByZeroL2_image_of_forall_exists_translationIntegral_small
     (hK : IsCompact K) (hKm : MeasurableSet K) {R : ℝ} (hR : 0 ≤ R)
     {A : Set (MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K))}
@@ -125,7 +135,7 @@ theorem totallyBounded_extendByZeroL2_image_of_forall_exists_translationIntegral
   rcases Set.mem_iUnion.1 hSu_cover with ⟨y, hy⟩
   rcases Set.mem_iUnion.1 hy with ⟨hyT, hyBall⟩
   have hyDist : dist (smoothL2 (E := E) (K := K) ψ hK hKm hψc hψcs u) y < ε / 2 := by
-    simpa [Metric.ball, Set.mem_setOf_eq] using hyBall
+    simpa [Metric.ball, Set.mem_ofPred_eq] using hyBall
   have hdist_smooth_ext :
       dist (extendByZeroL2 (E := E) (K := K) hKm u)
           (smoothL2 (E := E) (K := K) ψ hK hKm hψc hψcs u) ≤ ε / 2 := by
@@ -156,9 +166,11 @@ theorem totallyBounded_extendByZeroL2_image_of_forall_exists_translationIntegral
       lt_of_le_of_lt htri hlt
     simpa [add_halves ε] using htmp
   have hxBall : extendByZeroL2 (E := E) (K := K) hKm u ∈ Metric.ball y ε := by
-    simpa [Metric.ball, Set.mem_setOf_eq] using hxDist
+    simpa [Metric.ball, Set.mem_ofPred_eq] using hxDist
   exact Set.mem_iUnion.2 ⟨y, Set.mem_iUnion.2 ⟨hyT, hxBall⟩⟩
 
+/-- A bounded family with uniformly small averaged translations has compact closure after zero
+extension. -/
 theorem isCompact_closure_extendByZeroL2_image_of_forall_exists_translationIntegral_small
     (hK : IsCompact K) (hKm : MeasurableSet K) {R : ℝ} (hR : 0 ≤ R)
     {A : Set (MeasureTheory.Lp ℝ (2 : ℝ≥0∞) (volume.restrict K))}

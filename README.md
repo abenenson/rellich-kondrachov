@@ -1,49 +1,57 @@
-# rellich-kondrachov
+# Euclidean Rellich–Kondrachov compactness
 
-[![Lean Action CI](https://github.com/abenenson/rellich-kondrachov/actions/workflows/lean_action_ci.yml/badge.svg?branch=main)](https://github.com/abenenson/rellich-kondrachov/actions/workflows/lean_action_ci.yml)
+[![Euclidean Rellich CI](https://github.com/abenenson/rellich-kondrachov/actions/workflows/lean_action_ci.yml/badge.svg?branch=compat%2Feuclidean-lean-v4.34.1)](https://github.com/abenenson/rellich-kondrachov/actions/workflows/lean_action_ci.yml?query=branch%3Acompat%2Feuclidean-lean-v4.34.1)
 
-Lean 4 proof of the **Rellich–Kondrachov compact embedding theorem**: the Sobolev embedding H¹ → L² is compact on compact Riemannian manifolds.
+On a finite-dimensional real inner-product space, the `H¹ → L²` inclusion for
+functions supported in a fixed compact set is a compact operator. This branch
+provides the Euclidean theorem on **Lean 4.34.1** with Mathlib at
+`d13f23b723b8a846827a245b89c10fc7d3f11612`. The complete compact Riemannian
+manifold development uses Lean 4.29.1 on [main](https://github.com/abenenson/rellich-kondrachov/tree/main).
 
-> **Historical build status:** Verified on Lean v4.29.1 with Mathlib. Zero sorries.
-> Source documentation has since changed; fresh CI must qualify the current source bytes.
+## Use from another project
 
-## Main result
+Add the dependency to a `lakefile.lean` using the same Lean and Mathlib pins.
 
 ```lean
-theorem isCompactOperator_h1ToL2_riemannianVolume
-    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
-    {H : Type*} [TopologicalSpace H]
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    (I : ModelWithCorners ℝ E H)
-    [IsManifold I ⊤ M] [IsManifold I 1 M]
-    [Bundle.RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
-    [I.Boundaryless] [T3Space M] [CompactSpace M] :
-    IsCompactOperator fun x : ↥(h1 (I := I) (μ := riemannianVolumeMeasure (I := I) (M := M))) =>
-      h1ToL2 (I := I) (μ := riemannianVolumeMeasure (I := I) (M := M)) x
+require «rellich-kondrachov» from git
+  "https://github.com/abenenson/rellich-kondrachov.git" @ "compat/euclidean-lean-v4.34.1"
 ```
 
-## Proof strategy
+Run `lake update rellich-kondrachov` and retain the resolved revision in
+`lake-manifest.json`. Projects applying the `openai/math` compatibility patch
+can remove that patch step when using this branch. The focused import and
+theorem name are available directly.
 
-1. **Euclidean core** (`Euclidean/Rellich`): for a fixed compact set K ⊆ ℝⁿ, the H¹ → L² inclusion restricted to functions supported in K is compact. Via the Fréchet–Kolmogorov criterion, using the H¹ translation estimate `‖τₐu − u‖₂ ≤ ‖a‖ · ‖∇u‖₂`.
-2. **Manifold glue** (`Manifold/RellichKondrachov`): decompose via a finite atlas; compactness of each chart contribution implies compactness of the sum.
-3. **Riemannian specialisation** (`Manifold/RellichKondrachovRiemannian`): instantiate for compact Riemannian manifolds with Levi-Civita volume measure.
+```lean
+import RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean.Rellich
 
-## Dependencies
+open RellichKondrachov.Analysis.FunctionalSpaces.Sobolev.Euclidean
 
-Lean 4 + [Mathlib](https://github.com/leanprover-community/mathlib4). No external dependencies.
+#check h1OnToL2
+#check isCompactOperator_h1OnToL2
+```
 
-For more detail on the internal organization of the development, see
-[`docs/overview.md`](docs/overview.md).
+The theorem takes a compactness proof and a measurability proof for the
+fixed support set. The [downstream example](RellichKondrachovExamples/DownstreamCompatibility.lean)
+uses it to extract an L²-convergent subsequence from a bounded planar H¹ sequence.
 
-## Organization
+## Build and verification
 
-The development spans Euclidean Sobolev compactness, measure/Lp transport, chart localization,
-and the Riemannian specialization. The files are organized so these parts can be studied
-independently before the final compact-embedding theorem.
+```sh
+python3 scripts/fetch-euclidean-cache.py
+lake --wfail build
+lake --wfail build RellichKondrachovExamples
+lake env lean -DwarningAsError=true scripts/CheckEuclidean.lean
+```
 
-## References
+The default import builds the Euclidean theorem and its local prerequisites.
+Verification checks the imported declarations with the Mathlib environment
+linters and traces their axioms. The manifold modules are outside this branch's
+default build. The [overview](docs/overview.md) describes the supported proof.
 
-- F. Rellich, "Ein Satz über mittlere Konvergenz", *Nachrichten der Akademie der Wissenschaften in Göttingen*, 1930
-- V. I. Kondrachov, "Sur certaines propriétés des fonctions dans l'espace Lp", *Doklady Akademii Nauk SSSR*, 1945
-- L. C. Evans, *Partial Differential Equations*, 2nd ed., AMS, 2010, §5.7
+## Attribution
+
+Adam Benenson authored the original compact embedding formalization. This
+branch adapts the Apache-2.0 compatibility patch from `openai/math`, which
+uses the same theorem in a number-theory proof. The source files retain their
+copyright and license notices. [Pinned compatibility patch](https://github.com/openai/math/blob/4eaee87548250b2682affda7d05d947c05554bae/lean/patches/rellich-kondrachov-lean4341.patch) · [Downstream proof](https://github.com/openai/math/blob/4eaee87548250b2682affda7d05d947c05554bae/lean/OAI/NumberTheory/DirichletL/CubicSieve/RadialWindows.lean#L529).

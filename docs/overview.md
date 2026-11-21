@@ -1,30 +1,16 @@
-# Rellich–Kondrachov Overview
+# Euclidean compact embedding
 
-This project formalizes a compact Sobolev embedding theorem: on a compact Riemannian
-manifold, the natural inclusion from `H¹` to `L²` is a compact operator.
+The `H¹` space is the closure of the graph of the gradient of compactly
+supported `C¹` functions in the product of scalar and vector-valued `L²` spaces.
+For a measurable set `K`, the subspace `h1On K` restricts the scalar component
+to functions vanishing almost everywhere outside `K`.
 
-## Organization
+When `K` is compact, a bounded family in `h1On K` has uniformly small `L²`
+translations. Smoothing by a compactly supported kernel and applying
+Arzelà–Ascoli gives the Fréchet–Kolmogorov compactness criterion. The resulting
+compact operator is `h1OnToL2`. [Euclidean theorem](../RellichKondrachov/Analysis/FunctionalSpaces/Sobolev/Euclidean/Rellich.lean).
 
-The development is organized in focused layers:
-
-1. measure and `Lp` restriction/change-of-measure lemmas,
-2. Euclidean `H¹` and translation-estimate API,
-3. Fréchet–Kolmogorov and Euclidean compactness,
-4. chart-local Sobolev transport and localization,
-5. Riemannian volume specialization and the global compact embedding theorem.
-
-This staged organization separates reusable library pieces from the final manifold theorem.
-
-## Verification
-
-The repository is pinned to Lean and Mathlib in `lean-toolchain` and `lake-manifest.json`.
-CI builds the complete library with warnings treated as errors, then builds its API
-documentation with the matching `doc-gen4` release. Each successful run uploads the
-`api-docs` artifact, including pull requests and manual runs.
-
-To build the API documentation locally after `lake build`, run
-`bash scripts/build-docs.sh`. The output is in `public-docs/docs`.
-
-Publishing is optional: after configuring GitHub Pages to use GitHub Actions, set
-the repository variable `PUBLISH_DOCS` to `true` to deploy documentation on pushes
-to `main`.
+The Lean 4.34.1 compatibility branch builds this Euclidean import closure.
+Installation, the downstream example and the verification commands are in
+the [README](../README.md). The complete manifold development and its API
+documentation workflow are on the [Lean 4.29.1 branch](https://github.com/abenenson/rellich-kondrachov/tree/main).
