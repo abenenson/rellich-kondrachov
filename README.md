@@ -4,8 +4,7 @@
 
 Lean 4 proof of the **Rellich–Kondrachov compact embedding theorem**: the Sobolev embedding H¹ → L² is compact on compact Riemannian manifolds.
 
-> **Historical build status:** Verified on Lean v4.29.1 with Mathlib. Zero sorries.
-> Source documentation has since changed; fresh CI must qualify the current source bytes.
+> **Verified toolchain for the full development:** Lean 4.29.1 with pinned Mathlib. [Verification of the current proof sources](https://github.com/abenenson/rellich-kondrachov/actions/runs/44954193166).
 
 ## Main result
 
@@ -35,7 +34,7 @@ Lean 4 + [Mathlib](https://github.com/leanprover-community/mathlib4). No externa
 
 The manifold development on `main` uses Lean 4.29.1. For Euclidean compactness
 on Lean 4.34.1, the compatibility branch provides the focused Sobolev import,
-a Lake dependency example, and two checked consumer proofs. [Install the Euclidean library](https://github.com/abenenson/rellich-kondrachov/tree/compat/euclidean-lean-v4.34.1#use-from-another-project).
+a Lake dependency example, and two checked consumer proofs. [Install the Euclidean library](https://github.com/abenenson/rellich-kondrachov/tree/v0.1.0-euclidean-lean4.34.1#use-from-another-project).
 
 For more detail on the internal organization of the development, see
 [`docs/overview.md`](docs/overview.md).
@@ -51,3 +50,12 @@ independently before the final compact-embedding theorem.
 - F. Rellich, "Ein Satz über mittlere Konvergenz", *Nachrichten der Akademie der Wissenschaften in Göttingen*, 1930
 - V. I. Kondrachov, "Sur certaines propriétés des fonctions dans l'espace Lp", *Doklady Akademii Nauk SSSR*, 1945
 - L. C. Evans, *Partial Differential Equations*, 2nd ed., AMS, 2010, §5.7
+
+## Releases and related libraries
+
+The [Lean 4.34.1 Euclidean prerelease](https://github.com/abenenson/rellich-kondrachov/releases/tag/v0.1.0-euclidean-lean4.34.1) provides the Euclidean compactness library. Use `v0.1.0-euclidean-lean4.34.1` in your Lake dependency to pin this snapshot. The full manifold theorem lives on `main`.
+
+- [levi-civita-smoothness](https://github.com/abenenson/levi-civita-smoothness) covers smoothness of the Levi-Civita connection.
+- [compact-spectral](https://github.com/abenenson/compact-spectral) covers spectral theory for compact self-adjoint operators.
+
+[Browse the Lean library index](https://adambenenson.com/projects/#formal-methods).
